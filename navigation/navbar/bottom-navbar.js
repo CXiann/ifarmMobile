@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreen from '../screens/activity-screen';
+import TestScreen from '../screens/test-screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -84,6 +85,16 @@ export default function BottomNavbar() {
             tabBarLabel: 'Activities',
             tabBarIcon: ({color, size}) => {
               return <Icon name="weather-sunny" size={size} color={color} />;
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Test"
+          component={TestScreen}
+          options={{
+            tabBarLabel: 'Test',
+            tabBarIcon: ({color, size}) => {
+              return <Icon name="tools" size={size} color={color} />;
             },
           }}
         />

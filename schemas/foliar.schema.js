@@ -1,13 +1,13 @@
 import Realm, {BSON} from 'realm';
 
 // Define your object model
-export class Foliars extends Realm.Object {
+export class Foliar extends Realm.Object {
   static schema = {
-    name: 'Foliars',
+    name: 'foliars',
     properties: {
       _id: {type: 'objectId', default: () => new BSON.ObjectId()},
       name: 'string',
-      tags: 'string?[]',
+      tags: 'string[]',
     },
     primaryKey: '_id',
   };
