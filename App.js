@@ -7,7 +7,7 @@ import {
   Button,
 } from 'react-native-paper';
 
-import BottomNavbar from './navigation/navbar/bottom-navbar';
+import BottomNavbar from './src/navigation/bottom-navbar';
 
 import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
@@ -16,6 +16,10 @@ import {APP_ID} from '@env';
 
 const {RealmProvider} = realmContext;
 
+// const realmAccessBehavior = {
+//   type: 'openImmediately',
+// };
+
 export default function App() {
   return (
     <AppProvider id={APP_ID}>
@@ -23,11 +27,6 @@ export default function App() {
         <RealmProvider
           sync={{
             flexible: true,
-            initialSubscriptions: {
-              update(subs, realm) {
-                subs.add(realm.objects('foliars'));
-              },
-            },
             onError: console.error,
           }}>
           <PaperProvider theme={THEME}>
@@ -69,7 +68,7 @@ function LogIn() {
   );
 }
 
-const LightTheme = require('./assets/LightTheme.json');
+const LightTheme = require('./src/assets/LightTheme.json');
 const THEME = {
   ...MD3DefaultTheme,
   colors: LightTheme.colors,

@@ -1,6 +1,7 @@
 import {createRealmContext} from '@realm/react';
-import {Foliar} from './schemas/foliar.schema';
+import {Foliar} from './src/schemas/foliar.schema';
+import {Fertilizer} from './src/schemas/fertilizer.schema';
 
 export const realmContext = createRealmContext({
-  schema: [Foliar],
+  schema: [Foliar, Fertilizer],
 });
