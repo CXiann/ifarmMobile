@@ -7,7 +7,7 @@ import {
   Button,
 } from 'react-native-paper';
 
-import BottomNavbar from './src/navigation/bottom-navbar';
+import MainNav from './src/navigation/main-nav';
 
 import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
@@ -20,24 +20,28 @@ const {RealmProvider} = realmContext;
 //   type: 'openImmediately',
 // };
 
-export default function App() {
+export default function AppWrapper() {
   return (
     <AppProvider id={APP_ID}>
       <UserProvider fallback={LogIn}>
-        <RealmProvider
-          sync={{
-            flexible: true,
-            onError: console.error,
-          }}>
-          <PaperProvider theme={THEME}>
-            <BottomNavbar />
-          </PaperProvider>
-        </RealmProvider>
+        <App />
       </UserProvider>
     </AppProvider>
   );
 }
-
+const App = () => {
+  return (
+    <RealmProvider
+      sync={{
+        flexible: true,
+        onError: console.error,
+      }}>
+      <PaperProvider theme={THEME}>
+        <MainNav />
+      </PaperProvider>
+    </RealmProvider>
+  );
+};
 // const THEME = {
 //   ...MD3DefaultTheme,
 //   colors: {

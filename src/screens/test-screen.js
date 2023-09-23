@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import Realm from 'realm';
-import {realmContext} from '../RealmContext';
+import {realmContext} from '../../RealmContext';
 import {Foliar} from '../schemas/foliar.schema';
 import {Fertilizer} from '../schemas/fertilizer.schema';
 
