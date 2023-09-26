@@ -1,14 +1,33 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
-
+import * as bcrypt from 'bcryptjs';
 import Realm from 'realm';
-import {useApp} from '@realm/react';
+import {realmContext} from '../../../RealmContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {User} from '../../schemas/user.schema';
 
 const LoginScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const {useQuery, useRealm} = realmContext;
+  const realm = useRealm();
+  const users = useQuery(User);
+
+  useEffect(() => {
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(realm.objects(User));
+    });
+    console.log('Total users: ', users.length);
+    global.currentUser = users.filtered(
+      'email CONTAINS $0',
+      'farmowner@ifarm.com',
+    );
+    global.currentUserId = global.currentUser[0]?._id;
+  }, [realm, User]);
 
   // const app = useApp();
   // async function handleLogIn() {
@@ -17,8 +36,18 @@ const LoginScreen = props => {
   //   await app.logIn(Realm.Credentials.anonymous());
   // }
 
-  const handleLogIn = () => {
-    props.navigation.navigate('Tabs');
+  const handleLogIn = async () => {
+    if (await validateCredentials()) {
+      props.navigation.navigate('Tabs');
+    }
+  };
+
+  const validateCredentials = async () => {
+    var isMatch = false;
+    const currentUserPassword = global.currentUser[0].password;
+    isMatch = await bcrypt.compare(password, currentUserPassword);
+    console.log('Login: ' + isMatch);
+    return isMatch;
   };
 
   return (

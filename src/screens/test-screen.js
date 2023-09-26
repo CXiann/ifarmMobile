@@ -5,7 +5,7 @@ import {realmContext} from '../../RealmContext';
 import {Foliar} from '../schemas/foliar.schema';
 import {Fertilizer} from '../schemas/fertilizer.schema';
 
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {TextInput, Button, Text} from 'react-native-paper';
 
 const TestScreen = () => {
@@ -56,58 +56,60 @@ const TestScreen = () => {
 
   return (
     <SafeAreaView>
-      <TextInput
-        label="Foliar Name"
-        mode="outlined"
-        value={foliar}
-        onChangeText={foliar => setFoliar(foliar)}
-        style={{margin: 10}}
-      />
-      <TextInput
-        label="Foliar Tags"
-        mode="outlined"
-        value={foliarTags}
-        onChangeText={foliarTags => setFoliarTags(foliarTags)}
-        style={{margin: 10}}
-      />
-      <Button
-        mode="contained"
-        onPress={() => handleAddFoliar()}
-        style={{width: 100, alignSelf: 'flex-end', margin: 20}}>
-        Submit
-      </Button>
-      {readFoliars ? (
-        <Text variant="displayMedium">{readFoliars.length}</Text>
-      ) : (
-        <Text variant="displayMedium">No Data Found</Text>
-      )}
-      <Text variant="displayMedium">{allSubscriptionState}</Text>
-      {/* Fertilizers */}
-      <TextInput
-        label="Fertilizer Name"
-        mode="outlined"
-        value={fertilizer}
-        onChangeText={fertilizer => setFertilizer(fertilizer)}
-        style={{margin: 10}}
-      />
-      <TextInput
-        label="Fertilizer Tags"
-        mode="outlined"
-        value={fertilizerTags}
-        onChangeText={fertilizerTags => setFertilizerTags(fertilizerTags)}
-        style={{margin: 10}}
-      />
-      <Button
-        mode="contained"
-        onPress={() => handleAddFertilizer()}
-        style={{width: 100, alignSelf: 'flex-end', margin: 20}}>
-        Submit
-      </Button>
-      {readFertilizers ? (
-        <Text variant="displayMedium">{readFertilizers.length}</Text>
-      ) : (
-        <Text variant="displayMedium">No Data Found</Text>
-      )}
+      <ScrollView>
+        <TextInput
+          label="Foliar Name"
+          mode="outlined"
+          value={foliar}
+          onChangeText={foliar => setFoliar(foliar)}
+          style={{margin: 10}}
+        />
+        <TextInput
+          label="Foliar Tags"
+          mode="outlined"
+          value={foliarTags}
+          onChangeText={foliarTags => setFoliarTags(foliarTags)}
+          style={{margin: 10}}
+        />
+        <Button
+          mode="contained"
+          onPress={() => handleAddFoliar()}
+          style={{width: 100, alignSelf: 'flex-end', margin: 20}}>
+          Submit
+        </Button>
+        {readFoliars ? (
+          <Text variant="displayMedium">{readFoliars.length}</Text>
+        ) : (
+          <Text variant="displayMedium">No Data Found</Text>
+        )}
+        <Text variant="displayMedium">{allSubscriptionState}</Text>
+        {/* Fertilizers */}
+        <TextInput
+          label="Fertilizer Name"
+          mode="outlined"
+          value={fertilizer}
+          onChangeText={fertilizer => setFertilizer(fertilizer)}
+          style={{margin: 10}}
+        />
+        <TextInput
+          label="Fertilizer Tags"
+          mode="outlined"
+          value={fertilizerTags}
+          onChangeText={fertilizerTags => setFertilizerTags(fertilizerTags)}
+          style={{margin: 10}}
+        />
+        <Button
+          mode="contained"
+          onPress={() => handleAddFertilizer()}
+          style={{width: 100, alignSelf: 'flex-end', margin: 20}}>
+          Submit
+        </Button>
+        {readFertilizers ? (
+          <Text variant="displayMedium">{readFertilizers.length}</Text>
+        ) : (
+          <Text variant="displayMedium">No Data Found</Text>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

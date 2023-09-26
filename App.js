@@ -34,6 +34,16 @@ const App = () => {
     <RealmProvider
       sync={{
         flexible: true,
+        // clientReset: {
+        //   mode: 'discardUnsyncedChanges',
+        //   onBefore: realm => {
+        //     console.log('Beginning client reset for ', realm.path);
+        //   },
+        //   onAfter: (beforeRealm, afterRealm) => {
+        //     console.log('Finished client reset for', beforeRealm.path);
+        //     console.log('New realm path', afterRealm.path);
+        //   },
+        // },
         onError: console.error,
       }}>
       <PaperProvider theme={THEME}>
@@ -51,13 +61,41 @@ const App = () => {
 //   },
 // };
 
+async function handleSyncError(session, syncError) {
+  if (syncError.name == 'ClientReset') {
+    console.log(syncError);
+    try {
+      console.log('error type is ClientReset....');
+      const path = realm.path; // realm.path will not be accessible after realm.close()
+      realm.close();
+      Realm.App.Sync.initiateClientReset(app, path);
+      // Download Realm from the server.
+      // Ensure that the backend state is fully downloaded before proceeding,
+      // which is the default behavior.
+      realm = await Realm.open(config);
+      realm.close();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+
 function LogIn() {
   const app = useApp();
   async function logInUser() {
-    // When anonymous authentication is enabled, users can immediately log
-    // into your app without providing any identifying information.
-    await app.logIn(Realm.Credentials.anonymous());
+    try {
+      // When anonymous authentication is enabled, users can immediately log
+      // into your app without providing any identifying information.
+      await app.logIn(Realm.Credentials.anonymous());
+    } catch (error) {
+      if (error.name === 'InvalidSessionError') {
+        // Handle the "invalid session" error here
+        // You can log the user out, prompt them to log in again, etc.
+        await app.currentUser?.logOut();
+      }
+    }
   }
+
   return (
     <Button
       mode="contained"
