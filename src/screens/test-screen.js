@@ -5,8 +5,9 @@ import {realmContext} from '../../RealmContext';
 import {Foliar} from '../schemas/foliar.schema';
 import {Fertilizer} from '../schemas/fertilizer.schema';
 
-import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {TextInput, Button, Text} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TestScreen = () => {
   const [foliar, setFoliar] = useState('');

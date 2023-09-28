@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, SafeAreaView, Button, Text} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {View, StyleSheet, Text, FlatList} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {TextInput, Card, Avatar} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -8,7 +9,7 @@ import Realm, {BSON} from 'realm';
 import {realmContext} from '../../RealmContext';
 
 import {Activity} from '../schemas/activity.schema';
-import {Results} from 'realm/dist/bundle';
+import {Activity_Props as actProps} from '../constants/activity-props';
 
 const ActivitiesScreen = () => {
   const {useRealm, useObject, useQuery} = realmContext;
@@ -51,19 +52,25 @@ const ActivitiesScreen = () => {
     setShow(true);
   };
 
+  const getActionFromActivityProp = action => {
+    return actProps.filter(item => item.action == action)[0].icon;
+  };
+
+  const getBgColorFromActivityProp = action => {
+    return actProps.filter(item => item.action == action)[0].bgColor;
+  };
+
   return (
     <SafeAreaView>
       <TextInput
         label="From"
         value={startDate.toLocaleDateString()}
-        // onChangeText={(startDate) => setDate(startDate)}
         onTouchStart={() => showCalendar('start')}
         style={{backgroundColor: '#ffffff'}}
       />
       <TextInput
         label="To"
         value={endDate.toLocaleDateString()}
-        // onChangeText={(startDate) => setDate(startDate)}
         onTouchStart={() => showCalendar('end')}
         style={{backgroundColor: '#ffffff'}}
       />
@@ -75,6 +82,57 @@ const ActivitiesScreen = () => {
           onChange={handleDateCalendar}
         />
       )}
+      <FlatList
+        data={activitiesToDisplay}
+        keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
+        renderItem={({item}) => (
+          <Card mode="contained" style={styles.card}>
+            <Card.Title
+              title={item?.action}
+              subtitle={item?.item.eng}
+              left={props => (
+                <Avatar.Icon
+                  {...props}
+                  icon={getActionFromActivityProp(item.action)}
+                  style={{
+                    backgroundColor: getBgColorFromActivityProp(item.action),
+                  }}
+                />
+              )}
+            />
+            <Card.Content>
+              <Text variant="titleLarge">
+                {item?.quantity + ' ' + item?.unit}
+              </Text>
+              <Text variant="bodyLarge">
+                {'F' + item?.field + ' R' + item?.row}
+              </Text>
+            </Card.Content>
+          </Card>
+        )}
+      />
+      {/* <Card mode="contained" style={styles.card}>
+        <Card.Title
+          title={activitiesToDisplay[0]?.action}
+          subtitle={activitiesToDisplay[0]?.item.eng}
+          left={props => (
+            <Avatar.Icon {...props} icon='shovel' />
+          )}
+        />
+        <Card.Content>
+          <Text variant="titleLarge">
+            {activitiesToDisplay[0]?.quantity +
+              ' ' +
+              activitiesToDisplay[0]?.unit}
+          </Text>
+          <Text variant="bodyLarge">
+            {'F' +
+              activitiesToDisplay[0]?.field +
+              ' R' +
+              activitiesToDisplay[0]?.row}
+          </Text>
+        </Card.Content>
+      </Card> */}
     </SafeAreaView>
   );
 };
@@ -86,5 +144,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  card: {
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
 });
