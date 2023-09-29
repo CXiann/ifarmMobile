@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, FlatList} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {TextInput, Card, Avatar} from 'react-native-paper';
+import {TextInput, Card, Avatar, Text} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {FlatList} from 'react-native-gesture-handler';
 
-import Realm, {BSON} from 'realm';
-import {realmContext} from '../../RealmContext';
+import Realm from 'realm';
+import {realmContext} from '../../../RealmContext';
 
-import {Activity} from '../schemas/activity.schema';
-import {Activity_Props as actProps} from '../constants/activity-props';
+import {Activity} from '../../schemas/activity.schema';
+import {Activity_Props as actProps} from '../../constants/activity-props';
 
-const ActivitiesScreen = () => {
+const ActivityScreenView = () => {
   const {useRealm, useObject, useQuery} = realmContext;
   const realm = useRealm();
 
@@ -64,15 +64,17 @@ const ActivitiesScreen = () => {
     <SafeAreaView>
       <TextInput
         label="From"
+        mode="outlined"
         value={startDate.toLocaleDateString()}
         onTouchStart={() => showCalendar('start')}
-        style={{backgroundColor: '#ffffff'}}
+        style={styles.textInput}
       />
       <TextInput
         label="To"
+        mode="outlined"
         value={endDate.toLocaleDateString()}
         onTouchStart={() => showCalendar('end')}
-        style={{backgroundColor: '#ffffff'}}
+        style={styles.textInput}
       />
       {show && (
         <DateTimePicker
@@ -111,33 +113,11 @@ const ActivitiesScreen = () => {
           </Card>
         )}
       />
-      {/* <Card mode="contained" style={styles.card}>
-        <Card.Title
-          title={activitiesToDisplay[0]?.action}
-          subtitle={activitiesToDisplay[0]?.item.eng}
-          left={props => (
-            <Avatar.Icon {...props} icon='shovel' />
-          )}
-        />
-        <Card.Content>
-          <Text variant="titleLarge">
-            {activitiesToDisplay[0]?.quantity +
-              ' ' +
-              activitiesToDisplay[0]?.unit}
-          </Text>
-          <Text variant="bodyLarge">
-            {'F' +
-              activitiesToDisplay[0]?.field +
-              ' R' +
-              activitiesToDisplay[0]?.row}
-          </Text>
-        </Card.Content>
-      </Card> */}
     </SafeAreaView>
   );
 };
 
-export default ActivitiesScreen;
+export default ActivityScreenView;
 
 const styles = StyleSheet.create({
   container: {
@@ -148,5 +128,10 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: 10,
     marginVertical: 5,
+  },
+  textInput: {
+    marginHorizontal: 10,
+    marginVertical: 5,
+    backgroundColor: '#ffffff',
   },
 });

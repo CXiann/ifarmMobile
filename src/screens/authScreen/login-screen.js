@@ -8,7 +8,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {User} from '../../schemas/user.schema';
 
-const LoginScreen = props => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -38,7 +38,7 @@ const LoginScreen = props => {
 
   const handleLogIn = async () => {
     if (await validateCredentials()) {
-      props.navigation.navigate('Tabs');
+      navigation.navigate('Tabs');
     }
   };
 

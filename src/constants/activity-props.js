@@ -4,6 +4,35 @@ export const Activity_Props = [
     action: 'Aerating',
     icon: 'shovel',
     bgColor: 'orange',
+    fields: [
+      {
+        id: 'date',
+        name: 'Date',
+        type: 'date',
+        validate: v => !!v,
+        width: '34%',
+      },
+      {
+        id: 'field',
+        name: 'Field Number*',
+        type: 'field',
+        props: {type: 'number'},
+        validate: v => !!parseInt(v),
+        width: '33%',
+      },
+      {
+        id: 'row',
+        name: 'Row Range*',
+        type: 'row',
+        validate: v => {
+          if (parseInt(v) === 0) return false;
+          return !!validateRange(v);
+        },
+        width: '33%',
+      },
+    ],
+    standardUnit: '',
+    units: [],
   },
   {
     id: 1,
@@ -44,7 +73,7 @@ export const Activity_Props = [
   {
     id: 7,
     action: 'Transplant',
-    icon: 'plant-wilt',
+    icon: 'swap-horizontal',
     bgColor: 'greenyellow',
   },
   {

@@ -1,24 +1,25 @@
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BottomNavigation} from 'react-native-paper';
+import {BottomNavigation, useTheme} from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
-import ActivitiesScreen from '../screens/activity-screen';
+import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
 import TestScreen from '../screens/test-screen';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavbar() {
+  const {colors} = useTheme();
+
   return (
     <Tab.Navigator
-      screenOptions={
-        {
-          // headerShown: false,
-        }
-      }
+      screenOptions={{
+        headerLeft: null,
+        headerStyle: {backgroundColor: colors.primaryContainer},
+      }}
       tabBar={({navigation, state, descriptors, insets}) => (
         <BottomNavigation.Bar
           navigationState={state}
@@ -61,7 +62,7 @@ export default function TabsNavbar() {
 
             return label;
           }}
-          style={{backgroundColor: '#b0d776'}}
+          style={{backgroundColor: colors.primaryContainer}}
         />
       )}>
       <Tab.Screen
@@ -76,7 +77,7 @@ export default function TabsNavbar() {
       />
       <Tab.Screen
         name="Activities"
-        component={ActivitiesScreen}
+        component={ActivitiesScreenMain}
         options={{
           tabBarLabel: 'Activities',
           tabBarIcon: ({color, size}) => {
