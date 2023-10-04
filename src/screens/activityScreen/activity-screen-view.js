@@ -10,6 +10,7 @@ import {realmContext} from '../../../RealmContext';
 
 import {Activity} from '../../schemas/activity.schema';
 import {Activity_Props as actProps} from '../../constants/activity-props';
+import DateInput from '../../components/dateInput';
 
 const ActivityScreenView = () => {
   const {useRealm, useObject, useQuery} = realmContext;
@@ -30,27 +31,18 @@ const ActivityScreenView = () => {
   }, [realm, Activity]);
 
   useEffect(() => {
+    global.currentUserSelectedFarmId = global.currentUserSelectedFarm.id;
     const currentUserAllActivities = allActivities.filtered(
-      'date >= $0 && date <= $1',
-      new Date(new Date(startDate.setHours(0, 0, 0, 0)).toISOString()), //set earliest possible starting of date
-      new Date(new Date(endDate.setHours(23, 59, 59, 999)).toISOString()), //set latest possible ending of date
+      'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3',
+      new Date(startDate.setHours(0, 0, 0, 0)), //set earliest possible starting of date
+      new Date(endDate.setHours(23, 59, 59, 999)), //set latest possible ending of date
+      global.currentUserId.toString(),
+      global.currentUserSelectedFarmId.toString(),
     );
     setActivitiesToDisplay(currentUserAllActivities);
   }, [startDate, endDate, setActivitiesToDisplay]);
 
   console.log('ATD: ', activitiesToDisplay.length);
-
-  const handleDateCalendar = (event, selectedDate) => {
-    if (option) {
-      setShow(false);
-      option == 'start' ? setStartDate(selectedDate) : setEndDate(selectedDate);
-    }
-  };
-
-  const showCalendar = selectedOption => {
-    setOption(selectedOption);
-    setShow(true);
-  };
 
   const getActionFromActivityProp = action => {
     return actProps.filter(item => item.action == action)[0].icon;
@@ -62,30 +54,11 @@ const ActivityScreenView = () => {
 
   return (
     <SafeAreaView>
-      <TextInput
-        label="From"
-        mode="outlined"
-        value={startDate.toLocaleDateString()}
-        onTouchStart={() => showCalendar('start')}
-        style={styles.textInput}
-      />
-      <TextInput
-        label="To"
-        mode="outlined"
-        value={endDate.toLocaleDateString()}
-        onTouchStart={() => showCalendar('end')}
-        style={styles.textInput}
-      />
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={option == 'start' ? startDate : endDate}
-          mode="date"
-          onChange={handleDateCalendar}
-        />
-      )}
+      <DateInput label={'From'} date={startDate} setDate={setStartDate} />
+      <DateInput label={'To'} date={endDate} setDate={setEndDate} />
       <FlatList
         data={activitiesToDisplay}
+        initialNumToRender={7}
         keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
         renderItem={({item}) => (
           <Card mode="contained" style={styles.card}>

@@ -1,9 +1,10 @@
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BottomNavigation, useTheme} from 'react-native-paper';
+import {Button, BottomNavigation, useTheme} from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import OctIcon from 'react-native-vector-icons/Octicons';
 
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
@@ -16,10 +17,27 @@ export default function TabsNavbar() {
 
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({navigation}) => ({
         headerLeft: null,
-        headerStyle: {backgroundColor: colors.primaryContainer},
-      }}
+        headerStyle: {
+          backgroundColor: colors.primaryContainer,
+        },
+        headerRightContainerStyle: {
+          paddingRight: '3%',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerRight: () => (
+          <Button
+            mode="elevated"
+            icon="arrow-right"
+            onPress={() => navigation.navigate('Farm_Selector')}
+            contentStyle={{flexDirection: 'row-reverse'}}>
+            Change Farm
+          </Button>
+        ),
+      })}
       tabBar={({navigation, state, descriptors, insets}) => (
         <BottomNavigation.Bar
           navigationState={state}

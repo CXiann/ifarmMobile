@@ -7,6 +7,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import TabsNavbar from './tabs-navbar';
 import LoginScreen from '../screens/authScreen/login-screen';
 import ActivityScreenAddForm from '../screens/activityScreen/activity-screen-add-form';
+import FarmSelectorScreen from '../screens/farm-selector-screen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default function MainNav() {
           }}
           initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Farm_Selector" component={FarmSelectorScreen} />
           <Stack.Screen name="Tabs" component={TabsNavbar} />
           <Stack.Screen
             name="Add_Form"

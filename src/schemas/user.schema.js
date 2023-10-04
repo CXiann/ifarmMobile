@@ -1,4 +1,4 @@
-import Realm from 'realm';
+import Realm, {BSON} from 'realm';
 
 export class User_Name extends Realm.Object {
   static schema = {
@@ -14,9 +14,9 @@ export class User_Name extends Realm.Object {
 
 export class User extends Realm.Object {
   static schema = {
-    name: 'user',
+    name: 'users',
     properties: {
-      _id: 'objectId',
+      _id: {type: 'objectId', default: () => new BSON.ObjectId()},
       __v: 'int?',
       accountStatus: 'string',
       currentHashedRefreshToken: 'string?',

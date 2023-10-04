@@ -1,12 +1,12 @@
 import React from 'react';
-import {StatusBar} from 'expo-status-bar';
+
 import {StyleSheet, Text, View} from 'react-native';
 import {
   Provider as PaperProvider,
   MD3LightTheme as MD3DefaultTheme,
   Button,
 } from 'react-native-paper';
-
+import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 import MainNav from './src/navigation/main-nav';
 
 import Realm from 'realm';
@@ -14,11 +14,7 @@ import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
 
-const {RealmProvider} = realmContext;
-
-// const realmAccessBehavior = {
-//   type: 'openImmediately',
-// };
+const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
   return (
@@ -46,8 +42,15 @@ const App = () => {
         },
         onError: console.error,
       }}>
-      <PaperProvider theme={THEME}>
-        <MainNav />
+      <PaperProvider
+        theme={THEME}
+        // settings={{
+        //   icon: props => <Icon {...props} />,
+        // }}
+      >
+        <AutocompleteDropdownContextProvider>
+          <MainNav />
+        </AutocompleteDropdownContextProvider>
       </PaperProvider>
     </RealmProvider>
   );
@@ -62,6 +65,7 @@ const App = () => {
 // };
 
 async function handleSyncError(session, syncError) {
+  // const realm = useRealm();
   if (syncError.name == 'ClientReset') {
     console.log(syncError);
     try {
@@ -72,7 +76,7 @@ async function handleSyncError(session, syncError) {
       // Download Realm from the server.
       // Ensure that the backend state is fully downloaded before proceeding,
       // which is the default behavior.
-      realm = await Realm.open(config);
+      realm = await Realm.open();
       realm.close();
     } catch (err) {
       console.error(err);
@@ -81,33 +85,22 @@ async function handleSyncError(session, syncError) {
 }
 
 function LogIn() {
-  const app = useApp();
+  logInUser();
   async function logInUser() {
+    const app = useApp();
     try {
-      // When anonymous authentication is enabled, users can immediately log
-      // into your app without providing any identifying information.
-      await app.logIn(Realm.Credentials.anonymous());
+      console.log('here');
+      app.currentUser && (await app.logIn(Realm.Credentials.anonymous()));
     } catch (error) {
       if (error.name === 'InvalidSessionError') {
+        console.log('error');
         // Handle the "invalid session" error here
         // You can log the user out, prompt them to log in again, etc.
         await app.currentUser?.logOut();
+        // await app.logIn(Realm.Credentials.anonymous());
       }
     }
   }
-
-  return (
-    <Button
-      mode="contained"
-      onPress={logInUser}
-      style={{
-        top: '50%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      Log In
-    </Button>
-  );
 }
 
 const LightTheme = require('./src/assets/LightTheme.json');

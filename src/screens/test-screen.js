@@ -32,7 +32,7 @@ const TestScreen = () => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Fertilizer));
     });
-  }, [realm, Foliar, Fertilizer]);
+  }, [realm]);
 
   const handleAddFoliar = () => {
     var strArrFoliarTags = foliarTags.split(',');

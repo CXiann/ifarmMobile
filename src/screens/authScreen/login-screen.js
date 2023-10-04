@@ -11,6 +11,7 @@ import {User} from '../../schemas/user.schema';
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isHidden, setIsHidden] = useState(true);
 
   const {useQuery, useRealm} = realmContext;
   const realm = useRealm();
@@ -25,8 +26,8 @@ const LoginScreen = ({navigation}) => {
     global.currentUser = users.filtered(
       'email CONTAINS $0',
       'farmowner@ifarm.com',
-    );
-    global.currentUserId = global.currentUser[0]?._id;
+    )[0];
+    global.currentUserId = global.currentUser?._id;
   }, [realm, User]);
 
   // const app = useApp();
@@ -38,13 +39,13 @@ const LoginScreen = ({navigation}) => {
 
   const handleLogIn = async () => {
     if (await validateCredentials()) {
-      navigation.navigate('Tabs');
+      navigation.navigate('Farm_Selector');
     }
   };
 
   const validateCredentials = async () => {
     var isMatch = false;
-    const currentUserPassword = global.currentUser[0].password;
+    const currentUserPassword = global.currentUser.password;
     isMatch = await bcrypt.compare(password, currentUserPassword);
     console.log('Login: ' + isMatch);
     return isMatch;
@@ -62,6 +63,15 @@ const LoginScreen = ({navigation}) => {
       <TextInput
         mode="outlined"
         label="Password"
+        secureTextEntry={isHidden}
+        right={
+          <TextInput.Icon
+            icon="eye"
+            onPress={() => {
+              setIsHidden(!isHidden);
+            }}
+          />
+        }
         value={password}
         onChangeText={password => setPassword(password)}
       />
