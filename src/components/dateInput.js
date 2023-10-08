@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
-import {TextInput, Text} from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const DateInput = ({label, date, setDate}) => {
+const DateInput = ({label, data, setData}) => {
   const [show, setShow] = useState(false);
+  const [date, setDate] = useState(data?.date || data);
 
   const showCalendar = () => {
     setShow(true);
@@ -13,13 +15,14 @@ const DateInput = ({label, date, setDate}) => {
   const handleDateCalendar = (event, selectedDate) => {
     setShow(false);
     setDate(selectedDate);
+    data?.date ? setData({...data, date: selectedDate}) : setData(selectedDate);
   };
 
   return (
-    <>
+    <SafeAreaView>
       <TextInput
         label={label}
-        mode="outlined"
+        mode="flat"
         value={date.toLocaleDateString()}
         onTouchStart={() => showCalendar()}
         style={styles.textInput}
@@ -32,7 +35,7 @@ const DateInput = ({label, date, setDate}) => {
           onChange={handleDateCalendar}
         />
       )}
-    </>
+    </SafeAreaView>
   );
 };
 

@@ -13,13 +13,14 @@ import {Activity_Props as actProps} from '../../constants/activity-props';
 import DateInput from '../../components/dateInput';
 
 const ActivityScreenView = () => {
-  const {useRealm, useObject, useQuery} = realmContext;
+  const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
+
+  const defaultActProps = actProps[9];
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [option, setOption] = useState('');
+
   const allActivities = useQuery(Activity);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState(allActivities);
 
@@ -31,7 +32,6 @@ const ActivityScreenView = () => {
   }, [realm, Activity]);
 
   useEffect(() => {
-    global.currentUserSelectedFarmId = global.currentUserSelectedFarm.id;
     const currentUserAllActivities = allActivities.filtered(
       'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3',
       new Date(startDate.setHours(0, 0, 0, 0)), //set earliest possible starting of date
@@ -45,17 +45,17 @@ const ActivityScreenView = () => {
   console.log('ATD: ', activitiesToDisplay.length);
 
   const getActionFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0].icon;
+    return actProps.filter(item => item.action == action)[0]?.icon;
   };
 
   const getBgColorFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0].bgColor;
+    return actProps.filter(item => item.action == action)[0]?.bgColor;
   };
 
   return (
     <SafeAreaView>
-      <DateInput label={'From'} date={startDate} setDate={setStartDate} />
-      <DateInput label={'To'} date={endDate} setDate={setEndDate} />
+      <DateInput label={'From'} data={startDate} setData={setStartDate} />
+      <DateInput label={'To'} data={endDate} setData={setEndDate} />
       <FlatList
         data={activitiesToDisplay}
         initialNumToRender={7}
@@ -68,9 +68,14 @@ const ActivityScreenView = () => {
               left={props => (
                 <Avatar.Icon
                   {...props}
-                  icon={getActionFromActivityProp(item.action)}
+                  icon={
+                    getActionFromActivityProp(item.action) ||
+                    defaultActProps.icon
+                  }
                   style={{
-                    backgroundColor: getBgColorFromActivityProp(item.action),
+                    backgroundColor:
+                      getBgColorFromActivityProp(item.action) ||
+                      defaultActProps.bgColor,
                   }}
                 />
               )}

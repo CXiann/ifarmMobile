@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
-import {Text, Button, useTheme} from 'react-native-paper';
+import {Text, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
-import Feather from 'react-native-vector-icons/Feather';
+import AutocompleteFarmInput from '../components/autocompleteFarmInput';
 
 import Realm, {BSON} from 'realm';
 import {realmContext} from '../../RealmContext';
@@ -11,9 +10,6 @@ import {realmContext} from '../../RealmContext';
 import {Farm} from '../schemas/farm.schema';
 
 const FarmSelectorScreen = ({navigation}) => {
-  Feather.loadFont();
-  const {colors} = useTheme();
-
   const {useQuery, useRealm} = realmContext;
   const realm = useRealm();
 
@@ -31,21 +27,6 @@ const FarmSelectorScreen = ({navigation}) => {
   );
   console.log('User All farms: ', global.currentUserAllFarm.length);
 
-  const getDataSetFormatFarm = farms => {
-    return farms.map((farm, index) => {
-      const newObj = {id: '', title: ''};
-      newObj['id'] = farm._id;
-      newObj['title'] = farm.name.eng;
-      return newObj;
-    });
-  };
-
-  const [dataSetFormatFarm, setDataSetFormatFarm] = useState(
-    getDataSetFormatFarm(global.currentUserAllFarm),
-  );
-
-  console.log('DataSetFormatFarm: ', dataSetFormatFarm);
-
   useEffect(() => {
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
@@ -58,6 +39,7 @@ const FarmSelectorScreen = ({navigation}) => {
   const handleManageButton = () => {
     console.log('Before navigating: ', Object.values(selectedFarm));
     global.currentUserSelectedFarm = selectedFarm;
+    global.currentUserSelectedFarmId = global.currentUserSelectedFarm.id;
     selectedFarm
       ? navigation.navigate('Tabs')
       : console.log('No farm selected');
@@ -66,46 +48,12 @@ const FarmSelectorScreen = ({navigation}) => {
   return (
     <SafeAreaView style={style.container}>
       <Text>Select the farm you wish to manage</Text>
-      <AutocompleteDropdown
-        inputContainerStyle={{
-          backgroundColor: colors.primaryContainer,
-          borderColor: 'gray',
-          borderRadius: 25,
-        }}
-        textInputProps={{
-          autoCorrect: false,
-          autoCapitalize: 'none',
-          editable: false,
-          style: {
-            borderRadius: 25,
-            backgroundColor: colors.primaryContainer,
-            color: colors.primary,
-            paddingLeft: 18,
-          },
-        }}
-        suggestionsListContainerStyle={{
-          backgroundColor: colors.primaryContainer,
-        }}
-        renderItem={(item, text) => (
-          <Text style={{color: colors.primary, padding: 15}}>{item.title}</Text>
-        )}
-        ChevronIconComponent={
-          <Feather name="chevron-down" size={20} color={colors.primary} />
-        }
-        ClearIconComponent={
-          <Feather name="x-circle" size={18} color={colors.primary} />
-        }
-        clearOnFocus={true}
-        closeOnBlur={true}
-        closeOnSubmit={true}
-        showChevron={true}
-        showClear={true}
-        useFilter={false}
-        initialValue={dataSetFormatFarm[0]}
-        onSelectItem={item => {
-          item && setSelectedFarm(item);
-        }}
-        dataSet={dataSetFormatFarm}
+      <AutocompleteFarmInput
+        dataSet={global.currentUserAllFarm} //Array of data to filter
+        id={'_id'}
+        title={'name'}
+        setSelectedOption={setSelectedFarm}
+        initialValue={true}
       />
       <Button
         style={style.button}
