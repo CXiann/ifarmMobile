@@ -45,6 +45,6 @@ const styles = StyleSheet.create({
   textInput: {
     marginHorizontal: 10,
     marginVertical: 5,
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
   },
 });

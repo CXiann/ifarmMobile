@@ -67,6 +67,7 @@ const ActivityScreenAddForm = ({route}) => {
       });
       console.log('Successfully created data');
     });
+    setDataForm(initialValueActivities);
   };
 
   return (

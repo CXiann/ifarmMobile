@@ -17,17 +17,18 @@ const AutocompleteUnitInput = ({
 
   const style = StyleSheet.create({
     container: {
-      backgroundColor: 'white',
+      backgroundColor: colors.surfaceVariant,
       paddingTop: 8,
-      // paddingHorizontal: 20,
-      margin: 8,
-      borderRadius: 5,
+      margin: 10,
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
     },
     text: {
       paddingHorizontal: 20,
-      color: colors.onSurface,
+      fontWeight: 'normal',
+      color: colors.onSurfaceVariant,
     },
   });
   return (
@@ -37,13 +38,14 @@ const AutocompleteUnitInput = ({
       </Text>
       <AutocompleteDropdown
         inputContainerStyle={{
-          backgroundColor: 'white',
+          backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
           paddingHorizontal: 8,
         }}
         textInputProps={{
           autoCorrect: false,
           autoCapitalize: 'none',
+          editable: false,
           style: {color: colors.primary},
         }}
         suggestionsListTextStyle={{

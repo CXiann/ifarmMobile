@@ -49,17 +49,19 @@ const AutocompleteItemInput = ({
 
   const style = StyleSheet.create({
     container: {
-      backgroundColor: 'white',
+      backgroundColor: colors.surfaceVariant,
       paddingTop: 8,
-      // paddingHorizontal: 20,
-      margin: 8,
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
+      margin: 10,
       borderRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
     },
     text: {
       paddingHorizontal: 20,
-      color: colors.onSurface,
+      fontWeight: 'normal',
+      color: colors.onSurfaceVariant,
     },
   });
 
@@ -70,7 +72,7 @@ const AutocompleteItemInput = ({
       </Text>
       <AutocompleteDropdown
         inputContainerStyle={{
-          backgroundColor: 'white',
+          backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
           paddingHorizontal: 8,
         }}
