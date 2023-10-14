@@ -15,7 +15,7 @@ const AutocompleteFarmInput = ({
   const {colors} = useTheme();
 
   const getDataSetFormatFarm = farms => {
-    return farms.map(farm => {
+    return farms?.map(farm => {
       const newObj = {id: '', title: ''};
       newObj['id'] = farm[id];
       newObj['title'] = farm[title].eng;
@@ -58,7 +58,7 @@ const AutocompleteFarmInput = ({
       closeOnBlur={true}
       closeOnSubmit={true}
       useFilter={false}
-      initialValue={initialValue ? dataSetFormatFarm[0] : undefined}
+      initialValue={initialValue ? dataSetFormatFarm[0] : ''}
       onSelectItem={item => {
         item && setSelectedOption(item);
       }}
@@ -75,6 +75,7 @@ const style = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     justifyContent: 'center',
+    minWidth: '100%',
     // flexDirection: 'row',
     // flexDirection: 'column-reverse',
   },

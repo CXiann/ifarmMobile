@@ -13,6 +13,7 @@ import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
+import {GlobalProvider} from './src/contexts/GlobalContext';
 
 const {RealmProvider, useRealm} = realmContext;
 
@@ -48,9 +49,11 @@ const App = () => {
         //   icon: props => <Icon {...props} />,
         // }}
       >
-        <AutocompleteDropdownContextProvider>
-          <MainNav />
-        </AutocompleteDropdownContextProvider>
+        <GlobalProvider>
+          <AutocompleteDropdownContextProvider>
+            <MainNav />
+          </AutocompleteDropdownContextProvider>
+        </GlobalProvider>
       </PaperProvider>
     </RealmProvider>
   );

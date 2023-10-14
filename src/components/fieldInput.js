@@ -4,35 +4,39 @@ import {TextInput, useTheme} from 'react-native-paper';
 
 const FieldInput = ({label, dataForm, setDataForm}) => {
   const {colors} = useTheme();
-  const [field, setField] = useState(dataForm['field']);
+  const [field, setField] = useState(dataForm['field'].toString());
 
   const styles = StyleSheet.create({
     textInput: {
       marginHorizontal: 10,
       marginVertical: 5,
+      minWidth: '100%',
     },
     content: {
       color: colors.primary,
     },
   });
 
-  const handleOnChangeText = field => {
-    setField(field);
-    setDataForm({...dataForm, field: field});
+  const handleOnChangeText = value => {
+    const parsedValue = parseInt(value);
+    if (!isNaN(parsedValue)) {
+      setField(parsedValue.toString());
+      setDataForm({...dataForm, field: parsedValue});
+    }
   };
 
   return (
     <TextInput
       label={label}
       mode="flat"
-      value={field.toString()}
-      onChangeText={field => handleOnChangeText(field)}
+      value={field}
+      onChangeText={value => handleOnChangeText(value)}
       right={
         <TextInput.Icon
           icon="chevron-up"
           color={colors.primary}
           onPress={() => {
-            setField(field + 1);
+            setField((parseInt(field) + 1).toString());
           }}
         />
       }
@@ -41,7 +45,7 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
           icon="chevron-down"
           color={colors.primary}
           onPress={() => {
-            setField(field - 1);
+            setField((parseInt(field) - 1).toString());
           }}
         />
       }

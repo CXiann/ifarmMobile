@@ -24,11 +24,13 @@ const AutocompleteUnitInput = ({
       borderTopRightRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
+      minWidth: '100%',
     },
     text: {
       paddingHorizontal: 20,
       fontWeight: 'normal',
       color: colors.onSurfaceVariant,
+      minWidth: '100%',
     },
   });
   return (

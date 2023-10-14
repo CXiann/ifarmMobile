@@ -3,11 +3,11 @@ import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
-
 import {realmContext} from '../../RealmContext';
 
 import {Farm} from '../schemas/farm.schema';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
   label,
@@ -21,11 +21,11 @@ const AutocompleteItemInput = ({
   Feather.loadFont();
   const {colors} = useTheme();
   const {useQuery} = realmContext;
+  const {farmId} = useGlobal();
 
-  global.currentUserSelectedFarmId;
   const currentUserSelectedFarmAllProps = useQuery(Farm).filtered(
     '_id == $0',
-    BSON.ObjectId(global.currentUserSelectedFarmId),
+    BSON.ObjectId(farmId),
   );
   console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
 
@@ -57,11 +57,13 @@ const AutocompleteItemInput = ({
       borderRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
+      minWidth: '100%',
     },
     text: {
       paddingHorizontal: 20,
       fontWeight: 'normal',
       color: colors.onSurfaceVariant,
+      minWidth: '100%',
     },
   });
 

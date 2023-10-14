@@ -10,6 +10,7 @@ const NumberInput = ({label, dataFormOption, dataForm, setDataForm}) => {
     textInput: {
       marginHorizontal: 10,
       marginVertical: 5,
+      minWidth: '100%',
     },
     content: {
       color: colors.primary,
