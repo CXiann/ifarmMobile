@@ -14,48 +14,55 @@ import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
 import {GlobalProvider} from './src/contexts/GlobalContext';
+import LoadingOverlay from './src/components/loadingOverlay';
 
 const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
   return (
-    <AppProvider id={APP_ID}>
+    // logger includes a default that prints level and message
+    <AppProvider
+      id={APP_ID}
+      logLevel={'trace'}
+      logger={(level, message) => console.log(`[${level}]: ${message}`)}>
       <UserProvider fallback={LogIn}>
-        <App />
+        <PaperProvider
+          theme={THEME}
+          // settings={{
+          //   icon: props => <Icon {...props} />,
+          // }}
+        >
+          <App />
+        </PaperProvider>
       </UserProvider>
     </AppProvider>
   );
 }
 const App = () => {
   return (
-    <RealmProvider
-      sync={{
-        flexible: true,
-        clientReset: {
-          mode: 'discardUnsyncedChanges',
-          onBefore: realm => {
-            console.log('Beginning client reset for ', realm.path);
+    <GlobalProvider>
+      <RealmProvider
+        fallback={<LoadingOverlay />}
+        sync={{
+          flexible: true,
+          clientReset: {
+            mode: 'discardUnsyncedChanges',
+            onBefore: realm => {
+              console.log('Beginning client reset for ', realm.path);
+            },
+            onAfter: (beforeRealm, afterRealm) => {
+              console.log('Finished client reset for', beforeRealm.path);
+              console.log('New realm path', afterRealm.path);
+            },
           },
-          onAfter: (beforeRealm, afterRealm) => {
-            console.log('Finished client reset for', beforeRealm.path);
-            console.log('New realm path', afterRealm.path);
-          },
-        },
-        onError: console.error,
-      }}>
-      <PaperProvider
-        theme={THEME}
-        // settings={{
-        //   icon: props => <Icon {...props} />,
-        // }}
-      >
-        <GlobalProvider>
-          <AutocompleteDropdownContextProvider>
-            <MainNav />
-          </AutocompleteDropdownContextProvider>
-        </GlobalProvider>
-      </PaperProvider>
-    </RealmProvider>
+          onError: console.error,
+        }}>
+        <AutocompleteDropdownContextProvider>
+          <LoadingOverlay />
+          <MainNav />
+        </AutocompleteDropdownContextProvider>
+      </RealmProvider>
+    </GlobalProvider>
   );
 };
 // const THEME = {
@@ -93,7 +100,7 @@ function LogIn() {
     const app = useApp();
     try {
       console.log('here');
-      app.currentUser && (await app.logIn(Realm.Credentials.anonymous()));
+      await app.logIn(Realm.Credentials.anonymous());
     } catch (error) {
       if (error.name === 'InvalidSessionError') {
         console.log('error');

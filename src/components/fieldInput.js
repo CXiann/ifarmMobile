@@ -4,7 +4,6 @@ import {TextInput, useTheme} from 'react-native-paper';
 
 const FieldInput = ({label, dataForm, setDataForm}) => {
   const {colors} = useTheme();
-  const [field, setField] = useState(dataForm['field'].toString());
 
   const styles = StyleSheet.create({
     textInput: {
@@ -18,25 +17,32 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
   });
 
   const handleOnChangeText = value => {
-    const parsedValue = parseInt(value);
-    if (!isNaN(parsedValue)) {
-      setField(parsedValue.toString());
-      setDataForm({...dataForm, field: parsedValue});
-    }
+    const numericPattern = /^[0-9]+$/;
+    console.log(value);
+    // if (numericPattern.test(value)) {
+    //   setDataForm({...dataForm, field: value});
+    // }
+    setDataForm({...dataForm, field: value});
   };
+  console.log('field: ', dataForm.field);
 
   return (
     <TextInput
       label={label}
       mode="flat"
-      value={field}
+      value={dataForm.field}
       onChangeText={value => handleOnChangeText(value)}
       right={
         <TextInput.Icon
           icon="chevron-up"
           color={colors.primary}
           onPress={() => {
-            setField((parseInt(field) + 1).toString());
+            setDataForm({
+              ...dataForm,
+              field: (
+                parseInt(dataForm.field == '' ? 0 : dataForm.field) + 1
+              ).toString(),
+            });
           }}
         />
       }
@@ -45,7 +51,12 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
           icon="chevron-down"
           color={colors.primary}
           onPress={() => {
-            setField((parseInt(field) - 1).toString());
+            setDataForm({
+              ...dataForm,
+              field: (
+                parseInt(dataForm.field == '' ? 0 : dataForm.field) - 1
+              ).toString(),
+            });
           }}
         />
       }

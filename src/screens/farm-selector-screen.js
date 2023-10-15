@@ -13,6 +13,7 @@ const FarmSelectorScreen = ({navigation}) => {
   const {useQuery, useRealm} = realmContext;
   const {userData, setFarmId} = useGlobal();
   const realm = useRealm();
+  const {setIsLoading} = useGlobal();
 
   const farms = useQuery(Farm);
   const [selectedFarm, setSelectedFarm] = useState({id: '', title: ''}); //store farm information in {id:objectId(string), title:}
@@ -23,29 +24,32 @@ const FarmSelectorScreen = ({navigation}) => {
       mutableSubs.add(realm.objects(Farm));
     });
     console.log('Total farms: ', farms.length);
+    setIsLoading(false);
   }, [realm]);
 
   const currentUserAllFarmBSONId = userData?.farms?.map(
     farmIdStr => new BSON.ObjectId(farmIdStr),
   );
   const allFarmData = farms.filtered('_id IN $0', currentUserAllFarmBSONId);
-  // setAllFarmData(farms.filtered('_id IN $0', currentUserAllFarmBSONId));
   console.log('User All farms: ', allFarmData?.length);
   console.log('Selected farm: ', selectedFarm);
 
   const handleManageButton = () => {
+    setIsLoading(true);
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
-    selectedFarm
-      ? navigation.navigate('Tabs')
-      : console.log('No farm selected');
+    if (selectedFarm) {
+      navigation.navigate('Tabs');
+    } else {
+      console.log('No farm selected');
+    }
   };
 
   return (
     <SafeAreaView style={style.container}>
       <Text>Select the farm you wish to manage</Text>
       <AutocompleteFarmInput
-        dataSet={allFarmData} //Array of data to filter
+        dataSet={allFarmData} // Array of data to filter
         id={'_id'}
         title={'name'}
         setSelectedOption={setSelectedFarm}

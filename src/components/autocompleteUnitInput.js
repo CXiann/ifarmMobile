@@ -62,10 +62,11 @@ const AutocompleteUnitInput = ({
         ClearIconComponent={
           <Feather name="x-circle" size={18} color={colors.primary} />
         }
+        showClear={false}
         closeOnBlur={true}
         closeOnSubmit={true}
         useFilter={false}
-        initialValue={initialValue ? dataSet[0] : undefined}
+        initialValue={initialValue ? dataSet[0] : ''}
         onSelectItem={item => {
           item && setDataForm({...dataForm, unit: item.title});
         }}

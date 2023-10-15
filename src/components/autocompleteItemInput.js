@@ -98,7 +98,7 @@ const AutocompleteItemInput = ({
         }
         closeOnBlur={true}
         closeOnSubmit={true}
-        initialValue={initialValue ? dataSetFormatFarm[0] : undefined}
+        initialValue={initialValue ? dataSetFormatFarm[0] : ''}
         onSelectItem={item => {
           item && setDataForm({...dataForm, item: {eng: item.title}});
         }}

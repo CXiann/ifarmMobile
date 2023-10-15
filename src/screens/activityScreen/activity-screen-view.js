@@ -7,16 +7,16 @@ import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
+import {useGlobal} from '../../contexts/GlobalContext';
 
 import {Activity} from '../../schemas/activity.schema';
 import {Activity_Props as actProps} from '../../constants/activity-props';
 import DateInput from '../../components/dateInput';
-import {useGlobal} from '../../contexts/GlobalContext';
 
 const ActivityScreenView = () => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
-  const {userId, farmId} = useGlobal();
+  const {userId, farmId, setIsLoading} = useGlobal();
   const {colors} = useTheme();
 
   const defaultActProps = actProps[9];
@@ -55,13 +55,15 @@ const ActivityScreenView = () => {
   const [activitiesToDisplay, setActivitiesToDisplay] = useState(allActivities);
 
   useEffect(() => {
+    setIsLoading(true);
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Activity));
     });
-  }, [realm, Activity]);
+  }, [realm]);
 
   useEffect(() => {
+    setIsLoading(true);
     const currentUserAllActivities = allActivities.filtered(
       'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3',
       new Date(startDate.setHours(0, 0, 0, 0)), //set earliest possible starting of date
@@ -70,6 +72,7 @@ const ActivityScreenView = () => {
       farmId.toString(),
     );
     setActivitiesToDisplay(currentUserAllActivities);
+    setIsLoading(false);
   }, [startDate, endDate, setActivitiesToDisplay]);
 
   console.log('ATD: ', activitiesToDisplay.length);
@@ -87,8 +90,9 @@ const ActivityScreenView = () => {
       <DateInput label={'From'} data={startDate} setData={setStartDate} />
       <DateInput label={'To'} data={endDate} setData={setEndDate} />
       <FlatList
+        removeClippedSubviews={true}
         data={activitiesToDisplay}
-        initialNumToRender={7}
+        initialNumToRender={4}
         keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
         renderItem={({item}) => (
           <Card mode="contained" style={styles.card}>

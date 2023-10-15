@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {Card, Avatar} from 'react-native-paper';
+import {Card, Avatar, Text} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -28,7 +28,7 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
             onPress={() => handleActivityPressed(item.action)}>
             <Card.Title
               title={item.action}
-              //   subtitle={item?.item.eng}
+              titleStyle={{fontSize: 12}}
               left={props => (
                 <Avatar.Icon
                   {...props}

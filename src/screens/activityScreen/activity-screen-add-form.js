@@ -31,8 +31,8 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     userName: {},
     farmId: farmId.toString(),
     farmName: {},
-    row: '',
-    field: 0,
+    row: '', //int
+    field: '0', //int
     quantity: 0,
     price: 0,
     unit: '',

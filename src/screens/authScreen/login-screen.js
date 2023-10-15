@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Keyboard} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
 import * as bcrypt from 'bcryptjs';
 import Realm from 'realm';
@@ -14,6 +14,7 @@ const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHidden, setIsHidden] = useState(true);
+  const {setIsLoading} = useGlobal();
 
   const {useQuery, useRealm} = realmContext;
   const realm = useRealm();
@@ -31,6 +32,7 @@ const LoginScreen = ({navigation}) => {
     )[0];
     setUserData(currentUser);
     setUserId(currentUser?._id);
+    setIsLoading(false);
   }, [realm]);
 
   // const app = useApp();
@@ -41,8 +43,15 @@ const LoginScreen = ({navigation}) => {
   // }
 
   const handleLogIn = async () => {
-    if (await validateCredentials()) {
+    Keyboard.dismiss();
+    setIsLoading(true);
+    const isMatch = await validateCredentials();
+    if (isMatch) {
+      console.log('Login: ' + isMatch);
       navigation.navigate('Farm_Selector');
+    } else {
+      console.log('Login: ' + isMatch);
+      setIsLoading(false);
     }
   };
 
@@ -50,7 +59,6 @@ const LoginScreen = ({navigation}) => {
     var isMatch = false;
     const currentUserPassword = userData.password;
     isMatch = await bcrypt.compare(password, currentUserPassword);
-    console.log('Login: ' + isMatch);
     return isMatch;
   };
 
