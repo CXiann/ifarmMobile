@@ -21,14 +21,14 @@ const TaskScreenAddForm = ({navigation}) => {
 
   return (
     <View>
-      <Appbar.Header>
+      {/* <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
             navigation.navigate('Task_Screen');
           }}
         />
         <Appbar.Content title="Add New Task" />
-      </Appbar.Header>
+      </Appbar.Header> */}
       <SafeAreaView style={styles.container}>
         <DateInput label={'Date'} data={dataForm} setData={setDataForm} />
         <TaskInput label={'Task'} />

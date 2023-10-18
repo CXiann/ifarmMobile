@@ -1,22 +1,20 @@
 import React from 'react';
-
-import ActivityScreenAddForm from './activity-screen-add-form';
-import ActivityScreenAddOptions from './activity-screen-add-options';
+import TaskScreenMain from '../screens/taskScreen/task-screen-main';
 
 import {createStackNavigator} from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-const ActivityScreenAddMain = () => {
+const TaskScreenNav = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Add_Options"
-        component={ActivityScreenAddOptions}
+        component={TaskScreenMain}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
   );
 };
 
-export default ActivityScreenAddMain;
+export default TaskScreenNav;

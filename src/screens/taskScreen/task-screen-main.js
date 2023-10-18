@@ -80,7 +80,7 @@ const TaskScreenMain = ({navigation}) => {
                 style={styles.addTaskButton}
                 accessibilityLabel="Add New Task"
                 onPress={() =>
-                  navigation.navigate('Add_Task_Screen')
+                  navigation.navigate('Add New Task')
                 }></IconButton>
             </View>
           </View>

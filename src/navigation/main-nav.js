@@ -23,18 +23,25 @@ export default function MainNav() {
           }}
           initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Farm_Selector" component={FarmSelectorScreen} />
+          <Stack.Screen name="Farm Selector" component={FarmSelectorScreen} />
           <Stack.Screen name="Tabs" component={TabsNavbar} />
           <Stack.Screen
-            name="Add_Form"
+            name="Add Form"
             component={ActivityScreenAddForm}
             options={({route}) => ({
               headerShown: true,
               title: route.params.action,
             })}
           />
-          <Stack.Screen name="Task_Screen" component={TaskScreenMain} />
-          <Stack.Screen name="Add_Task_Screen" component={TaskScreenAddForm} />
+          {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
+          <Stack.Screen
+            name="Add New Task"
+            component={TaskScreenAddForm}
+            options={({route}) => ({
+              headerShown: true,
+              // title: route.params.action,
+            })}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

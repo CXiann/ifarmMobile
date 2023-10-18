@@ -6,9 +6,9 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
-import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
+import ActivitiesScreenNav from './activity-screen-nav';
 import TestScreen from '../screens/test-screen';
-import TaskScreen from '../screens/taskScreen/task-screen-main';
+import TaskScreenNav from './task-screen-nav';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,7 +32,7 @@ export default function TabsNavbar() {
           <Button
             mode="elevated"
             icon="arrow-right"
-            onPress={() => navigation.navigate('Farm_Selector')}
+            onPress={() => navigation.navigate('Farm Selector')}
             contentStyle={{flexDirection: 'row-reverse'}}>
             Change Farm
           </Button>
@@ -96,7 +96,7 @@ export default function TabsNavbar() {
       />
       <Tab.Screen
         name="Activities"
-        component={ActivitiesScreenMain}
+        component={ActivitiesScreenNav}
         options={{
           tabBarLabel: 'Activities',
           tabBarIcon: ({color, size}) => {
@@ -116,11 +116,17 @@ export default function TabsNavbar() {
       /> */}
       <Tab.Screen
         name="Task"
-        component={TaskScreen}
+        component={TaskScreenNav}
         options={{
           tabBarLabel: 'Task',
           tabBarIcon: ({color, size}) => {
-            return <Icon name="tools" size={size} color={color} />;
+            return (
+              <Icon
+                name="newspaper-variant-outline"
+                size={size}
+                color={color}
+              />
+            );
           },
         }}
       />

@@ -48,7 +48,7 @@ const LoginScreen = ({navigation}) => {
     const isMatch = await validateCredentials();
     if (isMatch) {
       console.log('Login: ' + isMatch);
-      navigation.navigate('Farm_Selector');
+      navigation.navigate('Farm Selector');
     } else {
       console.log('Login: ' + isMatch);
       setIsLoading(false);
