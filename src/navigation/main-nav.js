@@ -8,6 +8,8 @@ import TabsNavbar from './tabs-navbar';
 import LoginScreen from '../screens/authScreen/login-screen';
 import ActivityScreenAddForm from '../screens/activityScreen/activity-screen-add-form';
 import FarmSelectorScreen from '../screens/farm-selector-screen';
+import TaskScreenMain from '../screens/taskScreen/task-screen-main';
+import TaskScreenAddForm from '../screens/taskScreen/task-screen-add-form';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +33,8 @@ export default function MainNav() {
               title: route.params.action,
             })}
           />
+          <Stack.Screen name="Task_Screen" component={TaskScreenMain} />
+          <Stack.Screen name="Add_Task_Screen" component={TaskScreenAddForm} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

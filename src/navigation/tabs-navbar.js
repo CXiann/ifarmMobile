@@ -9,6 +9,7 @@ import OctIcon from 'react-native-vector-icons/Octicons';
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
 import TestScreen from '../screens/test-screen';
+import TaskScreen from '../screens/taskScreen/task-screen-main';
 
 const Tab = createBottomTabNavigator();
 
@@ -103,11 +104,21 @@ export default function TabsNavbar() {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Test"
         component={TestScreen}
         options={{
           tabBarLabel: 'Test',
+          tabBarIcon: ({color, size}) => {
+            return <Icon name="tools" size={size} color={color} />;
+          },
+        }}
+      /> */}
+      <Tab.Screen
+        name="Task"
+        component={TaskScreen}
+        options={{
+          tabBarLabel: 'Task',
           tabBarIcon: ({color, size}) => {
             return <Icon name="tools" size={size} color={color} />;
           },
