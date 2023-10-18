@@ -1,19 +1,35 @@
 import React from 'react';
-
+import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Button, BottomNavigation, useTheme} from 'react-native-paper';
+import {
+  Button,
+  BottomNavigation,
+  Badge,
+  IconButton,
+  useTheme,
+} from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
 import TestScreen from '../screens/test-screen';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavbar() {
   const {colors} = useTheme();
 
+  const style = StyleSheet.create({
+    rightContainer: {
+      flexDirection: 'row',
+      // backgroundColor: 'white',
+      // paddingBottom: 10,
+      // justifyContent: 'center',
+    },
+    badge: {},
+  });
   return (
     <Tab.Navigator
       screenOptions={({navigation}) => ({
@@ -28,13 +44,31 @@ export default function TabsNavbar() {
           fontWeight: 'bold',
         },
         headerRight: () => (
-          <Button
-            mode="elevated"
-            icon="arrow-right"
-            onPress={() => navigation.navigate('Farm_Selector')}
-            contentStyle={{flexDirection: 'row-reverse'}}>
-            Change Farm
-          </Button>
+          <SafeAreaView style={style.rightContainer}>
+            {/* <IconButton
+              icon="bell"
+              iconColor="black"
+              size={20}
+              onPress={() => console.log('Pressed')}
+            />
+            <Badge style={style.badge}>3</Badge> */}
+            <Button
+              mode="elevated"
+              icon="arrow-right"
+              onPress={() => navigation.navigate('Farm_Selector')}
+              contentStyle={{
+                flexDirection: 'row-reverse',
+                justifyContent: 'center',
+                // backgroundColor: 'white',
+              }}
+              style={{
+                // backgroundColor: 'black',
+                justifyContent: 'center',
+                margin: 4,
+              }}>
+              Change Farm
+            </Button>
+          </SafeAreaView>
         ),
       })}
       initialRouteName="Home"

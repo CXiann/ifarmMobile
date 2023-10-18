@@ -127,7 +127,7 @@ const ActivityScreenView = () => {
                   {'F' + item?.field + ' R' + item?.row}
                 </Text>
                 <Text variant="bodyLarge">
-                  {item?.createdAt.toLocaleDateString()}
+                  {item?.date.toLocaleDateString()}
                 </Text>
               </SafeAreaView>
             </Card.Content>
