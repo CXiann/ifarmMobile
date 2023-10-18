@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {StyleSheet, Text, View} from 'react-native';
 import {
@@ -8,6 +8,7 @@ import {
 } from 'react-native-paper';
 import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 import MainNav from './src/navigation/main-nav';
+import NotificationHandler from './src/components/notificationHandler';
 
 import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
@@ -15,6 +16,8 @@ import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
 import {GlobalProvider} from './src/contexts/GlobalContext';
 import LoadingOverlay from './src/components/loadingOverlay';
+import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 const {RealmProvider, useRealm} = realmContext;
 
@@ -39,6 +42,38 @@ export default function AppWrapper() {
   );
 }
 const App = () => {
+  useEffect(() => {
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        console.log('TOKEN:', token);
+      },
+
+      // (required) Called when a remote is received or opened, or local notification is opened
+      onNotification: function (notification) {
+        console.log('NOTIFICATION:', notification);
+
+        // process the notification
+
+        // (required) Called when a remote is received or opened, or local notification is opened
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+
+      channelId: 'channel-1',
+
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+
+      popInitialNotification: true,
+
+      requestPermissions: Platform.OS === 'ios',
+    });
+  }, []);
+
   return (
     <GlobalProvider>
       <RealmProvider
@@ -60,6 +95,7 @@ const App = () => {
         <AutocompleteDropdownContextProvider>
           <LoadingOverlay />
           <MainNav />
+          <NotificationHandler />
         </AutocompleteDropdownContextProvider>
       </RealmProvider>
     </GlobalProvider>

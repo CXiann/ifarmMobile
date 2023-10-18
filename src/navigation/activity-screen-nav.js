@@ -3,12 +3,12 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useTheme} from 'react-native-paper';
 
-import ActivityScreenView from './activity-screen-view';
-import ActivityScreenAddMain from './activity-screen-add-main';
+import ActivityScreenView from '../screens/activityScreen/activity-screen-view';
+import ActivityScreenAddNav from './activity-screen-add-nav';
 
 const Tab = createMaterialTopTabNavigator();
 
-const ActivityScreenMain = () => {
+const ActivityScreenNav = () => {
   const {colors} = useTheme();
   return (
     <Tab.Navigator
@@ -16,9 +16,9 @@ const ActivityScreenMain = () => {
         tabBarIndicatorStyle: {backgroundColor: colors.primaryContainer},
       }}>
       <Tab.Screen name="View Activity" component={ActivityScreenView} />
-      <Tab.Screen name="Add Activity" component={ActivityScreenAddMain} />
+      <Tab.Screen name="Add Activity" component={ActivityScreenAddNav} />
     </Tab.Navigator>
   );
 };
 
-export default ActivityScreenMain;
+export default ActivityScreenNav;

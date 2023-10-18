@@ -12,8 +12,9 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
-import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
+import ActivitiesScreenNav from './activity-screen-nav';
 import TestScreen from '../screens/test-screen';
+import TaskScreenNav from './task-screen-nav';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,13 @@ export default function TabsNavbar() {
           fontWeight: 'bold',
         },
         headerRight: () => (
+          <Button
+            mode="elevated"
+            icon="arrow-right"
+            onPress={() => navigation.navigate('Farm Selector')}
+            contentStyle={{flexDirection: 'row-reverse'}}>
+            Change Farm
+          </Button>
           <SafeAreaView style={style.rightContainer}>
             {/* <IconButton
               icon="bell"
@@ -129,7 +137,7 @@ export default function TabsNavbar() {
       />
       <Tab.Screen
         name="Activities"
-        component={ActivitiesScreenMain}
+        component={ActivitiesScreenNav}
         options={{
           tabBarLabel: 'Activities',
           tabBarIcon: ({color, size}) => {
@@ -137,13 +145,29 @@ export default function TabsNavbar() {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Test"
         component={TestScreen}
         options={{
           tabBarLabel: 'Test',
           tabBarIcon: ({color, size}) => {
             return <Icon name="tools" size={size} color={color} />;
+          },
+        }}
+      /> */}
+      <Tab.Screen
+        name="Task"
+        component={TaskScreenNav}
+        options={{
+          tabBarLabel: 'Task',
+          tabBarIcon: ({color, size}) => {
+            return (
+              <Icon
+                name="newspaper-variant-outline"
+                size={size}
+                color={color}
+              />
+            );
           },
         }}
       />

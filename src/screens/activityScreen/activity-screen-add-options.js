@@ -8,7 +8,7 @@ import {Activity_Props as actProps} from '../../constants/activity-props';
 
 const ActivityScreenAddOptions = ({navigation, route}) => {
   const handleActivityPressed = action => {
-    navigation.navigate('Add_Form', {action: action});
+    navigation.navigate('Add Form', {action: action});
   };
 
   return (
