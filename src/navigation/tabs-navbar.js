@@ -4,7 +4,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Button, BottomNavigation, useTheme} from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import OctIcon from 'react-native-vector-icons/Octicons';
 
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenMain from '../screens/activityScreen/activity-screen-main';
@@ -39,6 +38,7 @@ export default function TabsNavbar() {
           </Button>
         ),
       })}
+      initialRouteName="Home"
       tabBar={({navigation, state, descriptors, insets}) => (
         <BottomNavigation.Bar
           navigationState={state}

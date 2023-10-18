@@ -1,17 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Keyboard} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
 import * as bcrypt from 'bcryptjs';
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useGlobal} from '../../contexts/GlobalContext';
 
 import {User} from '../../schemas/user.schema';
 
 const LoginScreen = ({navigation}) => {
+  const {userData, setUserId, setUserData} = useGlobal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHidden, setIsHidden] = useState(true);
+  const {setIsLoading} = useGlobal();
 
   const {useQuery, useRealm} = realmContext;
   const realm = useRealm();
@@ -23,12 +26,14 @@ const LoginScreen = ({navigation}) => {
       mutableSubs.add(realm.objects(User));
     });
     console.log('Total users: ', users.length);
-    global.currentUser = users.filtered(
+    const currentUser = users.filtered(
       'email CONTAINS $0',
       'farmowner@ifarm.com',
     )[0];
-    global.currentUserId = global.currentUser?._id;
-  }, [realm, User]);
+    setUserData(currentUser);
+    setUserId(currentUser?._id);
+    setIsLoading(false);
+  }, [realm]);
 
   // const app = useApp();
   // async function handleLogIn() {
@@ -38,16 +43,22 @@ const LoginScreen = ({navigation}) => {
   // }
 
   const handleLogIn = async () => {
-    if (await validateCredentials()) {
+    Keyboard.dismiss();
+    setIsLoading(true);
+    const isMatch = await validateCredentials();
+    if (isMatch) {
+      console.log('Login: ' + isMatch);
       navigation.navigate('Farm_Selector');
+    } else {
+      console.log('Login: ' + isMatch);
+      setIsLoading(false);
     }
   };
 
   const validateCredentials = async () => {
     var isMatch = false;
-    const currentUserPassword = global.currentUser.password;
+    const currentUserPassword = userData.password;
     isMatch = await bcrypt.compare(password, currentUserPassword);
-    console.log('Login: ' + isMatch);
     return isMatch;
   };
 

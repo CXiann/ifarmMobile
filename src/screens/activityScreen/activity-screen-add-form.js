@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {Button, Text, Snackbar} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {realmContext} from '../../../RealmContext';
@@ -12,24 +12,27 @@ import FieldInput from '../../components/fieldInput';
 import NumberInput from '../../components/numberInput';
 import AutocompleteItemInput from '../../components/autocompleteItemInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
+import SnackbarBottom from '../../components/snackbarBottom';
+import {useGlobal} from '../../contexts/GlobalContext';
 
-const ActivityScreenAddForm = ({route}) => {
+const ActivityScreenAddForm = ({route, navigation}) => {
   //find the input fields for corresponding action selected
   const selectedAction = route.params.action;
   const selectedActionFields = actProps.filter(
     act => act.action == selectedAction,
   )[0].fields;
+  const {userId, farmId} = useGlobal();
 
   const {useRealm, useObject, useQuery} = realmContext;
   const realm = useRealm();
 
   const initialValueActivities = {
-    userId: global.currentUserId.toString(),
+    userId: userId.toString(),
     userName: {},
-    farmId: global.currentUserSelectedFarmId.toString(),
+    farmId: farmId.toString(),
     farmName: {},
-    row: '',
-    field: 0,
+    row: '', //int
+    field: '0', //int
     quantity: 0,
     price: 0,
     unit: '',
@@ -45,6 +48,9 @@ const ActivityScreenAddForm = ({route}) => {
     __v: 0,
   };
   const [dataForm, setDataForm] = useState(initialValueActivities);
+  const [visible, setVisible] = useState(false);
+
+  const onDismissSnackBar = () => setVisible(false);
 
   useEffect(() => {
     realm.subscriptions.update(mutableSubs => {
@@ -65,8 +71,10 @@ const ActivityScreenAddForm = ({route}) => {
         date: new Date(dataForm['date'].toISOString()),
         convertQuantity: parseInt(dataForm['convertQuantity']),
       });
-      console.log('Successfully created data');
     });
+    console.log('Successfully created data');
+    setDataForm(initialValueActivities);
+    setVisible(true);
   };
 
   return (
@@ -127,6 +135,12 @@ const ActivityScreenAddForm = ({route}) => {
         onPress={handleAddActivity}>
         Add
       </Button>
+      <SnackbarBottom
+        label={'Dismiss'}
+        title={'Successfully created data.'}
+        visible={visible}
+        dismiss={onDismissSnackBar}
+      />
     </SafeAreaView>
   );
 };
@@ -136,11 +150,8 @@ export default ActivityScreenAddForm;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    flex: 1,
+    alignItems: 'center',
   },
-  textInput: {
-    // marginHorizontal: 10,
-    marginVertical: 5,
-    // backgroundColor: '#ffffff',
-  },
-  button: {marginVertical: 10},
+  button: {marginVertical: 10, minWidth: '100%'},
 });

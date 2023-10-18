@@ -17,17 +17,20 @@ const AutocompleteUnitInput = ({
 
   const style = StyleSheet.create({
     container: {
-      backgroundColor: 'white',
+      backgroundColor: colors.surfaceVariant,
       paddingTop: 8,
-      // paddingHorizontal: 20,
-      margin: 8,
-      borderRadius: 5,
+      margin: 10,
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
+      minWidth: '100%',
     },
     text: {
       paddingHorizontal: 20,
-      color: colors.onSurface,
+      fontWeight: 'normal',
+      color: colors.onSurfaceVariant,
+      minWidth: '100%',
     },
   });
   return (
@@ -37,13 +40,14 @@ const AutocompleteUnitInput = ({
       </Text>
       <AutocompleteDropdown
         inputContainerStyle={{
-          backgroundColor: 'white',
+          backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
           paddingHorizontal: 8,
         }}
         textInputProps={{
           autoCorrect: false,
           autoCapitalize: 'none',
+          editable: false,
           style: {color: colors.primary},
         }}
         suggestionsListTextStyle={{
@@ -58,10 +62,11 @@ const AutocompleteUnitInput = ({
         ClearIconComponent={
           <Feather name="x-circle" size={18} color={colors.primary} />
         }
+        showClear={false}
         closeOnBlur={true}
         closeOnSubmit={true}
         useFilter={false}
-        initialValue={initialValue ? dataSet[0] : undefined}
+        initialValue={initialValue ? dataSet[0] : ''}
         onSelectItem={item => {
           item && setDataForm({...dataForm, unit: item.title});
         }}

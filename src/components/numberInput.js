@@ -1,32 +1,35 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {TextInput, useTheme} from 'react-native-paper';
 
 const NumberInput = ({label, dataFormOption, dataForm, setDataForm}) => {
-  const [value, setValue] = useState(dataForm[dataFormOption]);
+  const {colors} = useTheme();
+
+  const styles = StyleSheet.create({
+    textInput: {
+      marginHorizontal: 10,
+      marginVertical: 5,
+      minWidth: '100%',
+    },
+    content: {
+      color: colors.primary,
+    },
+  });
 
   const handleOnChangeText = value => {
-    setValue(value);
     setDataForm({...dataForm, [dataFormOption]: value});
   };
 
   return (
     <TextInput
       label={label}
-      mode="outlined"
-      value={value.toString()}
+      mode="flat"
+      value={dataForm?.dataFormOption?.toString()}
       onChangeText={value => handleOnChangeText(value)}
       style={styles.textInput}
+      contentStyle={styles.content}
     />
   );
 };
 
 export default NumberInput;
-
-const styles = StyleSheet.create({
-  textInput: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-    //   backgroundColor: '#ffffff',
-  },
-});
