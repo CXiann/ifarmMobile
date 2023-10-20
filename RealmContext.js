@@ -5,6 +5,12 @@ import {Plant, Plant_Name} from './src/schemas/plants.schema';
 import {Pesticide, Pesticide_Name} from './src/schemas/pesticide.schema';
 import {User_Name, User} from './src/schemas/user.schema';
 import {
+  Task_FarmName,
+  Creator_Name,
+  Assignee_Name,
+  Task,
+} from './src/schemas/task.schema';
+import {
   Activity_FarmName,
   Activity_Item,
   Activity_UserName,
@@ -51,5 +57,9 @@ export const realmContext = createRealmContext({
     Farm_Pesticides_Name,
     Farm_Plants,
     Farm_Plants_Name,
+    Task_FarmName,
+    Creator_Name,
+    Assignee_Name,
+    Task,
   ],
 });

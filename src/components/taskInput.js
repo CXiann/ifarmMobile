@@ -2,18 +2,19 @@ import React, {useState} from 'react';
 import {TextInput} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 
-const TaskInput = () => {
+const TaskInput = ({label, dataForm, setDataForm}) => {
   const [text, setText] = useState('');
 
   const handleTextChange = newText => {
     setText(newText);
+    setDataForm({...dataForm, title: newText});
   };
 
   return (
     <TextInput
       mode="flat"
       placeholder="Enter Task Descriptions"
-      label="Task"
+      label={label}
       value={text}
       onChangeText={handleTextChange}
       style={styles.textInput}

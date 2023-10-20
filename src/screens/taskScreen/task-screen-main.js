@@ -10,7 +10,7 @@ import NumberInput from '../../components/numberInput';
 import AutocompleteItemInput from '../../components/autocompleteItemInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import TaskCard from '../../components/taskCard';
-import TaskStatusIndicator from '../../components/taskStatusIndicator';
+import DateCardCarousel from '../../components/dateCardCarousel';
 
 const TaskScreenMain = ({navigation}) => {
   // const initialValueTasks = {
@@ -84,17 +84,23 @@ const TaskScreenMain = ({navigation}) => {
                 }></IconButton>
             </View>
           </View>
-          <DateCard date={todayDate.getDate} day={todayDate.getDay} />
+          {/* <DateCard date={todayDate.getDate} day={todayDate.getDay} /> */}
+          <DateCardCarousel />
         </View>
         <View style={styles.bottom}>
           <Text variant="titleLarge" style={styles.bottomTitle}>
             Today's Tasks
           </Text>
-          <View style={styles.taskRow}>
-            {/* <TaskStatusIndicator /> */}
-            <TaskCard taskTitle="Apply 50kg Fertilizers" taskType="Urgent" />
-            <TaskCard taskTitle="Prune the grass" taskType="Normal" />
-          </View>
+          <TaskCard
+            taskTitle="Apply 50kg Fertilizers"
+            taskType="Urgent"
+            taskStatus="Not Started"
+          />
+          <TaskCard
+            taskTitle="Prune the grass"
+            taskType="Normal"
+            taskStatus="Completed"
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   top: {
-    backgroundColor: 'green',
+    backgroundColor: '#40be52',
     height: '100%',
   },
   topContent: {
@@ -155,6 +161,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 15,
     fontWeight: 'bold',
+  },
+  taskRow: {
+    flexDirection: 'row',
+    spaceBetween: 0,
+  },
+  taskStatusColumn: {
+    flexDirection: 'column',
+    alignContent: 'center',
+  },
+  taskCardColumn: {
+    flexDirection: 'column',
+    width: '90%',
   },
 });
 
