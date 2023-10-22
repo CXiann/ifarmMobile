@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {TextInput, useTheme} from 'react-native-paper';
 
-const FieldInput = ({label, dataForm, setDataForm}) => {
+const FieldInput = ({label, dataForm, setDataForm, myKey = 'none'}) => {
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({
@@ -24,10 +24,10 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
     // }
     setDataForm({...dataForm, field: value});
   };
-  console.log('field: ', dataForm.field);
 
   return (
     <TextInput
+      key={myKey != 'none' ? null : myKey} //any unique value(can even be hard coded value)
       label={label}
       mode="flat"
       value={dataForm.field}

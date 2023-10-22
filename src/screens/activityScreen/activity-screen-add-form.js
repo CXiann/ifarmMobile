@@ -76,18 +76,31 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     setDataForm(initialValueActivities);
     setVisible(true);
   };
-
+  console.log('########');
+  for (const key in dataForm) {
+    if (dataForm.hasOwnProperty(key)) {
+      console.log(`${key}: ${dataForm[key]}`);
+    }
+  }
   return (
     <SafeAreaView style={styles.container}>
-      {selectedActionFields.map(field => {
+      {selectedActionFields.map((field, index) => {
         switch (field.type) {
-          case 'date':
+          case 'date': {
             return (
-              <DateInput label={'Date'} data={dataForm} setData={setDataForm} />
+              <DateInput
+                myKey={index}
+                label={'Date'}
+                dataForm={dataForm}
+                setDataForm={setDataForm}
+                minWidth={'100%'}
+              />
             );
+          }
           case 'field':
             return (
               <FieldInput
+                myKey={index}
                 label={'Field Number'}
                 dataForm={dataForm}
                 setDataForm={setDataForm}
@@ -96,6 +109,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           case 'number':
             return (
               <NumberInput
+                myKey={index}
                 label={field.name}
                 dataFormOption={field.id}
                 dataForm={dataForm}
@@ -105,6 +119,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           case 'autocomplete':
             return (
               <AutocompleteItemInput
+                myKey={index}
                 label={field.name}
                 action={selectedAction}
                 id={'_id'}
@@ -118,6 +133,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           case 'unit':
             return (
               <AutocompleteUnitInput
+                myKey={index}
                 label={field.name}
                 dataSet={field.units}
                 dataForm={dataForm}
@@ -126,7 +142,11 @@ const ActivityScreenAddForm = ({route, navigation}) => {
               />
             );
           default:
-            return <Text variant="bodyLarge">Error</Text>;
+            return (
+              <Text key={index} variant="bodyLarge">
+                Error
+              </Text>
+            );
         }
       })}
       <Button

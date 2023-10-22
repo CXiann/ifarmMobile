@@ -46,6 +46,13 @@ export default function TabsNavbar() {
         },
         headerRight: () => (
           <SafeAreaView style={style.rightContainer}>
+            {/* <Button
+              mode="elevated"
+              icon="arrow-right"
+              onPress={() => navigation.navigate('Farm Selector')}
+              contentStyle={{flexDirection: 'row-reverse'}}>
+              Change Farm
+            </Button> */}
             {/* <IconButton
               icon="bell"
               iconColor="black"
@@ -56,12 +63,13 @@ export default function TabsNavbar() {
             <Button
               mode="elevated"
               icon="arrow-right"
-              onPress={() => navigation.navigate('Farm_Selector')}
+              onPress={() => navigation.navigate('Farm Selector')}
               contentStyle={{
                 flexDirection: 'row-reverse',
                 justifyContent: 'center',
-                // backgroundColor: 'white',
+                backgroundColor: colors.secondaryContainer,
               }}
+              labelStyle={{color: colors.outline}}
               style={{
                 // backgroundColor: 'black',
                 justifyContent: 'center',

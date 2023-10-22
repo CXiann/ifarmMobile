@@ -4,11 +4,23 @@ import {TextInput, useTheme} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const DateInput = ({label, data, setData}) => {
+const DateInput = ({
+  label,
+  dataForm, //dataForm accept object in the form {date:Date()}
+  setDataForm,
+  minWidth,
+  myKey = 'none',
+}) => {
   const {colors} = useTheme();
+  const styles = StyleSheet.create({
+    textInput: {
+      marginHorizontal: 10,
+      marginVertical: 5,
+      minWidth: minWidth,
+    },
+  });
 
   const [show, setShow] = useState(false);
-  const [date, setDate] = useState(data?.date || data);
 
   const showCalendar = () => {
     setShow(true);
@@ -16,16 +28,17 @@ const DateInput = ({label, data, setData}) => {
 
   const handleDateCalendar = (event, selectedDate) => {
     setShow(false);
-    setDate(selectedDate);
-    data?.date ? setData({...data, date: selectedDate}) : setData(selectedDate);
+    setDataForm({...dataForm, date: selectedDate});
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      key={myKey == 'none' ? null : myKey} //any unique value(can even be hard coded value)
+    >
       <TextInput
         label={label}
         mode="flat"
-        value={date.toLocaleDateString()}
+        value={dataForm['date'].toLocaleDateString()}
         editable={false}
         right={
           <TextInput.Icon
@@ -41,7 +54,7 @@ const DateInput = ({label, data, setData}) => {
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={date}
+          value={dataForm['date']}
           mode="date"
           onChange={handleDateCalendar}
         />
@@ -51,12 +64,3 @@ const DateInput = ({label, data, setData}) => {
 };
 
 export default DateInput;
-
-const styles = StyleSheet.create({
-  textInput: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-    minWidth: '100%',
-    // backgroundColor: '#ffffff',
-  },
-});

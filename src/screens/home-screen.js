@@ -12,8 +12,9 @@ const HomeScreen = () => {
       alignItems: 'center',
     },
   });
+
   useEffect(() => {
-    setIsLoading(false);
+    // setIsLoading(true);
   });
   return (
     <View style={styles.container}>

@@ -35,7 +35,6 @@ const FarmSelectorScreen = ({navigation}) => {
   console.log('Selected farm: ', selectedFarm);
 
   const handleManageButton = () => {
-    setIsLoading(true);
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
     if (selectedFarm) {

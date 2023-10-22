@@ -10,6 +10,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
+  myKey = 'none',
   label,
   id,
   title, //key of database prop
@@ -73,6 +74,7 @@ const AutocompleteItemInput = ({
         {label}
       </Text>
       <AutocompleteDropdown
+        key={myKey != 'none' ? null : myKey} //any unique value(can even be hard coded value)
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
