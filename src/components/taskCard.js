@@ -2,51 +2,45 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Text, Card, Avatar} from 'react-native-paper';
 
-const TaskCard = props => {
-  const getTaskTypeStyle = taskType => {
-    switch (taskType) {
-      case 'Urgent':
-        return styles.urgent;
-      case 'Important':
-        return styles.important;
-      case 'Normal':
-        return styles.normal;
-      default:
-        return styles.default; // Default style if taskType doesn't match any
-    }
-  };
+const TaskCard = ({taskTitle, taskCompleted}) => {
+  // const getTaskTypeStyle = taskType => {
+  //   switch (taskType) {
+  //     case 'Urgent':
+  //       return styles.urgent;
+  //     case 'Important':
+  //       return styles.important;
+  //     case 'Normal':
+  //       return styles.normal;
+  //     default:
+  //       return styles.default; // Default style if taskType doesn't match any
+  //   }
+  // };
 
-  const taskTypeStyle = getTaskTypeStyle(props.taskType);
+  // const taskTypeStyle = getTaskTypeStyle(props.taskType);
 
-  const getTaskStatus = taskStatus => {
-    switch (taskStatus) {
-      case 'Not Started':
+  const getTaskStatus = taskCompleted => {
+    switch (taskCompleted) {
+      case false:
         return 'checkbox-blank-circle';
-      case 'In Progress':
-        return 'checkbox-blank-circle';
-      case 'Completed':
+      case true:
         return 'check-bold';
       default:
         return 'checkbox-blank-circle';
     }
   };
 
-  const taskStatusIcon = getTaskStatus(props.taskStatus);
+  const taskStatusIcon = getTaskStatus(taskCompleted);
 
   const getTaskStatusColor = taskStatus => {
     switch (taskStatus) {
-      case 'Not Started':
+      case false:
         return styles.inProgress;
-      case 'In Progress':
-        return styles.inProgress;
-      case 'Completed':
+      case true:
         return styles.completed;
-      default:
-        return styles.default;
     }
   };
 
-  const taskStatusBgColor = getTaskStatusColor(props.taskStatus);
+  const taskStatusBgColor = getTaskStatusColor(taskCompleted);
 
   return (
     <View style={styles.container}>
@@ -67,10 +61,10 @@ const TaskCard = props => {
       </View>
       <Card style={styles.taskCard}>
         <Card.Content>
-          <Text style={styles.taskTitle}>{props.taskTitle}</Text>
-          <View style={[styles.taskType, taskTypeStyle]}>
+          <Text style={styles.taskTitle}>{taskTitle}</Text>
+          {/* <View style={[styles.taskType, taskTypeStyle]}>
             <Text style={styles.taskTypeText}>{props.taskType}</Text>
-          </View>
+          </View> */}
         </Card.Content>
       </Card>
     </View>

@@ -29,7 +29,6 @@ const TaskScreenAddForm = ({navigation}) => {
     console.log('Total users: ', users.length);
   }, [realm]);
 
-  console.log('User no 1: ', users[0]);
   const currentFarmBSONID = new BSON.ObjectId(farmId);
 
   const filteredUsers = users.filtered('farms.@size > 0'); // Filter users with non-empty farms
@@ -40,7 +39,6 @@ const TaskScreenAddForm = ({navigation}) => {
   console.log('Current Farm All Users: ', allUsers?.length);
 
   const farmerUsers = allUsers.filter(user => user.role === 'farmer');
-  console.log('Farmer Users: ', farmerUsers?.length);
 
   const initialValueTasks = {
     title: '',

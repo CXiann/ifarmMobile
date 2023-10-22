@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import DateCard from './dateCard';
 
 const {width: screenWidth} = Dimensions.get('window');
+const width = Dimensions.get('window').width;
 
-const DateCardCarousel = () => {
-  const width = Dimensions.get('window').width;
+const DateCardCarousel = ({handleChangeDate}) => {
   const today = new Date();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [carouselItems, setCarouselItems] = useState([]);
+  const [loop, setLoop] = useState(false);
 
   const numberOfDays = 14; // Number of days you want to show
 
@@ -21,17 +22,29 @@ const DateCardCarousel = () => {
     carouselItems.push(date);
   }
 
-  const renderItem = ({item}) => {
+  // Define the onPress function to update the activeIndex
+  const handleCardPress = index => {
+    setActiveIndex(index);
+    handleChangeDate(carouselItems[index]);
+    console.log('carouselItems[index]: ', carouselItems[index]);
+  };
+
+  const renderItem = ({item, index}) => {
     return (
-      <View style={styles.item}>
-        <DateCard date={item.getDate()} day={item.getDay()} />
-      </View>
+      <DateCard
+        date={item.getDate()}
+        day={item.getDay()}
+        currentIndex={index}
+        onPress={handleCardPress}
+        isActive={index === activeIndex}
+      />
     );
   };
 
   return (
     <View style={styles.container}>
       <Carousel
+        key={`${loop}`}
         mode={'stack'}
         modeConfig={{
           stackInterval: 1,
@@ -39,13 +52,21 @@ const DateCardCarousel = () => {
           opacityInterval: 0.01,
           snapDirection: 'left',
         }}
-        loop={false}
+        style={{
+          width: width,
+          height: 100,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        loop={loop}
+        repeat={false}
         autoPlay={false}
         data={carouselItems}
-        width={width}
+        width={width / 5}
         height={100}
+        defaultIndex={0}
         renderItem={renderItem}
-        onSnapToItem={index => setActiveIndex(index)}
+        overscrollEnabled={false}
       />
     </View>
   );
