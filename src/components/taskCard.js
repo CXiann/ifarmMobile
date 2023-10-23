@@ -1,8 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Text, Card, Avatar} from 'react-native-paper';
+import {
+  Button,
+  Text,
+  Card,
+  Avatar,
+  IconButton,
+  Dialog,
+  Portal,
+  PaperProvider,
+} from 'react-native-paper';
 
-const TaskCard = ({taskTitle, taskCompleted}) => {
+import {realmContext} from '../../RealmContext';
+import {Task} from '../schemas/task.schema';
+
+const TaskCard = ({taskTitle, taskCompleted, taskObject, showSnackBar}) => {
   // const getTaskTypeStyle = taskType => {
   //   switch (taskType) {
   //     case 'Urgent':
@@ -17,6 +29,29 @@ const TaskCard = ({taskTitle, taskCompleted}) => {
   // };
 
   // const taskTypeStyle = getTaskTypeStyle(props.taskType);
+
+  const {useRealm} = realmContext;
+  const realm = useRealm();
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  const showConfirmDialog = () => setDialogVisible(true);
+  const hideConfirmDialog = () => setDialogVisible(false);
+
+  useEffect(() => {
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(realm.objects(Task));
+    });
+  }, [realm]);
+
+  const handleMarkTaskAsCompleted = () => {
+    realm.write(() => {
+      taskObject.completed = true;
+    });
+    hideConfirmDialog();
+    showSnackBar();
+  };
 
   const getTaskStatus = taskCompleted => {
     switch (taskCompleted) {
@@ -66,7 +101,45 @@ const TaskCard = ({taskTitle, taskCompleted}) => {
             <Text style={styles.taskTypeText}>{props.taskType}</Text>
           </View> */}
         </Card.Content>
+        <Card.Actions>
+          <IconButton
+            icon="checkbox-marked-circle-outline"
+            mode="contained"
+            size={19}
+            style={styles.completeButton}
+            iconColor="white"
+            disabled={taskCompleted}
+            onPress={showConfirmDialog}></IconButton>
+        </Card.Actions>
       </Card>
+      <Portal>
+        <Dialog
+          visible={dialogVisible}
+          onDismiss={hideConfirmDialog}
+          style={styles.confirmDialog}>
+          <Dialog.Icon icon="alert-circle" size={30} />
+          <Dialog.Title style={styles.dialogTitle}>
+            Confirm Task is Completed
+          </Dialog.Title>
+          <Dialog.Content>
+            <View style={styles.dialogContainer}>
+              <Text variant="bodyMedium">
+                Do you confirm to mark the task as completed?
+              </Text>
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <View style={styles.buttonRow}>
+              <Button textColor="#C23E3B" onPress={hideConfirmDialog}>
+                Cancel
+              </Button>
+              <Button textColor="#62A87C" onPress={handleMarkTaskAsCompleted}>
+                Confirm
+              </Button>
+            </View>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
@@ -133,6 +206,26 @@ const styles = StyleSheet.create({
   },
   completed: {
     backgroundColor: '#90EE90',
+  },
+  completeButton: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#4B7695',
+    width: 30,
+    height: 30,
+  },
+  confirmDialog: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 35,
+    borderRadius: 50,
+  },
+  dialogTitle: {
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 

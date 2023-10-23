@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskCard from '../../components/taskCard';
 import DateCardCarousel from '../../components/dateCardCarousel';
+import SnackbarBottom from '../../components/snackbarBottom';
 
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
@@ -40,6 +41,10 @@ const TaskScreenMain = ({navigation}) => {
   const today = new Date();
 
   const [selectedDate, setSelectedDate] = useState(today);
+
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+  const showSnackBar = () => setSnackBarVisible(true);
+  const hideSnackBar = () => setSnackBarVisible(false);
 
   const handleChangeDate = date => {
     setSelectedDate(date);
@@ -84,7 +89,7 @@ const TaskScreenMain = ({navigation}) => {
       userId.toString(),
       farmId.toString(),
     );
-    const testDate = new Date();
+
     setTasksToDisplay(currentUserAllTasks);
     console.log('Total currentUserAllTasks: ', currentUserAllTasks.length);
     setIsLoading(false);
@@ -93,47 +98,58 @@ const TaskScreenMain = ({navigation}) => {
   console.log('All Tasks: ' + allTasks.length);
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.top}>
-        <View style={styles.topContent}>
-          <View style={styles.firstRow}>
-            <View style={styles.textColumn}>
-              <Text style={styles.dateTitle}>
-                {dayOfWeek[selectedDate.getDay()]},{' '}
-                {monthOfYear[selectedDate.getMonth()]} {selectedDate.getDate()}
-              </Text>
-              <Text style={styles.taskCount}>
-                You have total {tasksToDisplay.length} tasks today
-              </Text>
+      <ScrollView>
+        <View style={styles.top}>
+          <View style={styles.topContent}>
+            <View style={styles.firstRow}>
+              <View style={styles.textColumn}>
+                <Text style={styles.dateTitle}>
+                  {dayOfWeek[selectedDate.getDay()]},{' '}
+                  {monthOfYear[selectedDate.getMonth()]}{' '}
+                  {selectedDate.getDate()}
+                </Text>
+                <Text style={styles.taskCount}>
+                  You have total {tasksToDisplay.length} tasks today
+                </Text>
+              </View>
+              <View style={styles.buttonColumn}>
+                <IconButton
+                  icon="plus"
+                  iconColor="white"
+                  mode="contained-tonal"
+                  size={20}
+                  style={styles.addTaskButton}
+                  accessibilityLabel="Add New Task"
+                  onPress={() =>
+                    navigation.navigate('Add New Task')
+                  }></IconButton>
+              </View>
             </View>
-            <View style={styles.buttonColumn}>
-              <IconButton
-                icon="plus"
-                iconColor="white"
-                mode="contained-tonal"
-                size={20}
-                style={styles.addTaskButton}
-                accessibilityLabel="Add New Task"
-                onPress={() =>
-                  navigation.navigate('Add New Task')
-                }></IconButton>
-            </View>
+            <DateCardCarousel handleChangeDate={handleChangeDate} />
           </View>
-          <DateCardCarousel handleChangeDate={handleChangeDate} />
+          <View style={styles.bottom}>
+            <Text variant="titleLarge" style={styles.bottomTitle}>
+              Today's Tasks
+            </Text>
+            {tasksToDisplay.map((task, i) => (
+              <TaskCard
+                key={i} // Add a unique key prop for each TaskCard
+                taskTitle={task.title}
+                taskType="Normal"
+                taskCompleted={task.completed}
+                taskObject={task}
+                showSnackBar={showSnackBar}
+              />
+            ))}
+          </View>
         </View>
-        <View style={styles.bottom}>
-          <Text variant="titleLarge" style={styles.bottomTitle}>
-            Today's Tasks
-          </Text>
-          {tasksToDisplay.map((task, i) => (
-            <TaskCard
-              key={i} // Add a unique key prop for each TaskCard
-              taskTitle={task.title}
-              taskType="Normal"
-              taskCompleted={task.completed}
-            />
-          ))}
-        </View>
-      </View>
+        <SnackbarBottom
+          label={'Dismiss'}
+          title={'Successfully Mark Task as Completed'}
+          visible={snackBarVisible}
+          dismiss={hideSnackBar}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };
