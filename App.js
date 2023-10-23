@@ -133,7 +133,7 @@ async function handleSyncError(session, syncError) {
 function LogIn() {
   logInUser();
   async function logInUser() {
-    const app = useApp();
+    const app = useApp(APP_ID);
     try {
       console.log('here');
       await app.logIn(Realm.Credentials.anonymous());

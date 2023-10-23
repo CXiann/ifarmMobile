@@ -38,22 +38,11 @@ const TaskScreenMain = ({navigation}) => {
   ];
 
   const today = new Date();
-  console.log("Today's date: ", today);
 
-  const [selectedDate, setSelectedDate] = useState({
-    getDay: today.getDay(),
-    getDate: today.getDate(),
-    getMonth: today.getMonth(),
-    getFullYear: today.getFullYear(),
-  });
+  const [selectedDate, setSelectedDate] = useState(today);
 
   const handleChangeDate = date => {
-    setSelectedDate({
-      getDay: date.getDay(),
-      getDate: date.getDate(),
-      getMonth: date.getMonth(),
-      getFullYear: date.getFullYear(),
-    });
+    setSelectedDate(date);
     console.log('selectedDate: ', selectedDate);
   };
 
@@ -76,21 +65,32 @@ const TaskScreenMain = ({navigation}) => {
 
   useEffect(() => {
     setIsLoading(true);
+    const selectedDateChangeToDateType = new Date(selectedDate);
+
+    // Extract year, month, and day from the selected date
+    const selectedYear = selectedDateChangeToDateType.getUTCFullYear();
+    const selectedMonth = selectedDateChangeToDateType.getUTCMonth();
+    const selectedDay = selectedDateChangeToDateType.getUTCDate();
+
+    // Calculate the start and end dates for the selected day
+    const startDate = new Date(selectedYear, selectedMonth, selectedDay);
+    const endDate = new Date(selectedYear, selectedMonth, selectedDay + 1); // Add 1 to day to include all events on that day
+
+    // Filter tasks in the database using a range for the date field
     const currentUserAllTasks = allTasks.filtered(
-      'date == $0 && assigneeId CONTAINS $1 && farmId CONTAINS $2',
-      new Date(
-        selectedDate.getFullYear,
-        selectedDate.getMonth,
-        selectedDate.getDate,
-      ),
+      'date >= $0 && date < $1 && assigneeId CONTAINS $2 && farmId CONTAINS $3',
+      startDate,
+      endDate,
       userId.toString(),
       farmId.toString(),
     );
+    const testDate = new Date();
     setTasksToDisplay(currentUserAllTasks);
-    console.log('currentUserAllTasks: ', currentUserAllTasks);
+    console.log('Total currentUserAllTasks: ', currentUserAllTasks.length);
     setIsLoading(false);
   }, [selectedDate]);
 
+  console.log('All Tasks: ' + allTasks.length);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.top}>
@@ -98,8 +98,8 @@ const TaskScreenMain = ({navigation}) => {
           <View style={styles.firstRow}>
             <View style={styles.textColumn}>
               <Text style={styles.dateTitle}>
-                {dayOfWeek[selectedDate.getDay]},{' '}
-                {monthOfYear[selectedDate.getMonth]} {selectedDate.getDate}
+                {dayOfWeek[selectedDate.getDay()]},{' '}
+                {monthOfYear[selectedDate.getMonth()]} {selectedDate.getDate()}
               </Text>
               <Text style={styles.taskCount}>
                 You have total {tasksToDisplay.length} tasks today

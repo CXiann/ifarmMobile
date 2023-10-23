@@ -17,7 +17,7 @@ const DateCardCarousel = ({handleChangeDate}) => {
 
   // Create an array of date objects starting from today date
   for (let i = 0; i < numberOfDays; i++) {
-    var date = new Date();
+    const date = new Date();
     date.setDate(today.getDate() + i);
     carouselItems.push(date);
   }

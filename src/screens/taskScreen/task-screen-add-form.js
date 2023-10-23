@@ -21,14 +21,6 @@ const TaskScreenAddForm = ({navigation}) => {
   const users = useQuery(User);
   const [selectedUser, setSelectedUser] = useState({id: '', title: ''});
 
-  useEffect(() => {
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(realm.objects(User));
-    });
-    console.log('Total users: ', users.length);
-  }, [realm]);
-
   const currentFarmBSONID = new BSON.ObjectId(farmId);
 
   const filteredUsers = users.filtered('farms.@size > 0'); // Filter users with non-empty farms
@@ -66,6 +58,7 @@ const TaskScreenAddForm = ({navigation}) => {
   }, [realm]);
 
   const handleAddTask = () => {
+    console.log('dataForm: ', dataForm);
     realm.write(() => {
       realm.create('tasks', {
         ...dataForm,
