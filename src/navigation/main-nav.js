@@ -10,16 +10,24 @@ import ActivityScreenAddForm from '../screens/activityScreen/activity-screen-add
 import FarmSelectorScreen from '../screens/farm-selector-screen';
 import TaskScreenMain from '../screens/taskScreen/task-screen-main';
 import TaskScreenAddForm from '../screens/taskScreen/task-screen-add-form';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const Stack = createStackNavigator();
 
 export default function MainNav() {
+  const netInfo = useNetInfo();
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerShown: false,
+            headerShown: netInfo.isConnected ? false : true,
+            headerLeft: null,
+            headerTitle: 'Offline Mode',
+            headerStyle: {backgroundColor: 'grey', height: 25},
+            headerTitleAlign: 'center',
+            headerTitleStyle: {fontSize: 15},
           }}
           initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
