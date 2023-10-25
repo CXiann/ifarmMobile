@@ -1,7 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Card, Avatar, Text, useTheme} from 'react-native-paper';
+import {
+  Card,
+  Avatar,
+  Text,
+  useTheme,
+  Button,
+  Portal,
+  Modal,
+} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -12,6 +20,7 @@ import {Activity} from '../../schemas/activity.schema';
 import {Activity_Props} from '../../constants/activity-props';
 import DateInput from '../../components/dateInput';
 import ActivityViewSortingButtons from '../../components/activityViewSortingButtons';
+import ActivityScreenViewSorting from './activity-screen-view-sort';
 
 const ActivityScreenView = () => {
   const {useRealm, useQuery} = realmContext;
@@ -27,11 +36,19 @@ const ActivityScreenView = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
       padding: 16,
     },
     dateInputContainer: {
+      alignSelf: 'center',
       flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    filterButton: {
+      backgroundColor: colors.primaryContainer,
+      marginVertical: 10,
+    },
+    filterLabel: {
+      color: colors.onSurface,
     },
     card: {
       marginVertical: 5,
@@ -64,6 +81,7 @@ const ActivityScreenView = () => {
   const [startDate, setStartDate] = useState({date: new Date()});
   const [endDate, setEndDate] = useState({date: new Date()});
   const [selectedValue, setSelectedValue] = useState(initialButtonValues);
+  const [visible, setVisible] = useState(false);
 
   const allActivities = useQuery(Activity);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState(allActivities);
@@ -97,6 +115,8 @@ const ActivityScreenView = () => {
   const getBgColorFromActivityProp = action => {
     return actProps.filter(item => item.action == action)[0]?.bgColor;
   };
+
+  const showModal = () => setVisible(!visible);
   console.log(selectedValue);
   return (
     <SafeAreaView style={styles.container}>
@@ -114,11 +134,13 @@ const ActivityScreenView = () => {
           minWidth={'48%'}
         />
       </SafeAreaView>
-      <ActivityViewSortingButtons
-        selectedValue={selectedValue}
-        setSelectedValue={setSelectedValue}
-        props={actProps}
-      />
+      <Button
+        style={styles.filterButton}
+        labelStyle={styles.filterLabel}
+        mode="contained"
+        onPress={showModal}>
+        Filter
+      </Button>
       <FlatList
         removeClippedSubviews={true}
         data={activitiesToDisplay}
@@ -166,6 +188,13 @@ const ActivityScreenView = () => {
             </Card.Content>
           </Card>
         )}
+      />
+      <ActivityScreenViewSorting
+        visible={visible}
+        showModal={showModal}
+        selectedValue={selectedValue}
+        setSelectedValue={setSelectedValue}
+        actProps={actProps}
       />
     </SafeAreaView>
   );
