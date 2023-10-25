@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
+import WeatherMainCard from '../components/weatherMainCard';
 
 const HomeScreen = () => {
   const {setIsLoading} = useGlobal();
@@ -17,7 +18,8 @@ const HomeScreen = () => {
   });
   return (
     <View style={styles.container}>
-      <Text variant="headlineMedium">Home!</Text>
+      {/* <Text variant="headlineMedium">Home!</Text> */}
+      <WeatherMainCard />
     </View>
   );
 };
