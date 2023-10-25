@@ -98,7 +98,7 @@ const TaskScreenMain = ({navigation}) => {
   console.log('All Tasks: ' + allTasks.length);
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView style={styles.container}>
         <View style={styles.top}>
           <View style={styles.topContent}>
             <View style={styles.firstRow}>
@@ -155,7 +155,10 @@ const TaskScreenMain = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    height: '100%',
+    backgroundColor: 'white',
+  },
   textInput: {
     // marginHorizontal: 10,
     marginVertical: 5,

@@ -11,6 +11,7 @@ export const GlobalProvider = props => {
   const [userData, setUserData] = useState(null);
   const [farmId, setFarmId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentWeatherData, setCurrentWeatherData] = useState({});
 
   return (
     <GlobalContext.Provider
@@ -19,10 +20,12 @@ export const GlobalProvider = props => {
         farmId,
         userData,
         isLoading,
+        currentWeatherData,
         setUserId,
         setFarmId,
         setUserData,
         setIsLoading,
+        setCurrentWeatherData,
       }}>
       {props.children}
     </GlobalContext.Provider>
