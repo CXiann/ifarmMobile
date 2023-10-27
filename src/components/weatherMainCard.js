@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import {Card, Text, Avatar} from 'react-native-paper';
+import {Card, Text, Avatar, IconButton} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
+import LocationInput from './locationInput';
 
 const WeatherMainCard = () => {
-  const apiKey = '5590393c7e6c435088a62959230906';
+  const apiKey = '49fc111d10474a59b9e115511232710';
   const days = 5;
   const apiUrl = 'https://api.weatherapi.com/v1/forecast.json';
 
@@ -13,9 +14,11 @@ const WeatherMainCard = () => {
 
   useEffect(() => {
     const fetchWeatherData = async () => {
+      console.log('Fetching Weather Data...');
       const response = await fetch(
         `${apiUrl}?key=${apiKey}&q=${city}&days=${days}&aqi=no&alerts=yes`,
       );
+      console.log('Response: ', response);
       await setCurrentWeatherData(await response.json());
       console.log('Weather Data: ', currentWeatherData);
     };
@@ -32,11 +35,26 @@ const WeatherMainCard = () => {
                 <Avatar.Icon size={35} icon="pin" />
               </View>
               <View style={styles.locationTitle}>
-                <Text style={styles.locationText}>
+                {/* <LocationInput
+                  style={styles.locationText}
+                  city={city}
+                  setCity={setCity}>
                   {currentWeatherData.location.name},{' '}
                   {currentWeatherData.location.country}
-                </Text>
+                </LocationInput> */}
+                {/* <Text style={styles.locationText}>
+                  {currentWeatherData.location.name},{' '}
+                  {currentWeatherData.location.country}
+                </Text> */}
               </View>
+              {/* <View style={styles.editIcon}>
+                <IconButton
+                  icon="circle-edit-outline"
+                  iconColor="white"
+                  size={20}
+                  onPress={() => console.log('Pressed')}
+                />
+              </View> */}
             </View>
             <View style={styles.middleRow}>
               <View style={styles.temperatureColumn}>
@@ -100,6 +118,9 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 15,
     color: 'white',
+  },
+  editIcon: {
+    right: 5,
   },
   middleRow: {
     flexDirection: 'row',
