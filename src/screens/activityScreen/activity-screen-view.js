@@ -83,19 +83,19 @@ const ActivityScreenView = () => {
   const [selectedValue, setSelectedValue] = useState(initialButtonValues);
   const [visible, setVisible] = useState(false);
 
-  const allActivities = useQuery(Activity);
-  const [activitiesToDisplay, setActivitiesToDisplay] = useState(allActivities);
+  // const allActivities = useQuery(Activity);
+  const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
+
+  // useEffect(() => {
+  //   realm.subscriptions.update(mutableSubs => {
+  //     // Create subscription for filtered results.
+  //     mutableSubs.add(realm.objects(Activity));
+  //   });
+  // }, [realm]);
 
   useEffect(() => {
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(realm.objects(Activity));
-    });
-  }, [realm]);
-
-  useEffect(() => {
-    console.log('filtered');
-    const currentUserAllActivities = allActivities.filtered(
+    setIsLoading(true);
+    const currentUserAllActivities = realm.objects(Activity).filtered(
       'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
       new Date(startDate['date'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
       new Date(endDate['date'].setHours(23, 59, 59, 999)), //set latest possible ending of date
@@ -103,8 +103,22 @@ const ActivityScreenView = () => {
       farmId.toString(),
       selectedValue,
     );
+    // const subscribe = async () => {
+    //   await realm.subscriptions.update(mutableSubs => {
+    //     // Create subscription for filtered results.
+    //     mutableSubs.add(currentUserAllActivities);
+    //   });
+    //   setIsLoading(false);
+    //   // setInterval(() => setIsLoading(false), 3000);
+    // };
+    // subscribe();
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(currentUserAllActivities);
+    });
+    setIsLoading(false);
     setActivitiesToDisplay(currentUserAllActivities);
-  }, [startDate, endDate, selectedValue, setActivitiesToDisplay]);
+  }, [realm, startDate, endDate, selectedValue, setActivitiesToDisplay]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 

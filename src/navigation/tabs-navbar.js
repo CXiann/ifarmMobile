@@ -6,6 +6,7 @@ import {
   BottomNavigation,
   Badge,
   IconButton,
+  Text,
   useTheme,
 } from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
@@ -19,7 +20,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabsNavbar() {
+export default function TabsNavbar({route}) {
   const {colors} = useTheme();
 
   const style = StyleSheet.create({
@@ -60,6 +61,7 @@ export default function TabsNavbar() {
               onPress={() => console.log('Pressed')}
             />
             <Badge style={style.badge}>3</Badge> */}
+
             <Button
               mode="elevated"
               icon="arrow-right"
@@ -71,11 +73,18 @@ export default function TabsNavbar() {
               }}
               labelStyle={{color: colors.outline}}
               style={{
-                // backgroundColor: 'black',
-                justifyContent: 'center',
                 margin: 4,
               }}>
-              Change Farm
+              <Text
+                style={{alignSelf: 'center', fontWeight: 'bold'}}
+                variant="labelLarge">
+                {'Farm: '}
+                <Text
+                  variant="titleMedium"
+                  style={{color: colors.tertiary, fontWeight: 'bold'}}>
+                  {route.params.farmName}
+                </Text>
+              </Text>
             </Button>
           </SafeAreaView>
         ),

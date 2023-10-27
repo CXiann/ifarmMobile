@@ -38,7 +38,7 @@ const FarmSelectorScreen = ({navigation}) => {
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
     if (selectedFarm) {
-      navigation.navigate('Tabs');
+      navigation.navigate('Tabs', {farmName: selectedFarm.title});
     } else {
       console.log('No farm selected');
     }
