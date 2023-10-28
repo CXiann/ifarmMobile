@@ -155,7 +155,10 @@ const TaskScreenMain = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: 'white',
+    height: '100%',
+  },
   textInput: {
     // marginHorizontal: 10,
     marginVertical: 5,
