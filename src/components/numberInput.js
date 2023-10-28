@@ -13,7 +13,6 @@ const NumberInput = ({
 
   const styles = StyleSheet.create({
     textInput: {
-      marginHorizontal: 10,
       marginVertical: 5,
       minWidth: '100%',
     },

@@ -11,9 +11,9 @@ import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
   myKey = 'none',
-  label,
-  id,
-  title, //key of database prop
+  label, //labeling for input
+  id, //unique key id of database prop
+  title, //unique key of database prop(To display as options)
   options,
   dataForm,
   setDataForm,
@@ -23,12 +23,13 @@ const AutocompleteItemInput = ({
   const {colors} = useTheme();
   const {useQuery} = realmContext;
   const {farmId} = useGlobal();
+  console.log('FarmId: ', farmId);
 
   const currentUserSelectedFarmAllProps = useQuery(Farm).filtered(
     '_id == $0',
     BSON.ObjectId(farmId),
   );
-  console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
+  // console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
 
   const currentUserAllSelectedActionItems =
     currentUserSelectedFarmAllProps[0][options] || [];
@@ -54,7 +55,7 @@ const AutocompleteItemInput = ({
       paddingTop: 8,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
-      margin: 10,
+      marginVertical: 5,
       borderRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
@@ -102,7 +103,11 @@ const AutocompleteItemInput = ({
         closeOnSubmit={true}
         initialValue={initialValue ? dataSetFormatFarm[0] : ''}
         onSelectItem={item => {
-          item && setDataForm({...dataForm, item: {eng: item.title}});
+          item &&
+            setDataForm({
+              ...dataForm,
+              item: {...dataForm.item, eng: item.title},
+            });
         }}
         dataSet={dataSetFormatFarm}
       />

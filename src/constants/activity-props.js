@@ -22,7 +22,7 @@ export const Activity_Props = [
       },
       {
         id: 'row',
-        name: 'Row Range*',
+        name: 'Row Range',
         type: 'number',
         validate: v => {
           if (parseInt(v) === 0) return false;

@@ -20,7 +20,7 @@ const AutocompleteUnitInput = ({
     container: {
       backgroundColor: colors.surfaceVariant,
       paddingTop: 8,
-      margin: 10,
+      marginVertical: 5,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
       borderBottomWidth: 1,
@@ -71,7 +71,7 @@ const AutocompleteUnitInput = ({
         useFilter={false}
         initialValue={initialValue ? dataSet[0] : ''}
         onSelectItem={item => {
-          item && setDataForm({...dataForm, unit: item.title});
+          item && setDataForm({...dataForm, originalUnit: item.title});
         }}
         dataSet={dataSet}
       />

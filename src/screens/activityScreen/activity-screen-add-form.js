@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text, Snackbar} from 'react-native-paper';
+import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {realmContext} from '../../../RealmContext';
@@ -14,36 +14,43 @@ import AutocompleteItemInput from '../../components/autocompleteItemInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import SnackbarBottom from '../../components/snackbarBottom';
 import {useGlobal} from '../../contexts/GlobalContext';
+// import {createStackNavigator} from '@react-navigation/stack';
 
 const ActivityScreenAddForm = ({route, navigation}) => {
+  // const Stack = createStackNavigator();
+  // const Wrapper = {
+  //   <Stack.Navigator>
+  // }
+
   //find the input fields for corresponding action selected
   const selectedAction = route.params.action;
-  const selectedActionFields = actProps.filter(
+  const selectedActionAllProps = actProps.find(
     act => act.action == selectedAction,
-  )[0].fields;
-  const {userId, farmId} = useGlobal();
+  );
+  const selectedActionFields = selectedActionAllProps.fields;
+  const {userId, farmId, userName, farmName} = useGlobal();
 
   const {useRealm, useObject, useQuery} = realmContext;
   const realm = useRealm();
 
   const initialValueActivities = {
     userId: userId.toString(),
-    userName: {},
+    userName: {eng: userName, chs: '', cht: ''},
     farmId: farmId.toString(),
-    farmName: {},
+    farmName: {eng: farmName, chs: '', cht: ''},
     row: '', //int
     field: '0', //int
-    quantity: 0,
-    price: 0,
+    quantity: '', //int
+    price: '', //int
     unit: '',
     item: {eng: '', chs: '', cht: ''},
     action: '',
     remarks: '',
     date: new Date(),
     isActual: true,
-    originalQuantity: 0,
-    convertUnit: '',
-    convertQuantity: 0,
+    originalQuantity: '', //int
+    originalUnit: '', //modified in input component
+    convertQuantity: '', //int
     createdAt: new Date(new Date().toISOString()),
     __v: 0,
   };
@@ -60,107 +67,148 @@ const ActivityScreenAddForm = ({route, navigation}) => {
   }, [realm]);
 
   const handleAddActivity = () => {
+    console.log('########');
+    for (const key in dataForm) {
+      if (dataForm.hasOwnProperty(key)) {
+        console.log(`${key}: ${dataForm[key]}`);
+      }
+    }
     realm.write(() => {
       realm.create('activities', {
         ...dataForm,
-        row: parseInt(dataForm['row']),
-        field: parseInt(dataForm['field']),
-        quantity: parseInt(dataForm['quantity']),
-        price: parseInt(dataForm['price']),
+        row: !isNaN(parseInt(dataForm['row'])) ? parseInt(dataForm['row']) : 0,
+        field: !isNaN(parseInt(dataForm['field']))
+          ? parseInt(dataForm['field'])
+          : 0,
+        quantity: !isNaN(parseInt(dataForm['quantity']))
+          ? /kg|^ℓ$/.test(dataForm['originalUnit'])
+            ? parseInt(dataForm['quantity'])
+            : /^g$|mℓ/.test(dataForm['originalUnit'])
+            ? parseInt(dataForm['quantity']) / 1000
+            : parseInt(dataForm['quantity']) / 1000000
+          : 0,
+        unit: /g/.test(dataForm['originalUnit']) ? 'kg' : 'ℓ',
+        price: !isNaN(parseFloat(dataForm['price']))
+          ? parseFloat(dataForm['price'])
+          : 0,
         action: selectedAction,
         date: new Date(dataForm['date'].toISOString()),
-        convertQuantity: parseInt(dataForm['convertQuantity']),
+        originalQuantity: !isNaN(parseInt(dataForm['quantity']))
+          ? parseInt(dataForm['quantity'])
+          : 0,
+
+        convertQuantity: !isNaN(parseInt(dataForm['convertQuantity']))
+          ? /kg|ℓ/.test(dataForm['unit'])
+            ? parseInt(dataForm['convertQuantity'])
+            : parseInt(dataForm['convertQuantity']) * 1000
+          : 0,
       });
     });
     console.log('Successfully created data');
     setDataForm(initialValueActivities);
     setVisible(true);
   };
-  console.log('########');
-  for (const key in dataForm) {
-    if (dataForm.hasOwnProperty(key)) {
-      console.log(`${key}: ${dataForm[key]}`);
-    }
-  }
+  // console.log('########');
+  // for (const key in dataForm) {
+  //   if (dataForm.hasOwnProperty(key)) {
+  //     console.log(`${key}: ${dataForm[key]}`);
+  //   }
+  // }
   return (
     <SafeAreaView style={styles.container}>
-      {selectedActionFields.map((field, index) => {
-        switch (field.type) {
-          case 'date': {
-            return (
-              <DateInput
-                myKey={index}
-                label={'Date'}
-                dataForm={dataForm}
-                setDataForm={setDataForm}
-                minWidth={'100%'}
-              />
-            );
+      <SafeAreaView style={styles.topBar}>
+        <IconButton
+          icon="arrow-left"
+          iconColor="black"
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+        <SafeAreaView style={styles.topBarText}>
+          <Text variant="titleLarge" style={{fontWeight: 700}}>
+            {route.params.action}
+          </Text>
+        </SafeAreaView>
+      </SafeAreaView>
+      <SafeAreaView style={styles.inputContainer}>
+        {selectedActionFields.map((field, index) => {
+          switch (field.type) {
+            case 'date': {
+              return (
+                <DateInput
+                  myKey={index}
+                  label={'Date'}
+                  dataForm={dataForm}
+                  setDataForm={setDataForm}
+                  minWidth={'100%'}
+                  dateFieldName={'date'}
+                />
+              );
+            }
+            case 'field':
+              return (
+                <FieldInput
+                  myKey={index}
+                  label={'Field Number'}
+                  dataForm={dataForm}
+                  setDataForm={setDataForm}
+                />
+              );
+            case 'number':
+              return (
+                <NumberInput
+                  myKey={index}
+                  label={field.name}
+                  dataFormOption={field.id}
+                  dataForm={dataForm}
+                  setDataForm={setDataForm}
+                />
+              );
+            case 'autocomplete':
+              return (
+                <AutocompleteItemInput
+                  myKey={index}
+                  label={field.name}
+                  action={selectedAction}
+                  id={'_id'}
+                  title={'name'}
+                  options={field.options}
+                  dataForm={dataForm}
+                  setDataForm={setDataForm}
+                  initialValue={false}
+                />
+              );
+            case 'unit':
+              return (
+                <AutocompleteUnitInput
+                  myKey={index}
+                  label={field.name}
+                  dataSet={field.units}
+                  dataForm={dataForm}
+                  setDataForm={setDataForm}
+                  initialValue={true}
+                />
+              );
+            default:
+              return (
+                <Text key={index} variant="bodyLarge">
+                  Error
+                </Text>
+              );
           }
-          case 'field':
-            return (
-              <FieldInput
-                myKey={index}
-                label={'Field Number'}
-                dataForm={dataForm}
-                setDataForm={setDataForm}
-              />
-            );
-          case 'number':
-            return (
-              <NumberInput
-                myKey={index}
-                label={field.name}
-                dataFormOption={field.id}
-                dataForm={dataForm}
-                setDataForm={setDataForm}
-              />
-            );
-          case 'autocomplete':
-            return (
-              <AutocompleteItemInput
-                myKey={index}
-                label={field.name}
-                action={selectedAction}
-                id={'_id'}
-                title={'name'}
-                options={field.options}
-                dataForm={dataForm}
-                setDataForm={setDataForm}
-                initialValue={false}
-              />
-            );
-          case 'unit':
-            return (
-              <AutocompleteUnitInput
-                myKey={index}
-                label={field.name}
-                dataSet={field.units}
-                dataForm={dataForm}
-                setDataForm={setDataForm}
-                initialValue={true}
-              />
-            );
-          default:
-            return (
-              <Text key={index} variant="bodyLarge">
-                Error
-              </Text>
-            );
-        }
-      })}
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleAddActivity}>
-        Add
-      </Button>
-      <SnackbarBottom
-        label={'Dismiss'}
-        title={'Successfully created data.'}
-        visible={visible}
-        dismiss={onDismissSnackBar}
-      />
+        })}
+        <Button
+          mode="contained"
+          style={styles.button}
+          onPress={handleAddActivity}>
+          Add
+        </Button>
+        <SnackbarBottom
+          label={'Dismiss'}
+          title={'Successfully created data.'}
+          visible={visible}
+          dismiss={onDismissSnackBar}
+        />
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
@@ -169,8 +217,22 @@ export default ActivityScreenAddForm;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     flex: 1,
+  },
+  topBar: {
+    backgroundColor: 'white',
+    maxHeight: '15%',
+    minWidth: '100%',
+    flexDirection: 'row',
+  },
+  topBarText: {
+    justifyContent: 'center',
+    marginLeft: '3%',
+    color: 'black',
+  },
+  inputContainer: {
+    flex: 1,
+    padding: 16,
     alignItems: 'center',
   },
   button: {marginVertical: 10, minWidth: '100%'},

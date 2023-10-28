@@ -11,9 +11,8 @@ import {Farm} from '../schemas/farm.schema';
 
 const FarmSelectorScreen = ({navigation}) => {
   const {useQuery, useRealm} = realmContext;
-  const {userData, setFarmId} = useGlobal();
+  const {userData, setFarmId, setIsLoading, setFarmName} = useGlobal();
   const realm = useRealm();
-  const {setIsLoading} = useGlobal();
 
   const farms = useQuery(Farm);
   const [selectedFarm, setSelectedFarm] = useState({id: '', title: ''}); //store farm information in {id:objectId(string), title:}
@@ -37,6 +36,7 @@ const FarmSelectorScreen = ({navigation}) => {
   const handleManageButton = () => {
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
+    setFarmName(selectedFarm.title);
     if (selectedFarm) {
       navigation.navigate('Tabs', {farmName: selectedFarm.title});
     } else {

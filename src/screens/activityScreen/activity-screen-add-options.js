@@ -39,14 +39,6 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
                 />
               )}
             />
-            {/* <Card.Content>
-              <Text variant="titleLarge">
-                {item?.quantity + ' ' + item?.unit}
-              </Text>
-              <Text variant="bodyLarge">
-                {'F' + item?.field + ' R' + item?.row}
-              </Text>
-            </Card.Content> */}
           </Card>
         )}
       />

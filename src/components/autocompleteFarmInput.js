@@ -58,6 +58,7 @@ const AutocompleteFarmInput = ({
       closeOnBlur={true}
       closeOnSubmit={true}
       useFilter={false}
+      showClear={false}
       initialValue={initialValue ? dataSetFormatFarm[0] : ''}
       onSelectItem={item => {
         item && setSelectedOption(item);

@@ -10,7 +10,7 @@ import {useGlobal} from '../../contexts/GlobalContext';
 import {User} from '../../schemas/user.schema';
 
 const LoginScreen = ({navigation}) => {
-  const {userData, setUserId, setUserData} = useGlobal();
+  const {userData, setUserId, setUserData, setUserName} = useGlobal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHidden, setIsHidden] = useState(true);
@@ -32,6 +32,7 @@ const LoginScreen = ({navigation}) => {
     )[0];
     setUserData(currentUser);
     setUserId(currentUser?._id);
+    setUserName(currentUser?.name.eng);
     setIsLoading(false);
   }, [realm]);
 

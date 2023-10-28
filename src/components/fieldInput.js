@@ -7,7 +7,6 @@ const FieldInput = ({label, dataForm, setDataForm, myKey = 'none'}) => {
 
   const styles = StyleSheet.create({
     textInput: {
-      marginHorizontal: 10,
       marginVertical: 5,
       minWidth: '100%',
     },

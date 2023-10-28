@@ -9,12 +9,12 @@ const DateInput = ({
   dataForm, //dataForm accept object in the form {date:Date()}
   setDataForm,
   minWidth,
+  dateFieldName,
   myKey = 'none',
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
     textInput: {
-      marginHorizontal: 10,
       marginVertical: 5,
       minWidth: minWidth,
     },
@@ -28,7 +28,7 @@ const DateInput = ({
 
   const handleDateCalendar = (event, selectedDate) => {
     setShow(false);
-    setDataForm({...dataForm, date: selectedDate});
+    setDataForm({...dataForm, [dateFieldName]: selectedDate});
   };
 
   return (
@@ -38,7 +38,7 @@ const DateInput = ({
       <TextInput
         label={label}
         mode="flat"
-        value={dataForm['date'].toLocaleDateString()}
+        value={dataForm[dateFieldName].toLocaleDateString()}
         editable={false}
         right={
           <TextInput.Icon
@@ -54,7 +54,7 @@ const DateInput = ({
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
-          value={dataForm['date']}
+          value={dataForm[dateFieldName]}
           mode="date"
           onChange={handleDateCalendar}
         />

@@ -18,14 +18,16 @@ import {useGlobal} from '../../contexts/GlobalContext';
 
 import {Activity} from '../../schemas/activity.schema';
 import {Activity_Props} from '../../constants/activity-props';
+import {Item_Props as itemProps} from '../../constants/item-props';
 import DateInput from '../../components/dateInput';
-import ActivityViewSortingButtons from '../../components/activityViewSortingButtons';
-import ActivityScreenViewSorting from './activity-screen-view-sort';
+import ActivityScreenViewSort from './activity-screen-view-sort';
+import AutocompleteItemInput from '../../components/autocompleteItemInput';
 
 const ActivityScreenView = () => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
   const {userId, farmId, isLoading, setIsLoading} = useGlobal();
+  console.log('View: ', farmId);
   const {colors} = useTheme();
 
   const defaultActProps = Activity_Props[9];
@@ -39,7 +41,6 @@ const ActivityScreenView = () => {
       padding: 16,
     },
     dateInputContainer: {
-      alignSelf: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
@@ -78,30 +79,32 @@ const ActivityScreenView = () => {
     return prop.action;
   });
 
-  const [startDate, setStartDate] = useState({date: new Date()});
-  const [endDate, setEndDate] = useState({date: new Date()});
-  const [selectedValue, setSelectedValue] = useState(initialButtonValues);
-  const [visible, setVisible] = useState(false);
+  const initialItemValues = itemProps.map(prop => {
+    return prop.options;
+  });
 
-  // const allActivities = useQuery(Activity);
+  const initialValues = {
+    startDate: new Date(),
+    endDate: new Date(),
+    selectedValue: initialButtonValues,
+    options: initialItemValues,
+  };
+
+  const [dataForm, setDataForm] = useState(initialValues);
+  const [visible, setVisible] = useState(false);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
 
-  // useEffect(() => {
-  //   realm.subscriptions.update(mutableSubs => {
-  //     // Create subscription for filtered results.
-  //     mutableSubs.add(realm.objects(Activity));
-  //   });
-  // }, [realm]);
+  const farm = useQuery(Activity);
 
   useEffect(() => {
     setIsLoading(true);
-    const currentUserAllActivities = realm.objects(Activity).filtered(
+    const currentUserAllActivities = farm.filtered(
       'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
-      new Date(startDate['date'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
-      new Date(endDate['date'].setHours(23, 59, 59, 999)), //set latest possible ending of date
+      new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
+      new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
       userId.toString(),
       farmId.toString(),
-      selectedValue,
+      dataForm['selectedValue'],
     );
     // const subscribe = async () => {
     //   await realm.subscriptions.update(mutableSubs => {
@@ -118,7 +121,7 @@ const ActivityScreenView = () => {
     });
     setIsLoading(false);
     setActivitiesToDisplay(currentUserAllActivities);
-  }, [realm, startDate, endDate, selectedValue, setActivitiesToDisplay]);
+  }, [realm, dataForm, setActivitiesToDisplay]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 
@@ -131,20 +134,22 @@ const ActivityScreenView = () => {
   };
 
   const showModal = () => setVisible(!visible);
-  console.log(selectedValue);
+  console.log(dataForm['selectedValue']);
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.dateInputContainer}>
         <DateInput
           label={'From'}
-          dataForm={startDate}
-          setDataForm={setStartDate}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          dateFieldName={'startDate'}
           minWidth={'48%'}
         />
         <DateInput
           label={'To'}
-          dataForm={endDate}
-          setDataForm={setEndDate}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          dateFieldName={'endDate'}
           minWidth={'48%'}
         />
       </SafeAreaView>
@@ -203,13 +208,23 @@ const ActivityScreenView = () => {
           </Card>
         )}
       />
-      <ActivityScreenViewSorting
+      <ActivityScreenViewSort
         visible={visible}
         showModal={showModal}
-        selectedValue={selectedValue}
-        setSelectedValue={setSelectedValue}
+        dataForm={dataForm}
+        setDataForm={setDataForm}
         actProps={actProps}
       />
+      {/* 
+      <AutocompleteItemInput
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        initialValue={false}
+        label={'Test'}
+        id={'_id'}
+        title={'name'}
+        options={'plants'}
+      /> */}
     </SafeAreaView>
   );
 };

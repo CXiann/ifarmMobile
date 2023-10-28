@@ -1,12 +1,11 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {SegmentedButtons} from 'react-native-paper';
+// import {useGlobal} from '../contexts/GlobalContext';
 
-const ActivityViewSortingButtons = ({
-  selectedValue,
-  setSelectedValue,
-  props,
-}) => {
+const ActivityViewSortingButtons = ({dataForm, setDataForm, props}) => {
+  // const {farmId} = useGlobal();
+  // console.log('test: ', farmId);
   const styles = StyleSheet.create({
     segmentedButtonsContainer: {
       paddingVertical: 5,
@@ -20,8 +19,10 @@ const ActivityViewSortingButtons = ({
         key={i}
         multiSelect
         density="small"
-        value={selectedValue}
-        onValueChange={setSelectedValue}
+        value={dataForm['selectedValue']}
+        onValueChange={value =>
+          setDataForm({...dataForm, selectedValue: value})
+        }
         style={styles.segmentedButtonsContainer}
         buttons={props
           .filter((item, index) => index >= i && index <= i + 2)

@@ -33,21 +33,14 @@ export default function MainNav() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Farm Selector" component={FarmSelectorScreen} />
           <Stack.Screen name="Tabs" component={TabsNavbar} />
-          <Stack.Screen
-            name="Add Form"
-            component={ActivityScreenAddForm}
-            options={({route}) => ({
-              headerShown: true,
-              title: route.params.action,
-            })}
-          />
+          <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
           <Stack.Screen
             name="Add New Task"
             component={TaskScreenAddForm}
             options={({route}) => ({
               headerShown: true,
-              // title: route.params.action,
+              title: route.params.action,
             })}
           />
         </Stack.Navigator>
