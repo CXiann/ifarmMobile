@@ -83,9 +83,11 @@ const ActivityScreenAddForm = ({route, navigation}) => {
         quantity: !isNaN(parseInt(dataForm['quantity']))
           ? /kg|^ℓ$/.test(dataForm['originalUnit'])
             ? parseInt(dataForm['quantity'])
+            : /mg/.test(dataForm['originalUnit'])
+            ? parseInt(dataForm['quantity']) / 1000000
             : /^g$|mℓ/.test(dataForm['originalUnit'])
             ? parseInt(dataForm['quantity']) / 1000
-            : parseInt(dataForm['quantity']) / 1000000
+            : parseInt(dataForm['quantity']) / 2
           : 0,
         unit: /g/.test(dataForm['originalUnit']) ? 'kg' : 'ℓ',
         price: !isNaN(parseFloat(dataForm['price']))

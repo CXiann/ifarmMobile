@@ -60,6 +60,8 @@ const ActivityScreenView = () => {
     },
     cardSubtitle: {
       color: colors.primary,
+      fontWeight: 'bold',
+      fontSize: 15,
     },
     cardBottom: {
       flexDirection: 'row',
@@ -67,6 +69,7 @@ const ActivityScreenView = () => {
     },
     cardBottomText: {
       color: 'red',
+      fontWeight: 'bold',
     },
     textInput: {
       marginHorizontal: 10,
@@ -98,14 +101,16 @@ const ActivityScreenView = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const currentUserAllActivities = farm.filtered(
-      'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
-      new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
-      new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
-      userId.toString(),
-      farmId.toString(),
-      dataForm['selectedValue'],
-    );
+    const currentUserAllActivities = farm
+      .filtered(
+        'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
+        new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
+        new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
+        userId.toString(),
+        farmId.toString(),
+        dataForm['selectedValue'],
+      )
+      .sorted('date', true);
     // const subscribe = async () => {
     //   await realm.subscriptions.update(mutableSubs => {
     //     // Create subscription for filtered results.
@@ -189,18 +194,63 @@ const ActivityScreenView = () => {
             />
             <Card.Content>
               {item?.remarks && (
-                <Text variant="titleLarge">{item?.remarks}</Text>
+                <Text
+                  variant="bodyLarge"
+                  style={{
+                    fontSize: 20,
+                    color: 'dimgray',
+                    marginBottom: '2%',
+                  }}>
+                  {item.remarks}
+                </Text>
               )}
-              {item?.unit && (
-                <Text variant="titleLarge">
-                  {item?.quantity + '' + item?.unit}
+              {item?.originalUnit && (
+                <Text
+                  variant="bodyLarge"
+                  style={{
+                    fontSize: 20,
+                    color: 'dimgray',
+                    marginBottom: '2%',
+                  }}>
+                  {item.originalQuantity + ' ' + item.originalUnit}
+                  <Text
+                    variant="bodyLarge"
+                    style={{
+                      fontSize: 20,
+                      color: 'yellowgreen',
+                    }}>
+                    {' (Std. unit: ' +
+                      item.quantity +
+                      ' ' +
+                      actProps.find(prop => prop.action == item.action)
+                        .standardUnit +
+                      ')'}
+                  </Text>
+                </Text>
+              )}
+              {item?.price != 0 && (
+                <Text
+                  variant="titleMedium"
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                    color: 'dimgray',
+                    marginBottom: '2%',
+                  }}>
+                  {'RM ' + item.price}
                 </Text>
               )}
               <SafeAreaView style={styles.cardBottom}>
-                <Text variant="bodyLarge" style={styles.cardBottomText}>
-                  {'F' + item?.field + ' R' + item?.row}
-                </Text>
-                <Text variant="bodyLarge">
+                {item?.field != 0 || item?.row != 0 ? (
+                  <Text variant="bodyLarge" style={styles.cardBottomText}>
+                    {'F' + item.field + ' R' + item.row}
+                  </Text>
+                ) : (
+                  <Text variant="bodyLarge" style={styles.cardBottomText}>
+                    {'N/A'}
+                  </Text>
+                )}
+                <Text variant="bodyLarge" style={{fontWeight: 'bold'}}>
                   {item?.date.toLocaleDateString()}
                 </Text>
               </SafeAreaView>
