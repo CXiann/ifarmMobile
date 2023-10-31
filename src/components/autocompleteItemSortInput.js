@@ -9,7 +9,7 @@ import {Farm} from '../schemas/farm.schema';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
-const AutocompleteItemInput = ({
+const AutocompleteItemSortInput = ({
   myKey = 'none',
   label, //labeling for input
   id, //unique key id of database prop
@@ -40,7 +40,7 @@ const AutocompleteItemInput = ({
   const getDataSetFormat = items => {
     return items.map(item => {
       const newObj = {id: '', title: ''};
-      newObj['id'] = item[id];
+      newObj['id'] = options + '_' + item[id];
       newObj['title'] = item[title].eng;
       return newObj;
     });
@@ -67,7 +67,7 @@ const AutocompleteItemInput = ({
       minWidth: '100%',
     },
   });
-
+  console.log('iniValue: ', dataForm['previousValue'][options]);
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
@@ -100,12 +100,20 @@ const AutocompleteItemInput = ({
         }
         closeOnBlur={true}
         closeOnSubmit={true}
-        initialValue={initialValue ? dataSetFormatFarm[0] : ''}
+        initialValue={initialValue ? dataForm['previousValue'][options] : ''}
+        onClear={() =>
+          setDataForm({
+            ...dataForm,
+            [options]: '',
+            previousValue: '',
+          })
+        }
         onSelectItem={item => {
           item &&
             setDataForm({
               ...dataForm,
-              item: {...dataForm.item, eng: item.title},
+              [options]: item.title,
+              previousValue: {...dataForm['previousValue'], [options]: item.id},
             });
         }}
         dataSet={dataSetFormatFarm}
@@ -114,4 +122,4 @@ const AutocompleteItemInput = ({
   );
 };
 
-export default AutocompleteItemInput;
+export default AutocompleteItemSortInput;

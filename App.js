@@ -23,22 +23,16 @@ const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
   return (
-    // logger includes a default that prints level and message
-    <AppProvider
-      id={APP_ID}
-      logLevel={'trace'}
-      logger={(level, message) => console.log(`[${level}]: ${message}`)}>
-      <UserProvider fallback={LogIn}>
-        <PaperProvider
-          theme={THEME}
-          // settings={{
-          //   icon: props => <Icon {...props} />,
-          // }}
-        >
+    <GlobalProvider>
+      <AppProvider
+        id={APP_ID}
+        logLevel={'trace'}
+        logger={(level, message) => console.log(`[${level}]: ${message}`)}>
+        <UserProvider fallback={LogIn}>
           <App />
-        </PaperProvider>
-      </UserProvider>
-    </AppProvider>
+        </UserProvider>
+      </AppProvider>
+    </GlobalProvider>
   );
 }
 const App = () => {
@@ -75,30 +69,30 @@ const App = () => {
   }, []);
 
   return (
-    <GlobalProvider>
-      <RealmProvider
-        fallback={<LoadingOverlay />}
-        sync={{
-          flexible: true,
-          clientReset: {
-            mode: 'discardUnsyncedChanges',
-            onBefore: realm => {
-              console.log('Beginning client reset for ', realm.path);
-            },
-            onAfter: (beforeRealm, afterRealm) => {
-              console.log('Finished client reset for', beforeRealm.path);
-              console.log('New realm path', afterRealm.path);
-            },
+    <RealmProvider
+      // fallback={<LoadingOverlay />}
+      sync={{
+        flexible: true,
+        clientReset: {
+          mode: 'discardUnsyncedChanges',
+          onBefore: realm => {
+            console.log('Beginning client reset for ', realm.path);
           },
-          onError: console.error,
-        }}>
-        <AutocompleteDropdownContextProvider>
+          onAfter: (beforeRealm, afterRealm) => {
+            console.log('Finished client reset for', beforeRealm.path);
+            console.log('New realm path', afterRealm.path);
+          },
+        },
+        onError: console.error,
+      }}>
+      <AutocompleteDropdownContextProvider>
+        <PaperProvider theme={THEME}>
           <LoadingOverlay />
           <MainNav />
           <NotificationHandler />
-        </AutocompleteDropdownContextProvider>
-      </RealmProvider>
-    </GlobalProvider>
+        </PaperProvider>
+      </AutocompleteDropdownContextProvider>
+    </RealmProvider>
   );
 };
 // const THEME = {

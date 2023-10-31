@@ -27,7 +27,6 @@ const ActivityScreenView = () => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
   const {userId, farmId, isLoading, setIsLoading} = useGlobal();
-  console.log('View: ', farmId);
   const {colors} = useTheme();
 
   const defaultActProps = Activity_Props[9];
@@ -63,6 +62,11 @@ const ActivityScreenView = () => {
       fontWeight: 'bold',
       fontSize: 15,
     },
+    cardBodyText: {
+      fontSize: 20,
+      color: 'dimgray',
+      marginBottom: '2%',
+    },
     cardBottom: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -89,8 +93,13 @@ const ActivityScreenView = () => {
   const initialValues = {
     startDate: new Date(),
     endDate: new Date(),
+    plants: '',
+    fertilizers: '',
+    pesticides: '',
+    foliars: '',
     selectedValue: initialButtonValues,
     options: initialItemValues,
+    previousValue: {plants: '', fertilizers: '', pesticides: '', foliars: ''},
   };
 
   const [dataForm, setDataForm] = useState(initialValues);
@@ -98,10 +107,13 @@ const ActivityScreenView = () => {
   const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
 
   const farm = useQuery(Activity);
-
+  console.log('here: ', dataForm['previousValue']);
   useEffect(() => {
     setIsLoading(true);
-    const currentUserAllActivities = farm
+    const keysToExtract = ['plants', 'fertilizers', 'pesticides', 'foliars'];
+    const propsForQuery = keysToExtract.map(key => dataForm[key]);
+    console.log(propsForQuery);
+    var currentUserAllActivities = farm
       .filtered(
         'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
         new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
@@ -111,6 +123,37 @@ const ActivityScreenView = () => {
         dataForm['selectedValue'],
       )
       .sorted('date', true);
+    function containsOnlyOneNonEmptyString(arrs) {
+      const nonEmptyStrings = arrs.filter(str => str != '');
+      return nonEmptyStrings.length == 1;
+    }
+    function containsMoreThanOneNonEmptyString(arrs) {
+      const nonEmptyStrings = arrs.filter(str => str != '');
+      return nonEmptyStrings.length > 1;
+    }
+    function getNonEmptyStringValue(arrs) {
+      for (const str of arrs) {
+        if (str !== '') {
+          return str;
+        }
+      }
+      return null;
+    }
+    //just to return empty Realm.Results
+    if (containsMoreThanOneNonEmptyString(propsForQuery)) {
+      currentUserAllActivities = currentUserAllActivities.filtered(
+        'isActual == $0',
+        false,
+      );
+    }
+
+    if (containsOnlyOneNonEmptyString(propsForQuery)) {
+      currentUserAllActivities = currentUserAllActivities.filtered(
+        'item.eng == $0',
+        getNonEmptyStringValue(propsForQuery),
+      );
+    }
+
     // const subscribe = async () => {
     //   await realm.subscriptions.update(mutableSubs => {
     //     // Create subscription for filtered results.
@@ -131,11 +174,11 @@ const ActivityScreenView = () => {
   console.log('ATD: ', activitiesToDisplay.length);
 
   const getActionFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0]?.icon;
+    return actProps.find(item => item.action == action).icon;
   };
 
   const getBgColorFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0]?.bgColor;
+    return actProps.find(item => item.action == action).bgColor;
   };
 
   const showModal = () => setVisible(!visible);
@@ -194,24 +237,12 @@ const ActivityScreenView = () => {
             />
             <Card.Content>
               {item?.remarks && (
-                <Text
-                  variant="bodyLarge"
-                  style={{
-                    fontSize: 20,
-                    color: 'dimgray',
-                    marginBottom: '2%',
-                  }}>
+                <Text variant="bodyLarge" style={styles.cardBodyText}>
                   {item.remarks}
                 </Text>
               )}
               {item?.originalUnit && (
-                <Text
-                  variant="bodyLarge"
-                  style={{
-                    fontSize: 20,
-                    color: 'dimgray',
-                    marginBottom: '2%',
-                  }}>
+                <Text variant="bodyLarge" style={styles.cardBodyText}>
                   {item.originalQuantity + ' ' + item.originalUnit}
                   <Text
                     variant="bodyLarge"
@@ -232,10 +263,8 @@ const ActivityScreenView = () => {
                 <Text
                   variant="titleMedium"
                   style={{
+                    ...styles.cardBodyText,
                     fontWeight: 'bold',
-                    fontSize: 20,
-                    color: 'dimgray',
-                    marginBottom: '2%',
                   }}>
                   {'RM ' + item.price}
                 </Text>
@@ -265,16 +294,6 @@ const ActivityScreenView = () => {
         setDataForm={setDataForm}
         actProps={actProps}
       />
-      {/* 
-      <AutocompleteItemInput
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        initialValue={false}
-        label={'Test'}
-        id={'_id'}
-        title={'name'}
-        options={'plants'}
-      /> */}
     </SafeAreaView>
   );
 };

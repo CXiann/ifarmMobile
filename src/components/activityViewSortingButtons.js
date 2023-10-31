@@ -1,11 +1,8 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {SegmentedButtons} from 'react-native-paper';
-// import {useGlobal} from '../contexts/GlobalContext';
 
 const ActivityViewSortingButtons = ({dataForm, setDataForm, props}) => {
-  // const {farmId} = useGlobal();
-  // console.log('test: ', farmId);
   const styles = StyleSheet.create({
     segmentedButtonsContainer: {
       paddingVertical: 5,
