@@ -667,11 +667,4 @@ export const Activity_Props = [
     standardUnit: '',
     units: [],
   },
-  {
-    id: 9,
-    action: 'default',
-    icon: 'file-image',
-    bgColor: 'grey',
-    fields: [],
-  },
 ];

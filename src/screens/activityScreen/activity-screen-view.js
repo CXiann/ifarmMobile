@@ -1,15 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  Card,
-  Avatar,
-  Text,
-  useTheme,
-  Button,
-  Portal,
-  Modal,
-} from 'react-native-paper';
+import {useTheme, Button} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -17,22 +9,17 @@ import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
 
 import {Activity} from '../../schemas/activity.schema';
-import {Activity_Props} from '../../constants/activity-props';
-import {Item_Props as itemProps} from '../../constants/item-props';
+import {Activity_Props as actProps} from '../../constants/activity-props';
+
 import DateInput from '../../components/dateInput';
 import ActivityScreenViewSort from './activity-screen-view-sort';
-import AutocompleteItemInput from '../../components/autocompleteItemInput';
+import ActivityViewCards from '../../components/activityViewCards';
 
 const ActivityScreenView = () => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
-  const {userId, farmId, isLoading, setIsLoading} = useGlobal();
+  const {userId, farmId, setIsLoading} = useGlobal();
   const {colors} = useTheme();
-
-  const defaultActProps = Activity_Props[9];
-  const actProps = Activity_Props.filter(
-    (item, index) => index <= Activity_Props.length - 2,
-  );
 
   const styles = StyleSheet.create({
     container: {
@@ -50,44 +37,10 @@ const ActivityScreenView = () => {
     filterLabel: {
       color: colors.onSurface,
     },
-    card: {
-      marginVertical: 5,
-      minWidth: '100%',
-    },
-    cardTitle: {
-      fontWeight: 'bold',
-    },
-    cardSubtitle: {
-      color: colors.primary,
-      fontWeight: 'bold',
-      fontSize: 15,
-    },
-    cardBodyText: {
-      fontSize: 20,
-      color: 'dimgray',
-      marginBottom: '2%',
-    },
-    cardBottom: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    cardBottomText: {
-      color: 'red',
-      fontWeight: 'bold',
-    },
-    textInput: {
-      marginHorizontal: 10,
-      marginVertical: 5,
-      backgroundColor: '#ffffff',
-    },
   });
 
   const initialButtonValues = actProps.map(prop => {
     return prop.action;
-  });
-
-  const initialItemValues = itemProps.map(prop => {
-    return prop.options;
   });
 
   const initialValues = {
@@ -98,7 +51,7 @@ const ActivityScreenView = () => {
     pesticides: '',
     foliars: '',
     selectedValue: initialButtonValues,
-    options: initialItemValues,
+    options: [],
     previousValue: {plants: '', fertilizers: '', pesticides: '', foliars: ''},
   };
 
@@ -108,6 +61,7 @@ const ActivityScreenView = () => {
 
   const farm = useQuery(Activity);
   console.log('here: ', dataForm['previousValue']);
+
   useEffect(() => {
     setIsLoading(true);
     const keysToExtract = ['plants', 'fertilizers', 'pesticides', 'foliars'];
@@ -153,16 +107,6 @@ const ActivityScreenView = () => {
         getNonEmptyStringValue(propsForQuery),
       );
     }
-
-    // const subscribe = async () => {
-    //   await realm.subscriptions.update(mutableSubs => {
-    //     // Create subscription for filtered results.
-    //     mutableSubs.add(currentUserAllActivities);
-    //   });
-    //   setIsLoading(false);
-    //   // setInterval(() => setIsLoading(false), 3000);
-    // };
-    // subscribe();
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(currentUserAllActivities);
@@ -173,16 +117,14 @@ const ActivityScreenView = () => {
 
   console.log('ATD: ', activitiesToDisplay.length);
 
-  const getActionFromActivityProp = action => {
-    return actProps.find(item => item.action == action).icon;
-  };
-
-  const getBgColorFromActivityProp = action => {
-    return actProps.find(item => item.action == action).bgColor;
-  };
-
-  const showModal = () => setVisible(!visible);
+  const showModal = useCallback(() => setVisible(!visible), [visible]);
   console.log(dataForm['selectedValue']);
+
+  const renderItem = useCallback(
+    ({item}) => <ActivityViewCards item={item} actProps={actProps} />,
+    [],
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.dateInputContainer}>
@@ -211,89 +153,19 @@ const ActivityScreenView = () => {
       <FlatList
         removeClippedSubviews={true}
         data={activitiesToDisplay}
-        initialNumToRender={6}
+        initialNumToRender={4}
         keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
-        renderItem={({item}) => (
-          <Card mode="contained" style={styles.card}>
-            <Card.Title
-              title={item?.action}
-              titleStyle={styles.cardTitle}
-              subtitle={item?.item.eng}
-              subtitleStyle={styles.cardSubtitle}
-              left={props => (
-                <Avatar.Icon
-                  {...props}
-                  icon={
-                    getActionFromActivityProp(item.action) ||
-                    defaultActProps.icon
-                  }
-                  style={{
-                    backgroundColor:
-                      getBgColorFromActivityProp(item.action) ||
-                      defaultActProps.bgColor,
-                  }}
-                />
-              )}
-            />
-            <Card.Content>
-              {item?.remarks && (
-                <Text variant="bodyLarge" style={styles.cardBodyText}>
-                  {item.remarks}
-                </Text>
-              )}
-              {item?.originalUnit && (
-                <Text variant="bodyLarge" style={styles.cardBodyText}>
-                  {item.originalQuantity + ' ' + item.originalUnit}
-                  <Text
-                    variant="bodyLarge"
-                    style={{
-                      fontSize: 20,
-                      color: 'yellowgreen',
-                    }}>
-                    {' (Std. unit: ' +
-                      item.quantity +
-                      ' ' +
-                      actProps.find(prop => prop.action == item.action)
-                        .standardUnit +
-                      ')'}
-                  </Text>
-                </Text>
-              )}
-              {item?.price != 0 && (
-                <Text
-                  variant="titleMedium"
-                  style={{
-                    ...styles.cardBodyText,
-                    fontWeight: 'bold',
-                  }}>
-                  {'RM ' + item.price}
-                </Text>
-              )}
-              <SafeAreaView style={styles.cardBottom}>
-                {item?.field != 0 || item?.row != 0 ? (
-                  <Text variant="bodyLarge" style={styles.cardBottomText}>
-                    {'F' + item.field + ' R' + item.row}
-                  </Text>
-                ) : (
-                  <Text variant="bodyLarge" style={styles.cardBottomText}>
-                    {'N/A'}
-                  </Text>
-                )}
-                <Text variant="bodyLarge" style={{fontWeight: 'bold'}}>
-                  {item?.date.toLocaleDateString()}
-                </Text>
-              </SafeAreaView>
-            </Card.Content>
-          </Card>
-        )}
+        renderItem={renderItem}
       />
-      <ActivityScreenViewSort
-        visible={visible}
-        showModal={showModal}
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        actProps={actProps}
-      />
+      {visible && (
+        <ActivityScreenViewSort
+          visible={visible}
+          showModal={showModal}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          actProps={actProps}
+        />
+      )}
     </SafeAreaView>
   );
 };

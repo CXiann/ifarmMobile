@@ -1,4 +1,5 @@
 import Realm, {BSON} from 'realm';
+import React, {useEffect, useState, useCallback} from 'react';
 import {Modal, Portal, Text, useTheme, Button} from 'react-native-paper';
 import ActivityViewSortingButtons from '../../components/activityViewSortingButtons';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -16,11 +17,20 @@ const ActivityScreenViewSort = ({
     return prop.action;
   });
 
+  const [tempForm, setTempForm] = useState(dataForm);
+
+  if (!visible) {
+    return null;
+  }
+
   return (
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={showModal}
+        onDismiss={() => {
+          setDataForm({...dataForm, ...tempForm});
+          showModal();
+        }}
         contentContainerStyle={{
           backgroundColor: 'white',
           padding: 20,
@@ -36,28 +46,28 @@ const ActivityScreenViewSort = ({
           {itemProps.map((prop, index) => {
             return (
               <AutocompleteItemSortInput
-                dataForm={dataForm}
-                setDataForm={setDataForm}
+                tempForm={tempForm}
+                setTempForm={setTempForm}
                 initialValue={true}
                 label={prop.label}
                 id={'_id'}
                 title={'name'}
                 options={prop.options}
-                myKey={index}
+                myKey={prop.label + '_' + index}
               />
             );
           })}
           <ActivityViewSortingButtons
-            dataForm={dataForm}
-            setDataForm={setDataForm}
+            dataForm={tempForm}
+            setDataForm={setTempForm}
             props={actProps}
           />
           <SafeAreaView
             style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Button
               onPress={() =>
-                setDataForm({
-                  ...dataForm,
+                setTempForm({
+                  ...tempForm,
                   selectedValue: [],
                   plants: '',
                   fertilizers: '',
@@ -70,7 +80,7 @@ const ActivityScreenViewSort = ({
             </Button>
             <Button
               onPress={() =>
-                setDataForm({...dataForm, selectedValue: initialButtonValues})
+                setTempForm({...tempForm, selectedValue: initialButtonValues})
               }
               rippleColor={'white'}>
               Select All Options

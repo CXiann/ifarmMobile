@@ -15,8 +15,8 @@ const AutocompleteItemSortInput = ({
   id, //unique key id of database prop
   title, //unique key of database prop(To display as options)
   options,
-  dataForm,
-  setDataForm,
+  tempForm,
+  setTempForm,
   initialValue,
 }) => {
   Feather.loadFont();
@@ -67,7 +67,7 @@ const AutocompleteItemSortInput = ({
       minWidth: '100%',
     },
   });
-  console.log('iniValue: ', dataForm['previousValue'][options]);
+  console.log('iniValue: ', tempForm['previousValue']);
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
@@ -100,20 +100,20 @@ const AutocompleteItemSortInput = ({
         }
         closeOnBlur={true}
         closeOnSubmit={true}
-        initialValue={initialValue ? dataForm['previousValue'][options] : ''}
+        initialValue={initialValue ? tempForm['previousValue'][options] : ''}
         onClear={() =>
-          setDataForm({
-            ...dataForm,
+          setTempForm({
+            ...tempForm,
             [options]: '',
             previousValue: '',
           })
         }
         onSelectItem={item => {
           item &&
-            setDataForm({
-              ...dataForm,
+            setTempForm({
+              ...tempForm,
               [options]: item.title,
-              previousValue: {...dataForm['previousValue'], [options]: item.id},
+              previousValue: {...tempForm['previousValue'], [options]: item.id},
             });
         }}
         dataSet={dataSetFormatFarm}

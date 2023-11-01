@@ -14,7 +14,7 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={actProps.filter(item => item.action != 'default')}
+        data={actProps}
         keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
         numColumns={2}
         columnWrapperStyle={{
