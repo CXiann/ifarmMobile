@@ -170,7 +170,6 @@ const ActivityScreenAddForm = ({route, navigation}) => {
                 <AutocompleteItemInput
                   myKey={index}
                   label={field.name}
-                  action={selectedAction}
                   id={'_id'}
                   title={'name'}
                   options={field.options}

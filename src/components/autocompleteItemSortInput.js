@@ -1,6 +1,7 @@
 import Realm, {BSON} from 'realm';
+import {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
-import {Text, useTheme} from 'react-native-paper';
+import {Text, useTheme, ActivityIndicator} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
 import {realmContext} from '../../RealmContext';
@@ -21,32 +22,55 @@ const AutocompleteItemSortInput = ({
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
-  const {useQuery} = realmContext;
+  const {useRealm} = realmContext;
+  const realm = useRealm();
   const {farmId} = useGlobal();
 
-  const currentUserSelectedFarmAllProps = useQuery(Farm).filtered(
-    '_id == $0',
-    BSON.ObjectId(farmId),
-  );
-  // console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
+  const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
+    {
+      id: '',
+      title: '',
+    },
+  ]);
+  const [loading, setLoading] = useState(true);
 
-  const currentUserAllSelectedActionItems =
-    currentUserSelectedFarmAllProps[0][options] || [];
-  console.log(
-    'Current Farm Selected Item Props length: ',
-    currentUserAllSelectedActionItems.length,
-  );
-
-  const getDataSetFormat = items => {
-    return items.map(item => {
-      const newObj = {id: '', title: ''};
-      newObj['id'] = options + '_' + item[id];
-      newObj['title'] = item[title].eng;
-      return newObj;
-    });
-  };
-
-  const dataSetFormatFarm = getDataSetFormat(currentUserAllSelectedActionItems);
+  useEffect(() => {
+    const selectedFarmAllProps = realm
+      .objects(Farm)
+      .filtered('_id == $0', BSON.ObjectId(farmId));
+    // console.log('Current Farm All Props: ', selectedFarmAllProps);
+    const allSelectedActionItems = [...selectedFarmAllProps[0][options]] || [];
+    // console.log(
+    //   'Current Farm Selected Item Props length: ',
+    //   allSelectedActionItems.length,
+    // );
+    const allSelectedFarmVisibleTags =
+      [...selectedFarmAllProps[0]['visibleTags']] || [];
+    // console.log('Current Farm Visible Tags: ', allSelectedFarmVisibleTags);
+    const visibleTagsOptions = allSelectedActionItems
+      .filter(item =>
+        item['tags'].some(tag => allSelectedFarmVisibleTags.includes(tag)),
+      )
+      .sort((a, b) => {
+        const nameA = a['name']['eng'];
+        const nameB = b['name']['eng'];
+        // Compare the names
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+    console.log('Display: ', visibleTagsOptions.length);
+    const getDataSetFormat = items => {
+      return items.map(item => {
+        const newObj = {id: '', title: ''};
+        newObj['id'] = options + '_' + item[id];
+        newObj['title'] = item[title].eng;
+        return newObj;
+      });
+    };
+    setLoading(false);
+    setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
+  }, [realm]);
 
   const style = StyleSheet.create({
     container: {
@@ -67,7 +91,17 @@ const AutocompleteItemSortInput = ({
       minWidth: '100%',
     },
   });
-  console.log('iniValue: ', tempForm['previousValue']);
+  console.log('iniValue: ', tempForm['previousValue'][options]);
+  console.log('dataForm: ', dataSetFormatFarm);
+
+  //render other component
+  if (loading) {
+    return (
+      <SafeAreaView style={style.container}>
+        {/* <ActivityIndicator animating={true} /> */}
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
@@ -101,11 +135,12 @@ const AutocompleteItemSortInput = ({
         closeOnBlur={true}
         closeOnSubmit={true}
         initialValue={initialValue ? tempForm['previousValue'][options] : ''}
+        showClear={true}
         onClear={() =>
           setTempForm({
             ...tempForm,
             [options]: '',
-            previousValue: '',
+            previousValue: {...tempForm['previousValue'], [options]: ''},
           })
         }
         onSelectItem={item => {
@@ -116,7 +151,7 @@ const AutocompleteItemSortInput = ({
               previousValue: {...tempForm['previousValue'], [options]: item.id},
             });
         }}
-        dataSet={dataSetFormatFarm}
+        dataSet={dataSetFormatFarm || []}
       />
     </SafeAreaView>
   );

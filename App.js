@@ -73,6 +73,17 @@ const App = () => {
       // fallback={<LoadingOverlay />}
       sync={{
         flexible: true,
+        initialSubscriptions: {
+          update(subs, realm) {
+            subs.add(realm.objects('users'));
+            subs.add(realm.objects('farms'));
+            subs.add(realm.objects('activities'));
+            subs.add(realm.objects('foliars'));
+            subs.add(realm.objects('pesticides'));
+            subs.add(realm.objects('plants'));
+            subs.add(realm.objects('fertilizers'));
+          },
+        },
         clientReset: {
           mode: 'discardUnsyncedChanges',
           onBefore: realm => {
@@ -105,10 +116,10 @@ const App = () => {
 // };
 
 async function handleSyncError(session, syncError) {
-  // const realm = useRealm();
   if (syncError.name == 'ClientReset') {
     console.log(syncError);
     try {
+      const realm = useRealm();
       console.log('error type is ClientReset....');
       const path = realm.path; // realm.path will not be accessible after realm.close()
       realm.close();

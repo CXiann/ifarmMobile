@@ -19,6 +19,8 @@ export class Fertilizer extends Realm.Object {
       _id: {type: 'objectId', default: () => new BSON.ObjectId()},
       name: 'fertilizers_name',
       tags: 'string[]',
+      unitType: 'string?',
+      _v: 'int?',
     },
     primaryKey: '_id',
   };

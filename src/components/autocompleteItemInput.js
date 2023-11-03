@@ -1,4 +1,5 @@
 import Realm, {BSON} from 'realm';
+import {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -21,32 +22,62 @@ const AutocompleteItemInput = ({
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
-  const {useQuery} = realmContext;
+  const {useRealm} = realmContext;
+  const realm = useRealm();
   const {farmId} = useGlobal();
 
-  const currentUserSelectedFarmAllProps = useQuery(Farm).filtered(
-    '_id == $0',
-    BSON.ObjectId(farmId),
-  );
-  // console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
+  const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
+    {
+      id: '',
+      title: '',
+    },
+  ]);
 
-  const currentUserAllSelectedActionItems =
-    currentUserSelectedFarmAllProps[0][options] || [];
-  console.log(
-    'Current Farm Selected Item Props length: ',
-    currentUserAllSelectedActionItems.length,
-  );
+  useEffect(() => {
+    const selectedFarmAllProps = realm
+      .objects(Farm)
+      .filtered('_id == $0', BSON.ObjectId(farmId));
+    // console.log('Current Farm All Props: ', selectedFarmAllProps);
 
-  const getDataSetFormat = items => {
-    return items.map(item => {
-      const newObj = {id: '', title: ''};
-      newObj['id'] = item[id];
-      newObj['title'] = item[title].eng;
-      return newObj;
+    const allSelectedActionItems = [...selectedFarmAllProps[0][options]] || [];
+    console.log(
+      'Current Farm Selected Item Props length: ',
+      allSelectedActionItems.length,
+    );
+    const allSelectedFarmVisibleTags =
+      [...selectedFarmAllProps[0]['visibleTags']] || [];
+    console.log('Current Farm Visible Tags: ', allSelectedFarmVisibleTags);
+
+    const visibleTagsOptions = allSelectedActionItems
+      .filter(item =>
+        item['tags'].some(tag => allSelectedFarmVisibleTags.includes(tag)),
+      )
+      .sort((a, b) => {
+        const nameA = a['name']['eng'];
+        const nameB = b['name']['eng'];
+
+        // Compare the names
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+
+    console.log('Display: ', visibleTagsOptions.length);
+    const getDataSetFormat = items => {
+      return items.map(item => {
+        const newObj = {id: '', title: ''};
+        newObj['id'] = options + '_' + item[id];
+        newObj['title'] = item[title].eng;
+        return newObj;
+      });
+    };
+
+    setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(realm.objects(options));
     });
-  };
-
-  const dataSetFormatFarm = getDataSetFormat(currentUserAllSelectedActionItems);
+  }, [realm]);
 
   const style = StyleSheet.create({
     container: {
@@ -101,6 +132,13 @@ const AutocompleteItemInput = ({
         closeOnBlur={true}
         closeOnSubmit={true}
         initialValue={initialValue ? dataSetFormatFarm[0] : ''}
+        showClear={true}
+        onClear={() =>
+          setDataForm({
+            ...dataForm,
+            item: {eng: '', chs: '', cht: ''},
+          })
+        }
         onSelectItem={item => {
           item &&
             setDataForm({
@@ -108,7 +146,7 @@ const AutocompleteItemInput = ({
               item: {...dataForm.item, eng: item.title},
             });
         }}
-        dataSet={dataSetFormatFarm}
+        dataSet={dataSetFormatFarm || []}
       />
     </SafeAreaView>
   );

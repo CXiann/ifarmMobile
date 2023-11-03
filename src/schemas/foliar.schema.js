@@ -19,6 +19,8 @@ export class Foliar extends Realm.Object {
       _id: {type: 'objectId', default: () => new BSON.ObjectId()},
       name: 'foliars_name',
       tags: 'string[]',
+      unitType: 'string?',
+      _v: 'int?',
     },
     primaryKey: '_id',
   };

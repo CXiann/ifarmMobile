@@ -57,6 +57,15 @@ const ActivityScreenViewSort = ({
               />
             );
           })}
+          {/* <AutocompleteItemSortInput
+            tempForm={tempForm}
+            setTempForm={setTempForm}
+            initialValue={true}
+            label={'Fertilizers'}
+            id={'_id'}
+            title={'name'}
+            options={'fertilizers'}
+          /> */}
           <ActivityViewSortingButtons
             dataForm={tempForm}
             setDataForm={setTempForm}
