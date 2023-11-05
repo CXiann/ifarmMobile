@@ -45,16 +45,17 @@ const ActivityScreenViewSort = ({
 
           {itemProps.map((prop, index) => {
             return (
-              <AutocompleteItemSortInput
-                tempForm={tempForm}
-                setTempForm={setTempForm}
-                initialValue={true}
-                label={prop.label}
-                id={'_id'}
-                title={'name'}
-                options={prop.options}
-                myKey={prop.label + '_' + index}
-              />
+              <React.Fragment key={prop.label + '_' + index}>
+                <AutocompleteItemSortInput
+                  tempForm={tempForm}
+                  setTempForm={setTempForm}
+                  initialValue={true}
+                  label={prop.label}
+                  id={'_id'}
+                  title={'name'}
+                  options={prop.options}
+                />
+              </React.Fragment>
             );
           })}
           {/* <AutocompleteItemSortInput

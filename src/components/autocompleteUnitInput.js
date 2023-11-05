@@ -6,7 +6,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AutocompleteUnitInput = ({
-  myKey = 'none',
   label,
   dataSet,
   dataForm,
@@ -35,9 +34,7 @@ const AutocompleteUnitInput = ({
     },
   });
   return (
-    <SafeAreaView
-      key={myKey != 'none' ? null : myKey} //any unique value(can even be hard coded value)
-      style={style.container}>
+    <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>

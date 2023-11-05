@@ -136,64 +136,71 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           switch (field.type) {
             case 'date': {
               return (
-                <DateInput
-                  myKey={index}
-                  label={'Date'}
-                  dataForm={dataForm}
-                  setDataForm={setDataForm}
-                  minWidth={'100%'}
-                  dateFieldName={'date'}
-                />
+                <React.Fragment key={field.type + '_' + index}>
+                  <DateInput
+                    label={'Date'}
+                    dataForm={dataForm}
+                    setDataForm={setDataForm}
+                    minWidth={'100%'}
+                    dateFieldName={'date'}
+                  />
+                </React.Fragment>
               );
             }
             case 'field':
               return (
-                <FieldInput
-                  myKey={index}
-                  label={'Field Number'}
-                  dataForm={dataForm}
-                  setDataForm={setDataForm}
-                />
+                <React.Fragment key={field.type + '_' + index}>
+                  <FieldInput
+                    label={'Field Number'}
+                    dataForm={dataForm}
+                    setDataForm={setDataForm}
+                  />
+                </React.Fragment>
               );
             case 'number':
               return (
-                <NumberInput
-                  myKey={index}
-                  label={field.name}
-                  dataFormOption={field.id}
-                  dataForm={dataForm}
-                  setDataForm={setDataForm}
-                />
+                <React.Fragment key={field.type + '_' + index}>
+                  <NumberInput
+                    label={field.name}
+                    dataFormOption={field.id}
+                    dataForm={dataForm}
+                    setDataForm={setDataForm}
+                  />
+                </React.Fragment>
               );
             case 'autocomplete':
               return (
-                <AutocompleteItemInput
-                  myKey={index}
-                  label={field.name}
-                  id={'_id'}
-                  title={'name'}
-                  options={field.options}
-                  dataForm={dataForm}
-                  setDataForm={setDataForm}
-                  initialValue={false}
-                />
+                <React.Fragment key={field.type + '_' + index}>
+                  <AutocompleteItemInput
+                    label={field.name}
+                    id={'_id'}
+                    title={'name'}
+                    options={field.options}
+                    dataForm={dataForm}
+                    setDataForm={setDataForm}
+                    initialValue={false}
+                  />
+                </React.Fragment>
               );
             case 'unit':
               return (
-                <AutocompleteUnitInput
-                  myKey={index}
-                  label={field.name}
-                  dataSet={field.units}
-                  dataForm={dataForm}
-                  setDataForm={setDataForm}
-                  initialValue={true}
-                />
+                <React.Fragment key={field.type + '_' + index}>
+                  <AutocompleteUnitInput
+                    label={field.name}
+                    dataSet={field.units}
+                    dataForm={dataForm}
+                    setDataForm={setDataForm}
+                    initialValue={true}
+                  />
+                </React.Fragment>
               );
             default:
               return (
-                <Text key={index} variant="bodyLarge">
-                  Error
-                </Text>
+                <React.Fragment key={field.type + '_' + index}>
+                  <Text key={index} variant="bodyLarge">
+                    Error
+                  </Text>
+                </React.Fragment>
               );
           }
         })}

@@ -11,7 +11,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemSortInput = ({
-  myKey = 'none',
   label, //labeling for input
   id, //unique key id of database prop
   title, //unique key of database prop(To display as options)
@@ -68,8 +67,8 @@ const AutocompleteItemSortInput = ({
         return newObj;
       });
     };
-    setLoading(false);
     setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
+    setLoading(false);
   }, [realm]);
 
   const style = StyleSheet.create({
@@ -92,7 +91,6 @@ const AutocompleteItemSortInput = ({
     },
   });
   console.log('iniValue: ', tempForm['previousValue'][options]);
-  console.log('dataForm: ', dataSetFormatFarm);
 
   //render other component
   if (loading) {
@@ -108,7 +106,6 @@ const AutocompleteItemSortInput = ({
         {label}
       </Text>
       <AutocompleteDropdown
-        key={myKey != 'none' ? null : myKey} //any unique value(can even be hard coded value)
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',

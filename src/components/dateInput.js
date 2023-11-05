@@ -10,7 +10,6 @@ const DateInput = ({
   setDataForm,
   minWidth,
   dateFieldName,
-  myKey = 'none',
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -32,9 +31,7 @@ const DateInput = ({
   };
 
   return (
-    <SafeAreaView
-      key={myKey == 'none' ? null : myKey} //any unique value(can even be hard coded value)
-    >
+    <SafeAreaView>
       <TextInput
         label={label}
         mode="flat"

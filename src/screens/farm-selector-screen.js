@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, BackHandler} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AutocompleteFarmInput from '../components/autocompleteFarmInput';
@@ -18,13 +18,16 @@ const FarmSelectorScreen = ({navigation}) => {
   const [selectedFarm, setSelectedFarm] = useState({id: '', title: ''}); //store farm information in {id:objectId(string), title:}
 
   useEffect(() => {
+    setIsLoading(false);
+    navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+    });
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Farm));
     });
     console.log('Total farms: ', farms.length);
-    setIsLoading(false);
-  }, [realm]);
+  }, [realm, navigation]);
 
   const currentUserAllFarmBSONId = userData?.farms?.map(
     farmIdStr => new BSON.ObjectId(farmIdStr),

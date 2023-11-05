@@ -11,10 +11,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
-  myKey = 'none',
   label, //labeling for input
-  id, //unique key id of database prop
-  title, //unique key of database prop(To display as options)
   options,
   dataForm,
   setDataForm,
@@ -25,7 +22,7 @@ const AutocompleteItemInput = ({
   const {useRealm} = realmContext;
   const realm = useRealm();
   const {farmId} = useGlobal();
-
+  const [loading, setLoading] = useState(true);
   const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
     {
       id: '',
@@ -77,6 +74,7 @@ const AutocompleteItemInput = ({
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(options));
     });
+    setLoading(false);
   }, [realm]);
 
   const style = StyleSheet.create({
@@ -98,14 +96,19 @@ const AutocompleteItemInput = ({
       minWidth: '100%',
     },
   });
-
+  if (loading) {
+    return (
+      <SafeAreaView style={style.container}>
+        {/* <ActivityIndicator animating={true} /> */}
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
       <AutocompleteDropdown
-        key={myKey != 'none' ? null : myKey} //any unique value(can even be hard coded value)
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
