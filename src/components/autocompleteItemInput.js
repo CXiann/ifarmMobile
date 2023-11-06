@@ -12,6 +12,8 @@ import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
   label, //labeling for input
+  id, //unique key id of database prop
+  title, //unique key of database prop(To display as options)
   options,
   dataForm,
   setDataForm,

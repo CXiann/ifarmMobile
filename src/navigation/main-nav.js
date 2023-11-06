@@ -40,7 +40,6 @@ export default function MainNav() {
             component={TaskScreenAddForm}
             options={({route}) => ({
               headerShown: true,
-              title: route.params.action,
             })}
           />
         </Stack.Navigator>
