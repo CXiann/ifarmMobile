@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTheme, Button} from 'react-native-paper';
+import {useTheme, Button, FAB} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -29,13 +29,13 @@ const ActivityScreenView = () => {
     dateInputContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      marginBottom: 10,
     },
-    filterButton: {
-      backgroundColor: colors.primaryContainer,
-      marginVertical: 10,
-    },
-    filterLabel: {
-      color: colors.onSurface,
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
     },
   });
 
@@ -59,14 +59,14 @@ const ActivityScreenView = () => {
   const [visible, setVisible] = useState(false);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
 
-  const farm = useQuery(Activity);
   console.log('here: ', dataForm['previousValue']);
 
   useEffect(() => {
     setIsLoading(true);
+    const farm = realm.objects(Activity);
     const keysToExtract = ['plants', 'fertilizers', 'pesticides', 'foliars'];
     const propsForQuery = keysToExtract.map(key => dataForm[key]);
-    console.log(propsForQuery);
+    console.log('Props: ', propsForQuery);
     var currentUserAllActivities = farm
       .filtered(
         'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
@@ -113,7 +113,7 @@ const ActivityScreenView = () => {
     });
     setIsLoading(false);
     setActivitiesToDisplay(currentUserAllActivities);
-  }, [realm, dataForm, setActivitiesToDisplay]);
+  }, [realm, dataForm]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 
@@ -143,13 +143,6 @@ const ActivityScreenView = () => {
           minWidth={'48%'}
         />
       </SafeAreaView>
-      <Button
-        style={styles.filterButton}
-        labelStyle={styles.filterLabel}
-        mode="contained"
-        onPress={showModal}>
-        Filter
-      </Button>
       <FlatList
         removeClippedSubviews={true}
         data={activitiesToDisplay}
@@ -166,6 +159,14 @@ const ActivityScreenView = () => {
           actProps={actProps}
         />
       )}
+      <FAB
+        icon="filter-variant"
+        size="small"
+        mode="flat"
+        style={styles.fab}
+        loading={visible ? true : false}
+        onPress={showModal}
+      />
     </SafeAreaView>
   );
 };

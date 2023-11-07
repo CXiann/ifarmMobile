@@ -1,4 +1,5 @@
 import Realm, {BSON} from 'realm';
+import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
 import React, {useEffect, useState, useCallback} from 'react';
 import {Modal, Portal, Text, useTheme, Button} from 'react-native-paper';
 import ActivityViewSortingButtons from '../../components/activityViewSortingButtons';
@@ -13,11 +14,28 @@ const ActivityScreenViewSort = ({
   setDataForm,
   actProps,
 }) => {
+  const {colors} = useTheme();
   const initialButtonValues = actProps.map(prop => {
     return prop.action;
   });
 
   const [tempForm, setTempForm] = useState(dataForm);
+
+  const renderItem = useCallback(({item, index}) => {
+    return (
+      <React.Fragment key={item.label + '_' + index}>
+        <AutocompleteItemSortInput
+          tempForm={tempForm}
+          setTempForm={setTempForm}
+          initialValue={true}
+          label={item.label}
+          id={'_id'}
+          title={'name'}
+          options={item.options}
+        />
+      </React.Fragment>
+    );
+  }, []);
 
   if (!visible) {
     return null;
@@ -27,10 +45,7 @@ const ActivityScreenViewSort = ({
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={() => {
-          setDataForm({...dataForm, ...tempForm});
-          showModal();
-        }}
+        dismissable={false}
         contentContainerStyle={{
           backgroundColor: 'white',
           padding: 20,
@@ -39,11 +54,39 @@ const ActivityScreenViewSort = ({
         }}
         style={{flex: 1}}>
         <SafeAreaView>
-          <Text variant="titleLarge" style={{marginBottom: 20}}>
-            Filtering Options
-          </Text>
-
-          {itemProps.map((prop, index) => {
+          <SafeAreaView
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text
+              variant="titleLarge"
+              style={{
+                alignSelf: 'center',
+                // marginBottom: 20,
+              }}>
+              Filtering Options
+            </Text>
+            <Button
+              style={{backgroundColor: colors.primaryContainer, margin: 5}}
+              mode="elevated"
+              onPress={() => {
+                setDataForm({...dataForm, ...tempForm});
+                showModal();
+              }}>
+              Filter
+            </Button>
+          </SafeAreaView>
+          <GestureHandlerRootView>
+            <FlatList
+              removeClippedSubviews={true}
+              data={itemProps}
+              initialNumToRender={4}
+              keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
+              renderItem={renderItem}
+            />
+          </GestureHandlerRootView>
+          {/* {itemProps.map((prop, index) => {
             return (
               <React.Fragment key={prop.label + '_' + index}>
                 <AutocompleteItemSortInput
@@ -57,15 +100,15 @@ const ActivityScreenViewSort = ({
                 />
               </React.Fragment>
             );
-          })}
+          })} */}
           {/* <AutocompleteItemSortInput
             tempForm={tempForm}
             setTempForm={setTempForm}
             initialValue={true}
-            label={'Fertilizers'}
+            label={'Plants'}
             id={'_id'}
             title={'name'}
-            options={'fertilizers'}
+            options={'plants'}
           /> */}
           <ActivityViewSortingButtons
             dataForm={tempForm}

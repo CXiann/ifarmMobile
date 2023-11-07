@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {TextInput, useTheme} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -32,22 +32,32 @@ const DateInput = ({
 
   return (
     <SafeAreaView>
-      <TextInput
-        label={label}
-        mode="flat"
-        value={dataForm[dateFieldName].toLocaleDateString()}
-        editable={false}
-        right={
-          <TextInput.Icon
-            icon="calendar"
-            color={colors.primary}
-            onPress={() => {
-              showCalendar();
-            }}
+      <TouchableWithoutFeedback onPress={showCalendar}>
+        <SafeAreaView>
+          <TextInput
+            label={label}
+            mode="flat"
+            value={dataForm[dateFieldName].toLocaleDateString()}
+            // onFocus={() => {
+            //   showCalendar();
+            // }}
+            // onPressIn={() => {
+            //   showCalendar();
+            // }}
+            editable={false}
+            right={
+              <TextInput.Icon
+                icon="calendar"
+                color={colors.primary}
+                onPress={() => {
+                  showCalendar();
+                }}
+              />
+            }
+            style={styles.textInput}
           />
-        }
-        style={styles.textInput}
-      />
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
       {show && (
         <DateTimePicker
           testID="dateTimePicker"

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native';
 import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -131,92 +131,99 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           </Text>
         </SafeAreaView>
       </SafeAreaView>
-      <SafeAreaView style={styles.inputContainer}>
-        {selectedActionFields.map((field, index) => {
-          switch (field.type) {
-            case 'date': {
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <DateInput
-                    label={'Date'}
-                    dataForm={dataForm}
-                    setDataForm={setDataForm}
-                    minWidth={'100%'}
-                    dateFieldName={'date'}
-                  />
-                </React.Fragment>
-              );
-            }
-            case 'field':
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <FieldInput
-                    label={'Field Number'}
-                    dataForm={dataForm}
-                    setDataForm={setDataForm}
-                  />
-                </React.Fragment>
-              );
-            case 'number':
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <NumberInput
-                    label={field.name}
-                    dataFormOption={field.id}
-                    dataForm={dataForm}
-                    setDataForm={setDataForm}
-                  />
-                </React.Fragment>
-              );
-            case 'autocomplete':
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <AutocompleteItemInput
-                    label={field.name}
-                    id={'_id'}
-                    title={'name'}
-                    options={field.options}
-                    dataForm={dataForm}
-                    setDataForm={setDataForm}
-                    initialValue={false}
-                  />
-                </React.Fragment>
-              );
-            case 'unit':
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <AutocompleteUnitInput
-                    label={field.name}
-                    dataSet={field.units}
-                    dataForm={dataForm}
-                    setDataForm={setDataForm}
-                    initialValue={true}
-                  />
-                </React.Fragment>
-              );
-            default:
-              return (
-                <React.Fragment key={field.type + '_' + index}>
-                  <Text key={index} variant="bodyLarge">
-                    Error
-                  </Text>
-                </React.Fragment>
-              );
-          }
-        })}
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={handleAddActivity}>
-          Add
-        </Button>
-        <SnackbarBottom
-          label={'Dismiss'}
-          title={'Successfully created data.'}
-          visible={visible}
-          dismiss={onDismissSnackBar}
-        />
-      </SafeAreaView>
+      <ScrollView
+        nestedScrollEnabled
+        keyboardDismissMode="on-drag"
+        contentInsetAdjustmentBehavior="automatic">
+        <SafeAreaView style={styles.inputContainer}>
+          <KeyboardAvoidingView behavior="padding">
+            {selectedActionFields.map((field, index) => {
+              switch (field.type) {
+                case 'date': {
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <DateInput
+                        label={'Date'}
+                        dataForm={dataForm}
+                        setDataForm={setDataForm}
+                        minWidth={'100%'}
+                        dateFieldName={'date'}
+                      />
+                    </React.Fragment>
+                  );
+                }
+                case 'field':
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <FieldInput
+                        label={'Field Number'}
+                        dataForm={dataForm}
+                        setDataForm={setDataForm}
+                      />
+                    </React.Fragment>
+                  );
+                case 'number':
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <NumberInput
+                        label={field.name}
+                        dataFormOption={field.id}
+                        dataForm={dataForm}
+                        setDataForm={setDataForm}
+                      />
+                    </React.Fragment>
+                  );
+                case 'autocomplete':
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <AutocompleteItemInput
+                        label={field.name}
+                        id={'_id'}
+                        title={'name'}
+                        options={field.options}
+                        dataForm={dataForm}
+                        setDataForm={setDataForm}
+                        initialValue={false}
+                      />
+                    </React.Fragment>
+                  );
+                case 'unit':
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <AutocompleteUnitInput
+                        label={field.name}
+                        dataSet={field.units}
+                        dataForm={dataForm}
+                        setDataForm={setDataForm}
+                        initialValue={true}
+                      />
+                    </React.Fragment>
+                  );
+                default:
+                  return (
+                    <React.Fragment key={field.type + '_' + index}>
+                      <Text key={index} variant="bodyLarge">
+                        Error
+                      </Text>
+                    </React.Fragment>
+                  );
+              }
+            })}
+            <Button
+              mode="contained"
+              style={styles.button}
+              onPress={handleAddActivity}>
+              Add
+            </Button>
+            <SnackbarBottom
+              label={'Dismiss'}
+              title={'Successfully created data.'}
+              visible={visible}
+              dismiss={onDismissSnackBar}
+            />
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
