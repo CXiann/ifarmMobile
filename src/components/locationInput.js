@@ -9,12 +9,14 @@ const LocationInput = ({label, city, setCity, country}) => {
 
   return (
     <TextInput
-      mode="flat"
+      mode="outlined"
       placeholder="Enter New Location"
-      // label={label}
       value={city}
       onChangeText={handleLocationChange}
       style={styles.textInput}
+      textColor="white"
+      activeOutlineColor="#6BF216"
+      outlineColor="#01B67D"
     />
   );
 };
@@ -23,9 +25,10 @@ export default LocationInput;
 
 const styles = StyleSheet.create({
   textInput: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginHorizontal: 10,
-    marginVertical: 5,
-    minWidth: '100%',
-    // backgroundColor: '#ffffff',
+    width: '80%',
+    backgroundColor: '#01B67D',
   },
 });

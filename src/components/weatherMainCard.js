@@ -18,12 +18,11 @@ const WeatherMainCard = () => {
       const response = await fetch(
         `${apiUrl}?key=${apiKey}&q=${city}&days=${days}&aqi=no&alerts=yes`,
       );
-      console.log('Response: ', response);
       await setCurrentWeatherData(await response.json());
       console.log('Weather Data: ', currentWeatherData);
     };
     fetchWeatherData();
-  }, []);
+  }, [city]);
 
   return (
     <View style={styles.weatherCardWrapper}>
@@ -31,35 +30,23 @@ const WeatherMainCard = () => {
         <Card.Content>
           <View style={styles.container}>
             <View style={styles.topRow}>
-              <View style={styles.locationIcon}>
-                <Avatar.Icon size={35} icon="pin" />
-              </View>
-              <View style={styles.locationTitle}>
-                {/* <LocationInput
-                  style={styles.locationText}
-                  city={city}
-                  setCity={setCity}>
-                  {currentWeatherData.location.name},{' '}
-                  {currentWeatherData.location.country}
-                </LocationInput> */}
-                {/* <Text style={styles.locationText}>
-                  {currentWeatherData.location.name},{' '}
-                  {currentWeatherData.location.country}
-                </Text> */}
-              </View>
-              {/* <View style={styles.editIcon}>
-                <IconButton
-                  icon="circle-edit-outline"
-                  iconColor="white"
-                  size={20}
-                  onPress={() => console.log('Pressed')}
-                />
-              </View> */}
+              <Avatar.Icon
+                size={33}
+                icon="pin"
+                color="white"
+                style={styles.locationIcon}
+              />
+              <LocationInput
+                style={styles.locationText}
+                city={city}
+                setCity={setCity}
+                country={currentWeatherData.location?.country}></LocationInput>
+              <View></View>
             </View>
             <View style={styles.middleRow}>
               <View style={styles.temperatureColumn}>
                 <Text style={styles.numTemperature}>
-                  {currentWeatherData.current.temp_c}°C
+                  {currentWeatherData.current?.temp_c}°C
                 </Text>
                 <Text style={styles.unitTemperature}>Celsius</Text>
               </View>
@@ -67,15 +54,15 @@ const WeatherMainCard = () => {
                 <Image
                   style={styles.weatherIcon}
                   source={{
-                    uri: 'https:' + currentWeatherData.current.condition.icon,
+                    uri: 'https:' + currentWeatherData.current?.condition.icon,
                   }}
                 />
               </View>
             </View>
             <View style={styles.descriptionRow}>
               <Text style={styles.weatherDescription}>
-                {currentWeatherData.current.condition.text} with{' '}
-                {currentWeatherData.current.humidity}% humidity
+                {currentWeatherData.current?.condition.text} with{' '}
+                {currentWeatherData.current?.humidity}% humidity
               </Text>
             </View>
           </View>
@@ -106,10 +93,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   locationIcon: {
-    marginRight: 5,
+    backgroundColor: '#6BF216',
   },
   locationTitle: {
     alignItems: 'center',
@@ -118,9 +105,6 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 15,
     color: 'white',
-  },
-  editIcon: {
-    right: 5,
   },
   middleRow: {
     flexDirection: 'row',
@@ -151,7 +135,7 @@ const styles = StyleSheet.create({
   },
   descriptionRow: {
     alignItems: 'start',
-    marginTop: 14,
+    marginTop: 16,
   },
   weatherDescription: {
     color: 'white',
