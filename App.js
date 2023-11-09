@@ -82,6 +82,7 @@ const App = () => {
             subs.add(realm.objects('pesticides'));
             subs.add(realm.objects('plants'));
             subs.add(realm.objects('fertilizers'));
+            subs.add(realm.objects('fungicides'));
           },
         },
         clientReset: {

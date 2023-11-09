@@ -6,11 +6,10 @@ const ActivityViewSortingButtons = ({dataForm, setDataForm, props}) => {
   const styles = StyleSheet.create({
     segmentedButtonsContainer: {
       paddingVertical: 5,
-      elevation: 10,
     },
   });
   const buttonList = [];
-  for (let i = 0; i < props.length; i = i + 3) {
+  for (let i = 0; i < props.length; i = i + 2) {
     buttonList.push(
       <SegmentedButtons
         key={i}
@@ -22,13 +21,13 @@ const ActivityViewSortingButtons = ({dataForm, setDataForm, props}) => {
         }
         style={styles.segmentedButtonsContainer}
         buttons={props
-          .filter((item, index) => index >= i && index <= i + 2)
+          .filter((item, index) => index >= i && index <= i + 1)
           .map(prop => {
             const newObj = {
               icon: '',
               value: '',
               label: '',
-              style: {borderWidth: 0.5},
+              style: {},
             };
             newObj['icon'] = prop.icon;
             newObj['value'] = prop.action;

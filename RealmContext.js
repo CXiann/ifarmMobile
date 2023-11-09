@@ -3,6 +3,7 @@ import {Foliar, Foliar_Name} from './src/schemas/foliar.schema';
 import {Fertilizer, Fertilizer_Name} from './src/schemas/fertilizer.schema';
 import {Plant, Plant_Name} from './src/schemas/plants.schema';
 import {Pesticide, Pesticide_Name} from './src/schemas/pesticide.schema';
+import {Fungicide, Fungicide_Name} from './src/schemas/fungicide.schema';
 import {User_Name, User} from './src/schemas/user.schema';
 import {
   Activity_FarmName,
@@ -18,6 +19,8 @@ import {
   Farm_Fertilizers_Name,
   Farm_Foliars,
   Farm_Foliars_Name,
+  Farm_Fungicides,
+  Farm_Fungicides_Name,
   Farm_Pesticides,
   Farm_Pesticides_Name,
   Farm_Plants,
@@ -34,6 +37,8 @@ export const realmContext = createRealmContext({
     Plant_Name,
     Pesticide,
     Pesticide_Name,
+    Fungicide,
+    Fungicide_Name,
     User_Name,
     User,
     Activity_FarmName,
@@ -47,6 +52,8 @@ export const realmContext = createRealmContext({
     Farm_Fertilizers_Name,
     Farm_Foliars,
     Farm_Foliars_Name,
+    Farm_Fungicides,
+    Farm_Fungicides_Name,
     Farm_Pesticides,
     Farm_Pesticides_Name,
     Farm_Plants,

@@ -39,10 +39,6 @@ const ActivityScreenView = () => {
     },
   });
 
-  const initialButtonValues = actProps.map(prop => {
-    return prop.action;
-  });
-
   const initialValues = {
     startDate: new Date(),
     endDate: new Date(),
@@ -50,9 +46,16 @@ const ActivityScreenView = () => {
     fertilizers: '',
     pesticides: '',
     foliars: '',
-    selectedValue: initialButtonValues,
+    fungicides: '',
+    selectedValue: [],
     options: [],
-    previousValue: {plants: '', fertilizers: '', pesticides: '', foliars: ''},
+    previousValue: {
+      plants: '',
+      fertilizers: '',
+      pesticides: '',
+      foliars: '',
+      fungicides: '',
+    },
   };
 
   const [dataForm, setDataForm] = useState(initialValues);
@@ -64,12 +67,19 @@ const ActivityScreenView = () => {
   useEffect(() => {
     setIsLoading(true);
     const farm = realm.objects(Activity);
-    const keysToExtract = ['plants', 'fertilizers', 'pesticides', 'foliars'];
+    const keysToExtract = [
+      'plants',
+      'fertilizers',
+      'pesticides',
+      'foliars',
+      'fungicides',
+    ];
     const propsForQuery = keysToExtract.map(key => dataForm[key]);
     console.log('Props: ', propsForQuery);
     var currentUserAllActivities = farm
       .filtered(
-        'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3 && action IN $4',
+        'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3' +
+          (dataForm['selectedValue'].length > 0 ? ' && action IN $4' : ''),
         new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
         new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
         userId.toString(),
@@ -77,6 +87,7 @@ const ActivityScreenView = () => {
         dataForm['selectedValue'],
       )
       .sorted('date', true);
+
     function containsOnlyOneNonEmptyString(arrs) {
       const nonEmptyStrings = arrs.filter(str => str != '');
       return nonEmptyStrings.length == 1;

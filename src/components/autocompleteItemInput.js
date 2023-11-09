@@ -1,5 +1,5 @@
 import Realm, {BSON} from 'realm';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -18,6 +18,7 @@ const AutocompleteItemInput = ({
   dataForm,
   setDataForm,
   initialValue,
+  setRefItemFunction,
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
@@ -25,12 +26,17 @@ const AutocompleteItemInput = ({
   const realm = useRealm();
   const {farmId} = useGlobal();
   const [loading, setLoading] = useState(true);
+  const dropdownController = useRef(null);
   const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
     {
       id: '',
       title: '',
     },
   ]);
+
+  useEffect(() => {
+    setRefItemFunction(dropdownController);
+  }, []);
 
   useEffect(() => {
     const selectedFarmAllProps = realm
@@ -111,6 +117,9 @@ const AutocompleteItemInput = ({
         {label}
       </Text>
       <AutocompleteDropdown
+        controller={controller => {
+          dropdownController.current = controller;
+        }}
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',

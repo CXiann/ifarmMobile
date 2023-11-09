@@ -1,3 +1,5 @@
+import {validateRange} from '../utils/field-utils';
+
 export const Activity_Props = [
   {
     id: 0,
@@ -386,6 +388,93 @@ export const Activity_Props = [
   },
   {
     id: 5,
+    action: 'Fungicide',
+    icon: 'mushroom',
+    bgColor: 'purple',
+    fields: [
+      {
+        id: 'date',
+        name: 'Date',
+        type: 'date',
+        validate: v => {
+          return !!v;
+        },
+        width: '15%',
+      },
+      {
+        id: 'item',
+        name: 'Fungicide Name',
+        type: 'autocomplete',
+        options: 'fungicides',
+        validate: v => {
+          return !!v.eng; //temporary
+        },
+        width: '25%',
+      },
+      {
+        id: 'originalQuantity',
+        name: 'Quantity',
+        type: 'number',
+        props: {type: 'number'},
+        validate: v => {
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'originalUnit',
+        name: 'Unit',
+        type: 'unit',
+        validate: v => {
+          return !!v;
+        },
+        units: [
+          {id: '0', title: 'g'},
+          {id: '1', title: 'kg'},
+          {id: '2', title: 'mg'},
+          {id: '3', title: 'pack (1kg)'},
+          {id: '4', title: 'pack (500g)'},
+          {id: '5', title: 'mℓ'},
+          {id: '6', title: 'ℓ'},
+        ],
+        width: '12%',
+      },
+      {
+        id: 'field',
+        name: 'Field Number',
+        type: 'field',
+        props: {type: 'number'},
+        validate: v => {
+          if (parseInt(v) === 0) return true; //field number 0 is valid
+          return parseInt(v) > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'row',
+        name: 'Row Range',
+        type: 'number',
+        validate: v => {
+          return !!validateRange(v).length != 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'price',
+        name: 'Price(RM)',
+        type: 'number',
+        validate: v => {
+          if (parseFloat(v) === 0) return true; //price 0 is valid
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+    ],
+    standardUnit: 'ℓ',
+    units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+  },
+  {
+    id: 6,
     action: 'Harvest',
     icon: 'sickle',
     bgColor: 'forestgreen',
@@ -467,7 +556,7 @@ export const Activity_Props = [
     units: ['g', 'kg', 'pieces'],
   },
   {
-    id: 6,
+    id: 7,
     action: 'Sales',
     icon: 'currency-usd',
     bgColor: 'red',
@@ -550,7 +639,7 @@ export const Activity_Props = [
     units: ['kg', 'pack (1kg)', 'pack (500g)'],
   },
   {
-    id: 7,
+    id: 8,
     action: 'Transplant',
     icon: 'swap-horizontal',
     bgColor: 'greenyellow',
@@ -619,7 +708,7 @@ export const Activity_Props = [
     units: ['pieces'],
   },
   {
-    id: 8,
+    id: 9,
     action: 'Others',
     icon: 'unfold-more-vertical',
     bgColor: 'dodgerblue',

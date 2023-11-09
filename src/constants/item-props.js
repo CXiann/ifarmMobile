@@ -19,4 +19,9 @@ export const Item_Props = [
     label: 'Foliars',
     options: 'foliars',
   },
+  {
+    id: 4,
+    label: 'Fungicides',
+    options: 'fungicides',
+  },
 ];

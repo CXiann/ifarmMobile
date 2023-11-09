@@ -2,11 +2,11 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Snackbar} from 'react-native-paper';
 
-const SnackbarBottom = ({label, title, visible, dismiss}) => {
+const SnackbarBottom = ({label, title, visible, dismiss, textColor}) => {
   const styles = StyleSheet.create({
     snackbar: {
       position: 'absolute',
-      bottom: 10,
+      bottom: 30,
     },
   });
 
@@ -17,6 +17,7 @@ const SnackbarBottom = ({label, title, visible, dismiss}) => {
       style={styles.snackbar}
       duration={4000}
       action={{
+        textColor: textColor,
         label: label,
         onPress: () => {
           // Do something

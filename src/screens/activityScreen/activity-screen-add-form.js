@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native';
 import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -14,14 +14,9 @@ import AutocompleteItemInput from '../../components/autocompleteItemInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import SnackbarBottom from '../../components/snackbarBottom';
 import {useGlobal} from '../../contexts/GlobalContext';
-// import {createStackNavigator} from '@react-navigation/stack';
+import {validateRange} from '../../utils/field-utils';
 
 const ActivityScreenAddForm = ({route, navigation}) => {
-  // const Stack = createStackNavigator();
-  // const Wrapper = {
-  //   <Stack.Navigator>
-  // }
-
   //find the input fields for corresponding action selected
   const selectedAction = route.params.action;
   const selectedActionAllProps = actProps.find(
@@ -30,7 +25,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
   const selectedActionFields = selectedActionAllProps.fields;
   const {userId, farmId, userName, farmName} = useGlobal();
 
-  const {useRealm, useObject, useQuery} = realmContext;
+  const {useRealm} = realmContext;
   const realm = useRealm();
 
   const initialValueActivities = {
@@ -55,7 +50,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     __v: 0,
   };
   const [dataForm, setDataForm] = useState(initialValueActivities);
+  const [hasError, setHasError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [refUnit, setRefUnit] = useState(null);
+  const [refItem, setRefItem] = useState(null);
 
   const onDismissSnackBar = () => setVisible(false);
 
@@ -66,28 +64,22 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     });
   }, [realm]);
 
-  const handleAddActivity = () => {
-    console.log('########');
-    for (const key in dataForm) {
-      if (dataForm.hasOwnProperty(key)) {
-        console.log(`${key}: ${dataForm[key]}`);
-      }
-    }
-    realm.write(() => {
-      realm.create('activities', {
+  const dataToWrite = useCallback(
+    row => {
+      return {
         ...dataForm,
-        row: !isNaN(parseInt(dataForm['row'])) ? parseInt(dataForm['row']) : 0,
+        row: !isNaN(parseInt(row)) ? parseInt(row) : 0,
         field: !isNaN(parseInt(dataForm['field']))
           ? parseInt(dataForm['field'])
           : 0,
-        quantity: !isNaN(parseInt(dataForm['quantity']))
+        quantity: !isNaN(parseFloat(dataForm['originalQuantity']))
           ? /kg|^ℓ$/.test(dataForm['originalUnit'])
-            ? parseInt(dataForm['quantity'])
+            ? parseFloat(dataForm['originalQuantity'])
             : /mg/.test(dataForm['originalUnit'])
-            ? parseInt(dataForm['quantity']) / 1000000
+            ? parseFloat(dataForm['originalQuantity']) / 1000000
             : /^g$|mℓ/.test(dataForm['originalUnit'])
-            ? parseInt(dataForm['quantity']) / 1000
-            : parseInt(dataForm['quantity']) / 2
+            ? parseFloat(dataForm['originalQuantity']) / 1000
+            : parseFloat(dataForm['originalQuantity']) / 2
           : 0,
         unit: /g/.test(dataForm['originalUnit']) ? 'kg' : 'ℓ',
         price: !isNaN(parseFloat(dataForm['price']))
@@ -95,8 +87,8 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           : 0,
         action: selectedAction,
         date: new Date(dataForm['date'].toISOString()),
-        originalQuantity: !isNaN(parseInt(dataForm['quantity']))
-          ? parseInt(dataForm['quantity'])
+        originalQuantity: !isNaN(parseFloat(dataForm['originalQuantity']))
+          ? parseFloat(dataForm['originalQuantity'])
           : 0,
 
         convertQuantity: !isNaN(parseInt(dataForm['convertQuantity']))
@@ -104,18 +96,46 @@ const ActivityScreenAddForm = ({route, navigation}) => {
             ? parseInt(dataForm['convertQuantity'])
             : parseInt(dataForm['convertQuantity']) * 1000
           : 0,
+      };
+    },
+    [handleAddActivity, selectedAction],
+  );
+  const setRefUnitFunction = useCallback(ref => {
+    setRefUnit(ref);
+  }, []);
+
+  const setRefItemFunction = useCallback(ref => {
+    setRefItem(ref);
+  }, []);
+  const validateData = selectedActionFields.every(field => {
+    console.log(field.id + '_' + field.validate(dataForm[field.id]));
+    return field.validate(dataForm[field.id]);
+  });
+  const handleAddActivity = () => {
+    console.log('########');
+    for (const key in dataForm) {
+      if (dataForm.hasOwnProperty(key)) {
+        console.log(`${key}: ${dataForm[key]}`);
+      }
+    }
+
+    if (validateData) {
+      refUnit?.current.clear();
+      refItem?.current.clear();
+      const updateRows = validateRange(dataForm['row']);
+      realm.write(() => {
+        updateRows.map(row => realm.create('activities', dataToWrite(row)));
       });
-    });
-    console.log('Successfully created data');
-    setDataForm(initialValueActivities);
+      console.log('Successfully created data');
+      setDataForm(initialValueActivities);
+      setHasError(false);
+    } else {
+      console.log('Error');
+      setHasError(true);
+    }
     setVisible(true);
   };
-  // console.log('########');
-  // for (const key in dataForm) {
-  //   if (dataForm.hasOwnProperty(key)) {
-  //     console.log(`${key}: ${dataForm[key]}`);
-  //   }
-  // }
+
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.topBar}>
@@ -131,99 +151,96 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           </Text>
         </SafeAreaView>
       </SafeAreaView>
-      <ScrollView
-        nestedScrollEnabled
-        keyboardDismissMode="on-drag"
-        contentInsetAdjustmentBehavior="automatic">
-        <SafeAreaView style={styles.inputContainer}>
-          <KeyboardAvoidingView behavior="padding">
-            {selectedActionFields.map((field, index) => {
-              switch (field.type) {
-                case 'date': {
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <DateInput
-                        label={'Date'}
-                        dataForm={dataForm}
-                        setDataForm={setDataForm}
-                        minWidth={'100%'}
-                        dateFieldName={'date'}
-                      />
-                    </React.Fragment>
-                  );
-                }
-                case 'field':
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <FieldInput
-                        label={'Field Number'}
-                        dataForm={dataForm}
-                        setDataForm={setDataForm}
-                      />
-                    </React.Fragment>
-                  );
-                case 'number':
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <NumberInput
-                        label={field.name}
-                        dataFormOption={field.id}
-                        dataForm={dataForm}
-                        setDataForm={setDataForm}
-                      />
-                    </React.Fragment>
-                  );
-                case 'autocomplete':
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <AutocompleteItemInput
-                        label={field.name}
-                        id={'_id'}
-                        title={'name'}
-                        options={field.options}
-                        dataForm={dataForm}
-                        setDataForm={setDataForm}
-                        initialValue={false}
-                      />
-                    </React.Fragment>
-                  );
-                case 'unit':
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <AutocompleteUnitInput
-                        label={field.name}
-                        dataSet={field.units}
-                        dataForm={dataForm}
-                        setDataForm={setDataForm}
-                        initialValue={true}
-                      />
-                    </React.Fragment>
-                  );
-                default:
-                  return (
-                    <React.Fragment key={field.type + '_' + index}>
-                      <Text key={index} variant="bodyLarge">
-                        Error
-                      </Text>
-                    </React.Fragment>
-                  );
+      <ScrollView keyboardDismissMode="on-drag" style={{flex: 1}}>
+        <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
+          {selectedActionFields.map((field, index) => {
+            switch (field.type) {
+              case 'date': {
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <DateInput
+                      label={'Date'}
+                      dataForm={dataForm}
+                      setDataForm={setDataForm}
+                      minWidth={'100%'}
+                      dateFieldName={'date'}
+                    />
+                  </React.Fragment>
+                );
               }
-            })}
-            <Button
-              mode="contained"
-              style={styles.button}
-              onPress={handleAddActivity}>
-              Add
-            </Button>
-            <SnackbarBottom
-              label={'Dismiss'}
-              title={'Successfully created data.'}
-              visible={visible}
-              dismiss={onDismissSnackBar}
-            />
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+              case 'field':
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <FieldInput
+                      label={'Field Number'}
+                      dataForm={dataForm}
+                      setDataForm={setDataForm}
+                    />
+                  </React.Fragment>
+                );
+              case 'number':
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <NumberInput
+                      label={field.name}
+                      dataFormOption={field.id}
+                      dataForm={dataForm}
+                      setDataForm={setDataForm}
+                    />
+                  </React.Fragment>
+                );
+              case 'autocomplete':
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <AutocompleteItemInput
+                      label={field.name}
+                      id={'_id'}
+                      title={'name'}
+                      options={field.options}
+                      dataForm={dataForm}
+                      setDataForm={setDataForm}
+                      initialValue={false}
+                      setRefItemFunction={setRefItemFunction}
+                    />
+                  </React.Fragment>
+                );
+              case 'unit':
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <AutocompleteUnitInput
+                      label={field.name}
+                      dataSet={field.units}
+                      dataForm={dataForm}
+                      setDataForm={setDataForm}
+                      setRefUnitFunction={setRefUnitFunction}
+                    />
+                  </React.Fragment>
+                );
+              default:
+                return (
+                  <React.Fragment key={field.type + '_' + index}>
+                    <Text key={index} variant="bodyLarge">
+                      Error
+                    </Text>
+                  </React.Fragment>
+                );
+            }
+          })}
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={handleAddActivity}>
+            Add
+          </Button>
+        </KeyboardAvoidingView>
       </ScrollView>
+      <SnackbarBottom
+        label={'Dismiss'}
+        title={hasError ? 'Incorrect input data' : 'Successfully created data.'}
+        visible={visible}
+        textColor={hasError ? 'red' : 'yellowgreen'}
+        dismiss={onDismissSnackBar}
+      />
     </SafeAreaView>
   );
 };

@@ -38,12 +38,6 @@ const DateInput = ({
             label={label}
             mode="flat"
             value={dataForm[dateFieldName].toLocaleDateString()}
-            // onFocus={() => {
-            //   showCalendar();
-            // }}
-            // onPressIn={() => {
-            //   showCalendar();
-            // }}
             editable={false}
             right={
               <TextInput.Icon
