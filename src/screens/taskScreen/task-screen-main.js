@@ -5,6 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskCard from '../../components/taskCard';
 import DateCardCarousel from '../../components/dateCardCarousel';
 import SnackbarBottom from '../../components/snackbarBottom';
+import NotificationHandler from '../../components/notificationHandler';
+import PushNotification, {Importance} from 'react-native-push-notification';
 
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
@@ -95,6 +97,32 @@ const TaskScreenMain = ({navigation}) => {
     setIsLoading(false);
   }, [selectedDate]);
 
+  const testPushNotification = () => {
+    getChannels();
+    console.log('Entered testPushNotification');
+    PushNotification.localNotification({
+      channelId: 'channel-1',
+      title: 'TestNoti', // (optional)
+      message: 'This is a Test Notification Message', // (required)
+    });
+  };
+
+  const createChannel = () => {
+    PushNotification.createChannel(
+      {
+        channelId: 'channel-1',
+        channelName: 'Test Channel',
+      },
+      created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+    );
+  };
+
+  const getChannels = () => {
+    PushNotification.getChannels(function (channel_ids) {
+      console.log('Channel-ids: ' + channel_ids); // ['channel_id_1']
+    });
+  };
+
   console.log('All Tasks: ' + allTasks.length);
   return (
     <SafeAreaView style={styles.container}>
@@ -131,6 +159,18 @@ const TaskScreenMain = ({navigation}) => {
             <Text variant="titleLarge" style={styles.bottomTitle}>
               Today's Tasks
             </Text>
+            <IconButton
+              icon="apple"
+              iconColor="#035E7B"
+              mode="contained"
+              size={20}
+              onPress={createChannel}></IconButton>
+            <IconButton
+              icon="plus"
+              iconColor="#035E7B"
+              mode="contained"
+              size={20}
+              onPress={testPushNotification}></IconButton>
             {tasksToDisplay.map((task, i) => (
               <TaskCard
                 key={i} // Add a unique key prop for each TaskCard
@@ -190,9 +230,6 @@ const styles = StyleSheet.create({
   addTaskButton: {
     backgroundColor: '#035E7B',
     alignSelf: 'center',
-    width: 35,
-    height: 35,
-    borderRadius: 15,
   },
   top: {
     backgroundColor: '#4CB963',
