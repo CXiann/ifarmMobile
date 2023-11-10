@@ -133,7 +133,6 @@ const AutocompleteItemInput = ({
         suggestionsListTextStyle={{
           color: colors.primary,
         }}
-        suggestionsListContainerStyle={{}}
         renderItem={(item, text) => (
           <Text style={{color: colors.primary, padding: 15}}>{item.title}</Text>
         )}

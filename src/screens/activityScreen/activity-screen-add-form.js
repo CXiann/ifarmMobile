@@ -151,7 +151,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           </Text>
         </SafeAreaView>
       </SafeAreaView>
-      <ScrollView keyboardDismissMode="on-drag" style={{flex: 1}}>
+      <ScrollView
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        style={{flex: 1}}>
         <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
           {selectedActionFields.map((field, index) => {
             switch (field.type) {
