@@ -18,7 +18,7 @@ const HomeScreen = () => {
   });
   return (
     <View style={styles.container}>
-      <Text variant="headlineMedium">Home!</Text>
+      <Text variant="headlineMedium">Inventory!</Text>
     </View>
   );
 };
