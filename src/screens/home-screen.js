@@ -5,7 +5,7 @@ import {useGlobal} from '../contexts/GlobalContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import StockCard from '../components/stockCard';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const {setIsLoading, farmName} = useGlobal();
   const today = new Date();
 
@@ -21,12 +21,12 @@ const HomeScreen = () => {
       </Text>
       <View style={styles.stockCardContainer}>
         <View style={styles.stockCardRow}>
-          <StockCard stockName="Fertilizer" />
-          <StockCard stockName="Fungicide" />
+          <StockCard stockName="Fertilizer" navigation={navigation} />
+          <StockCard stockName="Fungicide" navigation={navigation} />
         </View>
         <View style={styles.stockCardRow}>
-          <StockCard stockName="Pesticide" />
-          <StockCard stockName="Foliar" />
+          <StockCard stockName="Pesticide" navigation={navigation} />
+          <StockCard stockName="Foliar" navigation={navigation} />
         </View>
       </View>
     </SafeAreaView>
@@ -41,9 +41,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  stockCardContainer: {
-    marginTop: 10,
-  },
+  stockCardContainer: {},
   stockCardRow: {
     flexDirection: 'row',
     justifyContent: 'center',
