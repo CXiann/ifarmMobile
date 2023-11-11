@@ -85,23 +85,38 @@ const ActivityScreenViewSort = ({
               <IconButton
                 icon="close"
                 size={15}
-                mode="contained"
+                mode="outlined"
                 style={{
                   alignSelf: 'center',
-                  backgroundColor: colors.primaryContainer,
+                  backgroundColor: 'white',
                 }}
                 onPress={() => showModal()}
               />
             </SafeAreaView>
             <SafeAreaView style={{marginVertical: 10}}>
-              <FlatList
+              {/* <FlatList
                 removeClippedSubviews={true}
                 data={itemProps}
-                initialNumToRender={1}
+                initialNumToRender={5}
                 maxToRenderPerBatch={4}
                 keyExtractor={item => item.id.toString()}
                 renderItem={renderItem}
-              />
+              /> */}
+              {itemProps.map((prop, index) => {
+                return (
+                  <React.Fragment key={prop.label + '_' + index}>
+                    <AutocompleteItemSortInput
+                      tempForm={tempForm}
+                      setTempForm={setTempForm}
+                      initialValue={true}
+                      label={prop.label}
+                      id={'_id'}
+                      title={'name'}
+                      options={prop.options}
+                    />
+                  </React.Fragment>
+                );
+              })}
             </SafeAreaView>
             <SafeAreaView style={{marginVertical: 10}}>
               <ActivityViewSortingButtons

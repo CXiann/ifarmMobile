@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, BackHandler} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AutocompleteFarmInput from '../components/autocompleteFarmInput';
@@ -40,7 +40,7 @@ const FarmSelectorScreen = ({navigation}) => {
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
     setFarmName(selectedFarm.title);
-    if (selectedFarm) {
+    if (selectedFarm.title) {
       navigation.navigate('Tabs', {farmName: selectedFarm.title});
     } else {
       console.log('No farm selected');
@@ -54,8 +54,8 @@ const FarmSelectorScreen = ({navigation}) => {
         dataSet={allFarmData} // Array of data to filter
         id={'_id'}
         title={'name'}
+        selectedOption={selectedFarm}
         setSelectedOption={setSelectedFarm}
-        initialValue={true}
       />
       <Button
         style={style.button}

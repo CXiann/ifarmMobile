@@ -98,7 +98,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           : 0,
       };
     },
-    [handleAddActivity, selectedAction],
+    [dataForm, selectedAction],
   );
   const setRefUnitFunction = useCallback(ref => {
     setRefUnit(ref);
@@ -115,7 +115,11 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     console.log('########');
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
-        console.log(`${key}: ${dataForm[key]}`);
+        if (key == 'item') {
+          console.log(`${key}.eng: ${dataForm[key]['eng']}`);
+        } else {
+          console.log(`${key}: ${dataForm[key]}`);
+        }
       }
     }
 
@@ -123,6 +127,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
       refUnit?.current.clear();
       refItem?.current.clear();
       const updateRows = validateRange(dataForm['row']);
+      console.log(
+        'Update: ',
+        updateRows.map(row => dataToWrite(row)),
+      );
       realm.write(() => {
         updateRows.map(row => realm.create('activities', dataToWrite(row)));
       });

@@ -54,19 +54,21 @@ export const Activity_Props = [
         name: 'Plant Name',
         type: 'autocomplete',
         options: 'plants',
-        validate: v => !!v.eng || !!v.chs || !!v.cht,
+        validate: v => {
+          return !!v.eng; //temporary
+        },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
-        validate: v => v > 0,
+        validate: v => parseFloat(v) > 0,
         width: '10%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => !!v,
@@ -98,7 +100,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '10%',
       },
@@ -146,22 +148,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'fertilizers',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -194,7 +196,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -233,22 +235,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'pesticides',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -281,7 +283,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -320,22 +322,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'foliars',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -368,7 +370,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -494,22 +496,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '10%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -538,7 +540,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -547,7 +549,7 @@ export const Activity_Props = [
         name: 'Average kg per 1 piece',
         type: 'number',
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '15%',
       },
@@ -576,22 +578,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -620,7 +622,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -659,22 +661,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '15%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -699,7 +701,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '15%',
       },
@@ -748,7 +750,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '20%',
       },
