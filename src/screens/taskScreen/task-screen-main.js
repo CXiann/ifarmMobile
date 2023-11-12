@@ -159,7 +159,7 @@ const TaskScreenMain = ({navigation}) => {
             <Text variant="titleLarge" style={styles.bottomTitle}>
               Today's Tasks
             </Text>
-            <IconButton
+            {/* <IconButton
               icon="apple"
               iconColor="#035E7B"
               mode="contained"
@@ -170,7 +170,7 @@ const TaskScreenMain = ({navigation}) => {
               iconColor="#035E7B"
               mode="contained"
               size={20}
-              onPress={testPushNotification}></IconButton>
+              onPress={testPushNotification}></IconButton> */}
             {tasksToDisplay.map((task, i) => (
               <TaskCard
                 key={i} // Add a unique key prop for each TaskCard
