@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTheme, Button, FAB} from 'react-native-paper';
+import {useTheme, Button, FAB, TextInput, IconButton} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -15,7 +15,7 @@ import DateInput from '../../components/dateInput';
 import ActivityScreenViewSort from './activity-screen-view-sort';
 import ActivityViewCards from '../../components/activityViewCards';
 
-const ActivityScreenView = () => {
+const ActivityScreenView = ({navigation}) => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
   const {userId, farmId, setIsLoading} = useGlobal();
@@ -24,18 +24,26 @@ const ActivityScreenView = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
     },
     dateInputContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      marginTop: 5,
       marginBottom: 10,
     },
     fab: {
-      position: 'absolute',
-      margin: 16,
-      right: 0,
-      bottom: 0,
+      // position: 'absolute',
+      // margin: 16,
+      // right: 0,
+      // bottom: 0,
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
     },
   });
 
@@ -62,7 +70,7 @@ const ActivityScreenView = () => {
   const [visible, setVisible] = useState(false);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
 
-  console.log('here: ', dataForm['previousValue']);
+  console.log('Prev value: ', dataForm['previousValue']);
 
   useEffect(() => {
     setIsLoading(true);
@@ -124,12 +132,13 @@ const ActivityScreenView = () => {
     });
     setIsLoading(false);
     setActivitiesToDisplay(currentUserAllActivities);
+    console.log('Done useeffect');
   }, [realm, dataForm]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 
   const showModal = useCallback(() => setVisible(!visible), [visible]);
-  console.log(dataForm['selectedValue']);
+  console.log('Selected action: ', dataForm['selectedValue']);
 
   const renderItem = useCallback(
     ({item}) => <ActivityViewCards item={item} actProps={actProps} />,
@@ -138,6 +147,33 @@ const ActivityScreenView = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{flexDirection: 'row'}}>
+        <Button
+          style={{marginEnd: 20}}
+          icon="plus"
+          mode="elevated"
+          onPress={() => navigation.navigate('Add Activity')}>
+          Add
+        </Button>
+        {/* <Button
+          icon="filter-variant"
+          mode="elevated"
+          onPress={() => showModal()}>
+          Filter
+        </Button> */}
+        <Button
+          icon="filter-variant"
+          mode="elevated"
+          onPress={() =>
+            navigation.navigate('Sort', {
+              dataForm: dataForm,
+              setDataForm: setDataForm,
+              actProps: actProps,
+            })
+          }>
+          Filter
+        </Button>
+      </SafeAreaView>
       <SafeAreaView style={styles.dateInputContainer}>
         <DateInput
           label={'From'}
@@ -170,14 +206,6 @@ const ActivityScreenView = () => {
           actProps={actProps}
         />
       )}
-      <FAB
-        icon="filter-variant"
-        size="small"
-        mode="flat"
-        style={styles.fab}
-        loading={visible ? true : false}
-        onPress={showModal}
-      />
     </SafeAreaView>
   );
 };

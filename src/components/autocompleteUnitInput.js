@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -15,6 +15,7 @@ const AutocompleteUnitInput = ({
   Feather.loadFont();
   const {colors} = useTheme();
   const dropdownController = useRef(null);
+  const [isFocus, setIsFocus] = useState(false);
 
   useEffect(() => {
     setRefUnitFunction(dropdownController);
@@ -27,8 +28,8 @@ const AutocompleteUnitInput = ({
       marginVertical: 5,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.outline,
+      borderBottomWidth: isFocus ? 2 : 0.8,
+      borderBottomColor: isFocus ? colors.primary : colors.outline,
       minWidth: '100%',
     },
     text: {
@@ -38,13 +39,21 @@ const AutocompleteUnitInput = ({
       minWidth: '100%',
     },
   });
+  console.log('focus: ', isFocus);
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
       <TouchableWithoutFeedback
-        onPress={() => dropdownController.current.open()}>
+        onPress={() => {
+          dropdownController.current.open();
+          setIsFocus(true);
+        }}
+        onBlur={() => {
+          dropdownController.current.close();
+          setIsFocus(false);
+        }}>
         <SafeAreaView>
           <AutocompleteDropdown
             controller={controller => {

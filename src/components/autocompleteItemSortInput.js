@@ -114,7 +114,7 @@ const AutocompleteItemSortInput = ({
     },
     itemContainerStyle: {},
     dropdown: {
-      height: 30,
+      height: 40,
       borderColor: 'gray',
       // borderWidth: 0.5,
       borderRadius: 8,
@@ -130,64 +130,19 @@ const AutocompleteItemSortInput = ({
   });
   console.log('iniValue: ', tempForm['previousValue'][options]);
 
-  //render other component
-  if (loading) {
-    return (
-      <SafeAreaView style={style.container}>
-        {/* <ActivityIndicator animating={true} /> */}
-      </SafeAreaView>
-    );
-  }
+  // render other component
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView style={style.container}>
+  //       {/* <ActivityIndicator animating={true} /> */}
+  //     </SafeAreaView>
+  //   );
+  // }
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
-      {/* <AutocompleteDropdown
-        inputContainerStyle={{
-          backgroundColor: colors.surfaceVariant,
-          borderColor: 'gray',
-          paddingHorizontal: 8,
-        }}
-        textInputProps={{
-          autoCorrect: false,
-          autoCapitalize: 'none',
-          style: {color: colors.primary},
-        }}
-        suggestionsListTextStyle={{
-          color: colors.primary,
-        }}
-        suggestionsListContainerStyle={{}}
-        renderItem={item => (
-          <Text style={{color: colors.primary, padding: 15}}>{item.title}</Text>
-        )}
-        ChevronIconComponent={
-          <Feather name="chevron-down" size={20} color={colors.primary} />
-        }
-        ClearIconComponent={
-          <Feather name="x-circle" size={18} color={colors.primary} />
-        }
-        closeOnBlur={true}
-        closeOnSubmit={true}
-        initialValue={initialValue ? tempForm['previousValue'][options] : ''}
-        showClear={true}
-        onClear={() =>
-          setTempForm({
-            ...tempForm,
-            [options]: '',
-            previousValue: {...tempForm['previousValue'], [options]: ''},
-          })
-        }
-        onSelectItem={item => {
-          item &&
-            setTempForm({
-              ...tempForm,
-              [options]: item.title,
-              previousValue: {...tempForm['previousValue'], [options]: item.id},
-            });
-        }}
-        dataSet={dataSetFormatFarm || []}
-      /> */}
       <Dropdown
         style={[style.dropdown, isFocus && {borderColor: 'yellowgreen'}]}
         selectedTextStyle={style.selectedTextStyle}
@@ -199,6 +154,38 @@ const AutocompleteItemSortInput = ({
         data={dataSetFormatFarm}
         search
         ref={myRef}
+        renderRightIcon={item => {
+          return (
+            <>
+              <SafeAreaView style={{flexDirection: 'row'}}>
+                {value && (
+                  <IconButton
+                    icon="close-circle-outline"
+                    iconColor={colors.primary}
+                    size={20}
+                    onPress={() => {
+                      setValue('');
+                      setTempForm({
+                        ...tempForm,
+                        [options]: '',
+                        previousValue: {
+                          ...tempForm['previousValue'],
+                          [options]: '',
+                        },
+                      });
+                    }}
+                  />
+                )}
+                <IconButton
+                  icon="chevron-down"
+                  iconColor={colors.primary}
+                  size={20}
+                  onPress={() => myRef.current.open()}
+                />
+              </SafeAreaView>
+            </>
+          );
+        }}
         renderInputSearch={onSearch => {
           return (
             <SafeAreaView style={{padding: 10}}>

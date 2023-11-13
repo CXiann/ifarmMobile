@@ -1,13 +1,20 @@
 import Realm, {BSON} from 'realm';
 import {ScrollView} from 'react-native';
-import {FlatList, GestureHandlerRootView} from 'react-native-gesture-handler';
-import React, {useEffect, useState, useCallback} from 'react';
 import {
-  Modal,
-  Portal,
+  FlatList,
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
+import React, {useEffect, useState, useCallback} from 'react';
+import Modal from 'react-native-modal';
+
+import {
+  // Modal,
+  // Portal,
   Text,
   useTheme,
   Button,
+  Provider as PaperProvider,
   IconButton,
   TextInput,
 } from 'react-native-paper';
@@ -30,49 +37,160 @@ const ActivityScreenViewSort = ({
 
   const [tempForm, setTempForm] = useState(dataForm);
 
-  const renderItem = useCallback(({item, index}) => {
-    return (
-      <React.Fragment key={item.label + '_' + index}>
-        <AutocompleteItemSortInput
-          tempForm={tempForm}
-          setTempForm={setTempForm}
-          initialValue={true}
-          label={item.label}
-          id={'_id'}
-          title={'name'}
-          options={item.options}
-        />
-      </React.Fragment>
-    );
-  }, []);
-
   if (!visible) {
     return null;
   }
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={() => {
-          showModal();
-        }}
-        contentContainerStyle={{
-          backgroundColor: 'white',
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          borderRadius: 20,
-          marginTop: 50,
-        }}>
-        <GestureHandlerRootView>
-          <ScrollView
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{flexGrow: 1}}>
+    // <Portal>
+    //   <Modal
+    //     visible={visible}
+    //     onDismiss={() => {
+    //       showModal();
+    //     }}
+    //     contentContainerStyle={{
+    //       backgroundColor: 'white',
+    //       paddingHorizontal: 20,
+    //       paddingVertical: 10,
+    //       borderRadius: 20,
+    //       marginTop: 55,
+    //     }}>
+    //     <ScrollView
+    //       keyboardDismissMode="on-drag"
+    //       keyboardShouldPersistTaps="handled"
+    //       contentContainerStyle={{flexGrow: 1}}>
+    //       <SafeAreaView
+    //         style={{
+    //           flexDirection: 'row',
+    //           justifyContent: 'space-between',
+    //           marginTop: 8,
+    //         }}>
+    //         <Text
+    //           variant="titleLarge"
+    //           style={{
+    //             alignSelf: 'center',
+    //             // marginBottom: 20,
+    //           }}>
+    //           Filtering Options
+    //         </Text>
+    //       </SafeAreaView>
+    //       <SafeAreaView style={{marginBottom: 10, marginTop: 5}}>
+
+    //         {itemProps.map((prop, index) => {
+    //           return (
+    //             <React.Fragment key={prop.label + '_' + index}>
+    //               <AutocompleteItemSortInput
+    //                 tempForm={tempForm}
+    //                 setTempForm={setTempForm}
+    //                 initialValue={true}
+    //                 label={prop.label}
+    //                 id={'_id'}
+    //                 title={'name'}
+    //                 options={prop.options}
+    //               />
+    //             </React.Fragment>
+    //           );
+    //         })}
+    //       </SafeAreaView>
+    //       <SafeAreaView style={{marginVertical: 10}}>
+    //         <ActivityViewSortingButtons
+    //           dataForm={tempForm}
+    //           setDataForm={setTempForm}
+    //           props={actProps}
+    //         />
+    //       </SafeAreaView>
+    //       <SafeAreaView
+    //         style={{
+    //           flexDirection: 'row',
+    //           justifyContent: 'space-between',
+    //           marginBottom: 10,
+    //         }}>
+    //         <Button
+    //           onPress={() =>
+    //             setTempForm({
+    //               ...tempForm,
+    //               selectedValue: [],
+    //               plants: '',
+    //               fertilizers: '',
+    //               pesticides: '',
+    //               foliars: '',
+    //               fungicides: '',
+    //             })
+    //           }
+    //           rippleColor={'white'}>
+    //           Clear All Options
+    //         </Button>
+    //         <Button
+    //           onPress={() =>
+    //             setTempForm({
+    //               ...tempForm,
+    //               selectedValue: initialButtonValues,
+    //             })
+    //           }
+    //           rippleColor={'white'}>
+    //           Select All Options
+    //         </Button>
+    //       </SafeAreaView>
+    //       <SafeAreaView
+    //         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+    //         <Button
+    //           style={{
+    //             backgroundColor: 'red',
+    //             marginBottom: 15,
+    //             marginTop: 5,
+    //             alignSelf: 'center',
+    //             minWidth: '47%',
+    //           }}
+    //           labelStyle={{color: 'white'}}
+    //           mode="contained"
+    //           onPress={() => showModal()}>
+    //           Cancel
+    //         </Button>
+    //         <Button
+    //           style={{
+    //             backgroundColor: colors.primaryContainer,
+    //             marginBottom: 15,
+    //             marginTop: 5,
+    //             alignSelf: 'center',
+    //             minWidth: '47%',
+    //           }}
+    //           labelStyle={{color: colors.primary}}
+    //           mode="contained"
+    //           onPress={() => {
+    //             setDataForm({...dataForm, ...tempForm});
+    //             showModal();
+    //           }}>
+    //           Filter
+    //         </Button>
+    //       </SafeAreaView>
+    //     </ScrollView>
+    //   </Modal>
+    <Modal
+      isVisible={visible}
+      onBackdropPress={() => {
+        showModal();
+      }}
+      propagateSwipe={true}
+      style={{
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 20,
+        // marginHorizontal: 0,
+        // marginTop: 55,
+        flex: 1,
+      }}>
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="always"
+          contentContainerStyle={{flexGrow: 1}}>
+          <TouchableOpacity>
             <SafeAreaView
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                marginTop: 8,
               }}>
               <Text
                 variant="titleLarge"
@@ -82,26 +200,8 @@ const ActivityScreenViewSort = ({
                 }}>
                 Filtering Options
               </Text>
-              <IconButton
-                icon="close"
-                size={15}
-                mode="outlined"
-                style={{
-                  alignSelf: 'center',
-                  backgroundColor: 'white',
-                }}
-                onPress={() => showModal()}
-              />
             </SafeAreaView>
-            <SafeAreaView style={{marginVertical: 10}}>
-              {/* <FlatList
-                removeClippedSubviews={true}
-                data={itemProps}
-                initialNumToRender={5}
-                maxToRenderPerBatch={4}
-                keyExtractor={item => item.id.toString()}
-                renderItem={renderItem}
-              /> */}
+            <SafeAreaView style={{marginBottom: 10, marginTop: 5}}>
               {itemProps.map((prop, index) => {
                 return (
                   <React.Fragment key={prop.label + '_' + index}>
@@ -157,26 +257,43 @@ const ActivityScreenViewSort = ({
                 Select All Options
               </Button>
             </SafeAreaView>
-            <Button
-              style={{
-                backgroundColor: colors.primaryContainer,
-                marginBottom: 15,
-                margin: 5,
-                alignSelf: 'center',
-                width: '50%',
-              }}
-              labelStyle={{color: colors.primary}}
-              mode="contained"
-              onPress={() => {
-                setDataForm({...dataForm, ...tempForm});
-                showModal();
-              }}>
-              Filter
-            </Button>
-          </ScrollView>
-        </GestureHandlerRootView>
-      </Modal>
-    </Portal>
+            <SafeAreaView
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Button
+                style={{
+                  backgroundColor: 'red',
+                  marginBottom: 15,
+                  marginTop: 5,
+                  alignSelf: 'center',
+                  minWidth: '47%',
+                }}
+                labelStyle={{color: 'white'}}
+                mode="contained"
+                onPress={() => showModal()}>
+                Cancel
+              </Button>
+              <Button
+                style={{
+                  backgroundColor: colors.primaryContainer,
+                  marginBottom: 15,
+                  marginTop: 5,
+                  alignSelf: 'center',
+                  minWidth: '47%',
+                }}
+                labelStyle={{color: colors.primary}}
+                mode="contained"
+                onPress={() => {
+                  setDataForm({...dataForm, ...tempForm});
+                  showModal();
+                }}>
+                Filter
+              </Button>
+            </SafeAreaView>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </Modal>
+    // </Portal>
   );
 };
 
