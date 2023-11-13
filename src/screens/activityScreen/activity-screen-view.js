@@ -20,6 +20,7 @@ const ActivityScreenView = ({navigation}) => {
   const realm = useRealm();
   const {userId, farmId, setIsLoading} = useGlobal();
   const {colors} = useTheme();
+  const farm = useQuery(Activity);
 
   const styles = StyleSheet.create({
     container: {
@@ -32,12 +33,6 @@ const ActivityScreenView = ({navigation}) => {
       justifyContent: 'space-between',
       marginTop: 5,
       marginBottom: 10,
-    },
-    fab: {
-      // position: 'absolute',
-      // margin: 16,
-      // right: 0,
-      // bottom: 0,
     },
     input: {
       height: 40,
@@ -74,7 +69,6 @@ const ActivityScreenView = ({navigation}) => {
 
   useEffect(() => {
     setIsLoading(true);
-    const farm = realm.objects(Activity);
     const keysToExtract = [
       'plants',
       'fertilizers',
@@ -137,12 +131,11 @@ const ActivityScreenView = ({navigation}) => {
 
   console.log('ATD: ', activitiesToDisplay.length);
 
-  const showModal = useCallback(() => setVisible(!visible), [visible]);
+  // const showModal = useCallback(() => setVisible(!visible), [visible]);
   console.log('Selected action: ', dataForm['selectedValue']);
 
-  const renderItem = useCallback(
-    ({item}) => <ActivityViewCards item={item} actProps={actProps} />,
-    [],
+  const renderItem = ({item}) => (
+    <ActivityViewCards item={item} actProps={actProps} />
   );
 
   return (
@@ -155,6 +148,7 @@ const ActivityScreenView = ({navigation}) => {
           onPress={() => navigation.navigate('Add Activity')}>
           Add
         </Button>
+        {/* Test old filter */}
         {/* <Button
           icon="filter-variant"
           mode="elevated"

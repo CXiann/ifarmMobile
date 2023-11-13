@@ -30,8 +30,6 @@ const DateInput = ({
     setDataForm({...dataForm, [dateFieldName]: selectedDate});
   };
 
-  console.log('date');
-
   return (
     <SafeAreaView>
       <TouchableWithoutFeedback onPress={showCalendar}>
