@@ -6,12 +6,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import StockCard from '../components/stockCard';
 
 const HomeScreen = ({navigation}) => {
-  const {setIsLoading, farmName} = useGlobal();
+  const {setIsLoading, farmName, farmId} = useGlobal();
   const today = new Date();
 
   useEffect(() => {
     // setIsLoading(true);
   });
+  console.log('FarmId: ', farmId);
 
   return (
     <SafeAreaView style={styles.container}>

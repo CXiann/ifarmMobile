@@ -1,6 +1,10 @@
 import {createRealmContext} from '@realm/react';
 import {Foliar, Foliar_Name} from './src/schemas/foliar.schema';
-import {Fertilizer, Fertilizer_Name} from './src/schemas/fertilizer.schema';
+import {
+  Fertilizer,
+  Fertilizer_Name,
+  Fertilizer_Quantity,
+} from './src/schemas/fertilizer.schema';
 import {Plant, Plant_Name} from './src/schemas/plants.schema';
 import {Pesticide, Pesticide_Name} from './src/schemas/pesticide.schema';
 import {Fungicide, Fungicide_Name} from './src/schemas/fungicide.schema';
@@ -33,6 +37,7 @@ export const realmContext = createRealmContext({
     Foliar_Name,
     Fertilizer,
     Fertilizer_Name,
+    Fertilizer_Quantity,
     Plant,
     Plant_Name,
     Pesticide,
