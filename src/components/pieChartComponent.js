@@ -61,7 +61,9 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
         />
         <View style={styles.rightSideOfChart}>
           <Text style={styles.stockText}>Total In Stock</Text>
-          <Text style={styles.stockValueText}>{getTotal(pieData)}</Text>
+          <Text style={styles.stockValueText}>
+            {getTotal(pieData).toFixed(2)}
+          </Text>
           {renderLegendComponent()}
         </View>
       </View>

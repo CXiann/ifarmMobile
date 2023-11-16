@@ -30,7 +30,6 @@ export class Fertilizer extends Realm.Object {
       name: 'fertilizers_name',
       tags: 'string[]',
       unitType: 'string?',
-      quantity: 'fertilizers_quantity',
       _v: 'int?',
     },
     primaryKey: '_id',

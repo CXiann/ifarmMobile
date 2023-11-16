@@ -4,39 +4,65 @@ import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import PieChartComponent from '../components/pieChartComponent';
 import InventoryPercentage from '../components/inventoryPercentage';
+import {getColor} from '../utils/colorGenerator-utils';
 
 const InventoryScreenDetail = ({route, navigation}) => {
+  //all data
+  const allData = route.params.data;
   const selectedStock = route.params.stockName;
   const selectedCardColor = route.params.cardColor;
   const selectedIcon = route.params.iconName;
 
-  const pieData = [
-    {
-      value: 47,
-      name: 'Item1',
-      color: '#009FFF',
-      gradientCenterColor: '#006DFF',
-      focused: true,
-    },
-    {
-      value: 20,
-      name: 'Item2',
-      color: '#93FCF8',
-      gradientCenterColor: '#3BE9DE',
-    },
-    {
-      value: 16,
-      name: 'Item3',
-      color: '#BDB2FA',
-      gradientCenterColor: '#8F80F3',
-    },
-    {
-      value: 40,
-      name: 'Item4',
-      color: '#FFA5BA',
-      gradientCenterColor: '#FF7F97',
-    },
-  ];
+  //volume data
+  const volumeList = allData?.filter(data =>
+    data.quantity?.volume ? true : false,
+  );
+  const volumeColor = volumeList?.map(() => {
+    return getColor();
+  });
+  const volumeColor2 = volumeList?.map(() => {
+    return getColor();
+  });
+
+  //mass data
+  const massList = allData.filter(data => (data.quantity?.mass ? true : false));
+
+  const pieData = volumeList?.map((data, index) => {
+    return {
+      value: data.quantity?.volume,
+      name: data.name?.eng,
+      color: volumeColor[index],
+      gradientCenterColor: volumeColor2[index],
+    };
+  });
+  console.log('Option: ', allData.length);
+  // const pieData = [
+  //   {
+  //     value: 47,
+  //     name: 'Item1',
+  //     color: '#009FFF',
+  //     gradientCenterColor: '#006DFF',
+  //     focused: true,
+  //   },
+  //   {
+  //     value: 20,
+  //     name: 'Item2',
+  //     color: '#93FCF8',
+  //     gradientCenterColor: '#3BE9DE',
+  //   },
+  //   {
+  //     value: 16,
+  //     name: 'Item3',
+  //     color: '#BDB2FA',
+  //     gradientCenterColor: '#8F80F3',
+  //   },
+  //   {
+  //     value: 40,
+  //     name: 'Item4',
+  //     color: '#FFA5BA',
+  //     gradientCenterColor: '#FF7F97',
+  //   },
+  // ];
 
   const getTotal = data => {
     return data.reduce((a, b) => a + b.value, 0);
@@ -45,6 +71,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
   const calculatePercentage = (data, value) => {
     let total = getTotal(data);
     percentage = Math.round((value / total) * 100);
+
     return percentage;
   };
 

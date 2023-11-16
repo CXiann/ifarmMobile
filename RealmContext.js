@@ -1,10 +1,6 @@
 import {createRealmContext} from '@realm/react';
 import {Foliar, Foliar_Name} from './src/schemas/foliar.schema';
-import {
-  Fertilizer,
-  Fertilizer_Name,
-  Fertilizer_Quantity,
-} from './src/schemas/fertilizer.schema';
+import {Fertilizer, Fertilizer_Name} from './src/schemas/fertilizer.schema';
 import {Plant, Plant_Name} from './src/schemas/plants.schema';
 import {Pesticide, Pesticide_Name} from './src/schemas/pesticide.schema';
 import {Fungicide, Fungicide_Name} from './src/schemas/fungicide.schema';
@@ -21,12 +17,16 @@ import {
   Farm_Name,
   Farm_Fertilizers,
   Farm_Fertilizers_Name,
+  Farm_Fertilizers_Quantity,
   Farm_Foliars,
   Farm_Foliars_Name,
+  Farm_Foliars_Quantity,
   Farm_Fungicides,
   Farm_Fungicides_Name,
+  Farm_Fungicides_Quantity,
   Farm_Pesticides,
   Farm_Pesticides_Name,
+  Farm_Pesticides_Quantity,
   Farm_Plants,
   Farm_Plants_Name,
 } from './src/schemas/farm.schema';
@@ -37,7 +37,6 @@ export const realmContext = createRealmContext({
     Foliar_Name,
     Fertilizer,
     Fertilizer_Name,
-    Fertilizer_Quantity,
     Plant,
     Plant_Name,
     Pesticide,
@@ -55,12 +54,16 @@ export const realmContext = createRealmContext({
     Farm_Name,
     Farm_Fertilizers,
     Farm_Fertilizers_Name,
+    Farm_Fertilizers_Quantity,
     Farm_Foliars,
     Farm_Foliars_Name,
+    Farm_Foliars_Quantity,
     Farm_Fungicides,
     Farm_Fungicides_Name,
+    Farm_Fungicides_Quantity,
     Farm_Pesticides,
     Farm_Pesticides_Name,
+    Farm_Pesticides_Quantity,
     Farm_Plants,
     Farm_Plants_Name,
   ],
