@@ -24,8 +24,8 @@ const InventoryScreenDetail = ({route, navigation}) => {
   const selectedIcon = route.params.iconName;
 
   //volume data
-  const volumeList = visibleData?.filter(data =>
-    data.quantity?.volume ? true : false,
+  const volumeList = visibleData?.filter(
+    data => data.unit == 'volume' ?? false,
   );
   //randomly generating colors
   const volumeColor = volumeList?.map(() => {
@@ -36,9 +36,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
   });
 
   //mass data
-  const massList = visibleData.filter(data =>
-    data.quantity?.mass ? true : false,
-  );
+  const massList = visibleData.filter(data => data.unit == 'mass' ?? false);
   //randomly generating colors
   const massColor = massList?.map(() => {
     return getColor();
@@ -49,7 +47,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
 
   const pieData = massList?.map((data, index) => {
     return {
-      value: data.quantity?.mass,
+      value: data.quantity,
       name: data.name?.eng,
       color: massColor[index],
       gradientCenterColor: massColor2[index],
@@ -103,7 +101,8 @@ const InventoryScreenDetail = ({route, navigation}) => {
         _id: new BSON.ObjectId(),
         name: {eng: 'Test foliar 6', chs: '', cht: ''},
         tags: ['all'],
-        quantity: {mass: 0, volume: 11.3},
+        unit: 'mass',
+        quantity: 1.5,
       });
       // lacking visible tags and normal tags
       // realm.create('farms', newObject, 'modified');
