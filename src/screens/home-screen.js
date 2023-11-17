@@ -29,6 +29,8 @@ const HomeScreen = ({navigation}) => {
     return getVisibleTagsItems(selectedFarmAllProps, prop.options);
   });
 
+  const fullFoliars = [...selectedFarmAllProps[0]['foliars']];
+
   //need to remove [0] plants later
   const fertilizersList = allFilteredOptions[1];
   const pesticidesList = allFilteredOptions[2];
@@ -70,6 +72,7 @@ const HomeScreen = ({navigation}) => {
             stockName="Foliar"
             navigation={navigation}
             data={foliarsList}
+            fullData={fullFoliars}
           />
         </View>
       </View>

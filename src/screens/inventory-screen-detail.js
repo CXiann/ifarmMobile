@@ -1,22 +1,33 @@
 import React from 'react';
+import {BSON} from 'realm';
+import {realmContext} from '../../RealmContext';
 import {View, StyleSheet} from 'react-native';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import PieChartComponent from '../components/pieChartComponent';
 import InventoryPercentage from '../components/inventoryPercentage';
 import {getColor} from '../utils/colorGenerator-utils';
+import {useGlobal} from '../contexts/GlobalContext';
+import {Farm} from '../schemas/farm.schema';
 
 const InventoryScreenDetail = ({route, navigation}) => {
+  const {useObject, useRealm} = realmContext;
+  const realm = useRealm();
+  const {farmId} = useGlobal();
+  const farm = useObject(Farm, BSON.ObjectId(farmId));
+
   //all data
-  const allData = route.params.data;
+  const visibleData = route.params.data;
+  const allData = route.params.fullData;
   const selectedStock = route.params.stockName;
   const selectedCardColor = route.params.cardColor;
   const selectedIcon = route.params.iconName;
 
   //volume data
-  const volumeList = allData?.filter(data =>
+  const volumeList = visibleData?.filter(data =>
     data.quantity?.volume ? true : false,
   );
+  //randomly generating colors
   const volumeColor = volumeList?.map(() => {
     return getColor();
   });
@@ -25,17 +36,26 @@ const InventoryScreenDetail = ({route, navigation}) => {
   });
 
   //mass data
-  const massList = allData.filter(data => (data.quantity?.mass ? true : false));
+  const massList = visibleData.filter(data =>
+    data.quantity?.mass ? true : false,
+  );
+  //randomly generating colors
+  const massColor = massList?.map(() => {
+    return getColor();
+  });
+  const massColor2 = massList?.map(() => {
+    return getColor();
+  });
 
-  const pieData = volumeList?.map((data, index) => {
+  const pieData = massList?.map((data, index) => {
     return {
-      value: data.quantity?.volume,
+      value: data.quantity?.mass,
       name: data.name?.eng,
-      color: volumeColor[index],
-      gradientCenterColor: volumeColor2[index],
+      color: massColor[index],
+      gradientCenterColor: massColor2[index],
     };
   });
-  console.log('Option: ', allData.length);
+  console.log('Option: ', visibleData.length);
   // const pieData = [
   //   {
   //     value: 47,
@@ -63,6 +83,33 @@ const InventoryScreenDetail = ({route, navigation}) => {
   //     gradientCenterColor: '#FF7F97',
   //   },
   // ];
+  const handleAddButton = () => {
+    const newObject = {
+      _id: new BSON.ObjectId(),
+      name: {eng: 'test'},
+      foliars: allData,
+    };
+
+    // {
+    //   _id: new BSON.ObjectId(),
+    //   name: {eng: 'Test foliar 6', chs: '', cht: ''},
+    //   tags: ['all'],
+    //   quantity: {mass: 0, volume: 11.3},
+    // },
+    // console.log('Add: ', newObject['foliars'][1].quantity.volume);
+    realm.write(() => {
+      console.log('Length', allData);
+      farm.foliars = farm.foliars.concat({
+        _id: new BSON.ObjectId(),
+        name: {eng: 'Test foliar 6', chs: '', cht: ''},
+        tags: ['all'],
+        quantity: {mass: 0, volume: 11.3},
+      });
+      // lacking visible tags and normal tags
+      // realm.create('farms', newObject, 'modified');
+      console.log('Successfully added');
+    });
+  };
 
   const getTotal = data => {
     return data.reduce((a, b) => a + b.value, 0);
@@ -152,7 +199,10 @@ const InventoryScreenDetail = ({route, navigation}) => {
       <Button
         mode="contained"
         style={styles.addStockButton}
-        onPress={() => console.log('Add New Stock')}>
+        onPress={() => {
+          handleAddButton();
+          console.log('Add New Stock');
+        }}>
         Add Stock
       </Button>
     </SafeAreaView>

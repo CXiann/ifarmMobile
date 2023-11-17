@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar, Card, Text} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 
-const StockCard = ({stockName, navigation, data}) => {
+const StockCard = ({stockName, navigation, data, fullData}) => {
   const getCardProps = stockName => {
     switch (stockName) {
       case 'Fertilizer':
@@ -70,6 +70,7 @@ const StockCard = ({stockName, navigation, data}) => {
   const handleStockCardPressed = stockName => {
     navigation.navigate('Inventory Detail', {
       data: data,
+      fullData: fullData,
       stockName: stockName,
       cardColor: getCardProps(stockName).cardColor,
       iconName: getCardProps(stockName).cardIcon,
