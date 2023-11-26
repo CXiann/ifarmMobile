@@ -11,7 +11,7 @@ import FarmSelectorScreen from '../screens/farm-selector-screen';
 import TaskScreenMain from '../screens/taskScreen/task-screen-main';
 import TaskScreenAddForm from '../screens/taskScreen/task-screen-add-form';
 import {useNetInfo} from '@react-native-community/netinfo';
-import InventoryScreenDetail from '../screens/inventory-screen-detail';
+import InventoryScreenDetail from '../screens/inventoryScreen/inventory-screen-detail';
 
 const Stack = createStackNavigator();
 

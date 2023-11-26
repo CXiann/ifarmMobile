@@ -1,12 +1,13 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from 'react-native-paper';
 import {PieChart} from 'react-native-gifted-charts';
 
 const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
   const renderDot = color => {
     return (
-      <View
+      <SafeAreaView
         style={{
           height: 10,
           width: 10,
@@ -20,33 +21,33 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
 
   const renderLegendComponent = () => {
     return (
-      <View style={styles.legendContainer}>
+      <SafeAreaView style={styles.legendContainer}>
         {pieData.map((item, index) => (
-          <View style={styles.legendColumn} key={index}>
+          <SafeAreaView style={styles.legendColumn} key={index}>
             {renderDot(item.color)}
             <Text style={styles.legendText}>
               {item.name}: {calculatePercentage(pieData, item.value)}%
             </Text>
-          </View>
+          </SafeAreaView>
         ))}
-      </View>
+      </SafeAreaView>
     );
   };
 
   const centerLabelComponent = () => {
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <SafeAreaView style={{justifyContent: 'center', alignItems: 'center'}}>
         <Text style={{fontSize: 22, color: 'white', fontWeight: 'bold'}}>
           47%
         </Text>
         <Text style={{fontSize: 14, color: 'white'}}>Excellent</Text>
-      </View>
+      </SafeAreaView>
     );
   };
 
   return (
     <>
-      <View style={styles.chartContainer}>
+      <SafeAreaView style={styles.chartContainer}>
         <PieChart
           data={pieData}
           donut
@@ -59,12 +60,12 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
           // innerCircleColor={'#232B5D'}
           // centerLabelComponent={centerLabelComponent}
         />
-        <View style={styles.rightSideOfChart}>
+        <SafeAreaView style={styles.rightSideOfChart}>
           <Text style={styles.stockText}>Total In Stock</Text>
           <Text style={styles.stockValueText}>{getTotal(pieData)}</Text>
           {renderLegendComponent()}
-        </View>
-      </View>
+        </SafeAreaView>
+      </SafeAreaView>
     </>
   );
 };

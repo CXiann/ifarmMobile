@@ -1,42 +1,15 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import PieChartComponent from '../components/pieChartComponent';
-import InventoryPercentage from '../components/inventoryPercentage';
 
-const InventoryScreenDetail = ({route, navigation}) => {
+import PieChartComponent from './pieChartComponent';
+import InventoryPercentage from './inventoryPercentage';
+
+const InventoryDetails = ({route, navigation, pieData, type}) => {
   const selectedStock = route.params.stockName;
   const selectedCardColor = route.params.cardColor;
   const selectedIcon = route.params.iconName;
-
-  const pieData = [
-    {
-      value: 47,
-      name: 'Item1',
-      color: '#009FFF',
-      gradientCenterColor: '#006DFF',
-      focused: true,
-    },
-    {
-      value: 20,
-      name: 'Item2',
-      color: '#93FCF8',
-      gradientCenterColor: '#3BE9DE',
-    },
-    {
-      value: 16,
-      name: 'Item3',
-      color: '#BDB2FA',
-      gradientCenterColor: '#8F80F3',
-    },
-    {
-      value: 40,
-      name: 'Item4',
-      color: '#FFA5BA',
-      gradientCenterColor: '#FF7F97',
-    },
-  ];
 
   const getTotal = data => {
     return data.reduce((a, b) => a + b.value, 0);
@@ -53,19 +26,10 @@ const InventoryScreenDetail = ({route, navigation}) => {
       flex: 1,
       backgroundColor: 'white',
     },
-    topBar: {
-      backgroundColor: selectedCardColor,
-      height: '8%',
-      minWidth: '100%',
-      flexDirection: 'row',
-    },
-    topBarBackIcon: {
-      alignSelf: 'center',
-    },
-    topBarText: {
-      justifyContent: 'center',
-      marginLeft: '3%',
-      color: 'white',
+    titleText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
     },
     legendMainRow: {
       flexDirection: 'row',
@@ -98,20 +62,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.topBar}>
-        <IconButton
-          icon="arrow-left"
-          iconColor="black"
-          size={25}
-          style={styles.topBarBackIcon}
-          onPress={() => navigation.goBack()}
-        />
-        <SafeAreaView style={styles.topBarText}>
-          <Text variant="titleLarge" style={{fontWeight: 700}}>
-            {selectedStock} Details
-          </Text>
-        </SafeAreaView>
-      </SafeAreaView>
+      <Text style={styles.titleText}>{type.toUpperCase()}</Text>
       <PieChartComponent
         pieData={pieData}
         getTotal={getTotal}
@@ -132,4 +83,4 @@ const InventoryScreenDetail = ({route, navigation}) => {
   );
 };
 
-export default InventoryScreenDetail;
+export default InventoryDetails;
