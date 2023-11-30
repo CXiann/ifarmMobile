@@ -48,6 +48,13 @@ export default function TabsNavbar({route}) {
         },
         headerRight: () => (
           <SafeAreaView style={style.rightContainer}>
+            {/* <Button
+              mode="elevated"
+              icon="arrow-right"
+              onPress={() => navigation.navigate('Farm Selector')}
+              contentStyle={{flexDirection: 'row-reverse'}}>
+              Change Farm
+            </Button> */}
             {/* <IconButton
               icon="bell"
               iconColor="black"

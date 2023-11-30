@@ -1,39 +1,158 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Text, Card} from 'react-native-paper';
+import {
+  Button,
+  Text,
+  Card,
+  Avatar,
+  IconButton,
+  Dialog,
+  Portal,
+  PaperProvider,
+} from 'react-native-paper';
 
-const TaskCard = props => {
-  const getTaskTypeStyle = taskType => {
-    switch (taskType) {
-      case 'Urgent':
-        return styles.urgent;
-      case 'Important':
-        return styles.important;
-      case 'Normal':
-        return styles.normal;
+import {realmContext} from '../../RealmContext';
+import {Task} from '../schemas/task.schema';
+
+const TaskCard = ({taskTitle, taskCompleted, taskObject, showSnackBar}) => {
+  // const getTaskTypeStyle = taskType => {
+  //   switch (taskType) {
+  //     case 'Urgent':
+  //       return styles.urgent;
+  //     case 'Important':
+  //       return styles.important;
+  //     case 'Normal':
+  //       return styles.normal;
+  //     default:
+  //       return styles.default; // Default style if taskType doesn't match any
+  //   }
+  // };
+
+  // const taskTypeStyle = getTaskTypeStyle(props.taskType);
+
+  const {useRealm} = realmContext;
+  const realm = useRealm();
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  const showConfirmDialog = () => setDialogVisible(true);
+  const hideConfirmDialog = () => setDialogVisible(false);
+
+  useEffect(() => {
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(realm.objects(Task));
+    });
+  }, [realm]);
+
+  const handleMarkTaskAsCompleted = () => {
+    realm.write(() => {
+      taskObject.completed = true;
+    });
+    hideConfirmDialog();
+    showSnackBar();
+  };
+
+  const getTaskStatus = taskCompleted => {
+    switch (taskCompleted) {
+      case false:
+        return 'checkbox-blank-circle';
+      case true:
+        return 'check-bold';
       default:
-        return styles.default; // Default style if taskType doesn't match any
+        return 'checkbox-blank-circle';
     }
   };
 
-  const taskTypeStyle = getTaskTypeStyle(props.taskType);
+  const taskStatusIcon = getTaskStatus(taskCompleted);
+
+  const getTaskStatusColor = taskStatus => {
+    switch (taskStatus) {
+      case false:
+        return styles.inProgress;
+      case true:
+        return styles.completed;
+    }
+  };
+
+  const taskStatusBgColor = getTaskStatusColor(taskCompleted);
 
   return (
-    <Card style={styles.taskCard}>
-      <Card.Content>
-        <Text style={styles.taskTitle}>{props.taskTitle}</Text>
-        <View style={[styles.taskType, taskTypeStyle]}>
-          <Text style={styles.taskTypeText}>{props.taskType}</Text>
+    <View style={styles.container}>
+      <View style={styles.statusIndicator}>
+        <Avatar.Icon
+          size={22}
+          icon={taskStatusIcon}
+          style={taskStatusBgColor}
+          color="#ffffff"
+        />
+        <View style={styles.dottedLine}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
         </View>
-      </Card.Content>
-    </Card>
+      </View>
+      <Card style={styles.taskCard}>
+        <Card.Content>
+          <Text style={styles.taskTitle}>{taskTitle}</Text>
+          {/* <View style={[styles.taskType, taskTypeStyle]}>
+            <Text style={styles.taskTypeText}>{props.taskType}</Text>
+          </View> */}
+        </Card.Content>
+        <Card.Actions>
+          <IconButton
+            icon="checkbox-marked-circle-outline"
+            mode="contained"
+            size={19}
+            style={styles.completeButton}
+            iconColor="white"
+            disabled={taskCompleted}
+            onPress={showConfirmDialog}></IconButton>
+        </Card.Actions>
+      </Card>
+      <Portal>
+        <Dialog
+          visible={dialogVisible}
+          onDismiss={hideConfirmDialog}
+          style={styles.confirmDialog}>
+          <Dialog.Icon icon="alert-circle" size={30} />
+          <Dialog.Title style={styles.dialogTitle}>
+            Confirm Task is Completed
+          </Dialog.Title>
+          <Dialog.Content>
+            <View style={styles.dialogContainer}>
+              <Text variant="bodyMedium">
+                Do you confirm to mark the task as completed?
+              </Text>
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <View style={styles.buttonRow}>
+              <Button textColor="#C23E3B" onPress={hideConfirmDialog}>
+                Cancel
+              </Button>
+              <Button textColor="#62A87C" onPress={handleMarkTaskAsCompleted}>
+                Confirm
+              </Button>
+            </View>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  taskCard: {
-    width: '70%',
+  container: {
+    flexDirection: 'row',
     marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  taskCard: {
+    width: '80%',
     alignSelf: 'flex-end',
   },
   taskTitle: {
@@ -63,6 +182,50 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '700',
     fontSize: 10,
+  },
+  statusIndicator: {
+    flexDirection: 'column', // Ensures vertical alignment
+    alignItems: 'center', // Centers the bars horizontally
+    marginRight: 20,
+  },
+  dottedLine: {
+    width: 1,
+    height: 40,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  dot: {
+    width: 1,
+    height: 5,
+    backgroundColor: '#c6c6c6',
+    borderRadius: 2,
+    marginVertical: 2,
+  },
+  inProgress: {
+    backgroundColor: '#ADD8E6',
+  },
+  completed: {
+    backgroundColor: '#90EE90',
+  },
+  completeButton: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#4B7695',
+    width: 30,
+    height: 30,
+  },
+  confirmDialog: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginHorizontal: 35,
+    borderRadius: 50,
+  },
+  dialogTitle: {
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 
