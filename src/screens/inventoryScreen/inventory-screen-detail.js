@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import InventoryScreenType from './inventory-screen-type';
@@ -26,6 +27,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
     container: {
       flex: 1,
       backgroundColor: 'white',
+      paddingBottom: 16,
     },
     topBar: {
       backgroundColor: selectedCardColor,
@@ -59,7 +61,10 @@ const InventoryScreenDetail = ({route, navigation}) => {
           </Text>
         </SafeAreaView>
       </SafeAreaView>
-      <SafeAreaView>
+      <ScrollView
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        style={{flex: 1}}>
         <AutocompleteDropdown
           inputContainerStyle={{
             marginVertical: 10,
@@ -87,12 +92,12 @@ const InventoryScreenDetail = ({route, navigation}) => {
             item && setSelectedOption(item);
           }}
         />
-      </SafeAreaView>
-      <InventoryScreenType
-        route={route}
-        navigation={navigation}
-        type={selectedOption.title}
-      />
+        <InventoryScreenType
+          route={route}
+          navigation={navigation}
+          type={selectedOption.title}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };
