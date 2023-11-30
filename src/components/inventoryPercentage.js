@@ -17,7 +17,9 @@ const InventoryPercentage = ({pieData, calculatePercentage, icon}) => {
             <View style={styles.percentageColumn}>
               <View style={styles.textRow}>
                 <Text style={styles.itemNameText}>{item.name}</Text>
-                <Text style={styles.itemValueText}>{item.value}</Text>
+                <Text style={styles.itemValueText}>
+                  {item.value + ' ' + item.unit}
+                </Text>
               </View>
               <ProgressBar
                 progress={calculatePercentage(pieData, item.value) / 100}
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: 'column',
     justifyContent: 'center',
+    width: '100%',
     alignItems: 'center',
   },
   percentageRow: {
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
   },
   percentageColumn: {
     flexDirection: 'column',
-    width: '65%',
+    width: '75%',
     marginLeft: 20,
   },
   textRow: {

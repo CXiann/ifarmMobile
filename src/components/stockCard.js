@@ -55,6 +55,7 @@ const StockCard = ({stockName, navigation, data, fullData}) => {
     stockIcon: {
       backgroundColor: '#fdfffc',
       marginBottom: 15,
+      // paddingRight: 10,
     },
     stockAvailable: {
       fontSize: 20,
@@ -68,12 +69,15 @@ const StockCard = ({stockName, navigation, data, fullData}) => {
   });
 
   const handleStockCardPressed = stockName => {
+    const cardColor = getCardProps(stockName).cardColor;
+    const cardIcon = getCardProps(stockName).cardIcon;
+
     navigation.navigate('Inventory Detail', {
       data: data,
       fullData: fullData,
       stockName: stockName,
-      cardColor: getCardProps(stockName).cardColor,
-      iconName: getCardProps(stockName).cardIcon,
+      cardColor: cardColor,
+      iconName: cardIcon,
     });
   };
 
@@ -81,13 +85,17 @@ const StockCard = ({stockName, navigation, data, fullData}) => {
     <Card
       style={styles.stockCard}
       onPress={() => handleStockCardPressed(stockName)}>
+      <Card.Title
+        left={() => (
+          <Avatar.Icon
+            size={40}
+            icon={cardIcon}
+            style={styles.stockIcon}
+            color={iconColor}
+          />
+        )}
+      />
       <Card.Content>
-        <Avatar.Icon
-          size={28}
-          icon={cardIcon}
-          style={styles.stockIcon}
-          color={iconColor}
-        />
         <Text style={styles.stockTitle}>{stockName}</Text>
         <Text style={styles.stockAvailable}>{data.length}</Text>
         <Text style={styles.stockAvailableText}>Stock Available</Text>

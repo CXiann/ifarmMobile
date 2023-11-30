@@ -1,15 +1,69 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {BSON} from 'realm';
+import {realmContext} from '../../RealmContext';
 import {StyleSheet} from 'react-native';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {getColor} from '../utils/colorGenerator-utils';
+import {useGlobal} from '../contexts/GlobalContext';
+import {Farm} from '../schemas/farm.schema';
 
 import PieChartComponent from './pieChartComponent';
 import InventoryPercentage from './inventoryPercentage';
 
-const InventoryDetails = ({route, navigation, pieData, type}) => {
+const InventoryDetails = ({route, navigation, type}) => {
+  const {useObject, useRealm} = realmContext;
+  const realm = useRealm();
+  const {farmId} = useGlobal();
+  const farm = useObject(Farm, BSON.ObjectId(farmId));
+  const [pieData, setPieData] = useState(null);
+
+  //all data
+  const visibleData = route.params.data;
+  const allData = route.params.fullData;
   const selectedStock = route.params.stockName;
   const selectedCardColor = route.params.cardColor;
   const selectedIcon = route.params.iconName;
+
+  useEffect(() => {
+    const unit = type == 'Liquid' ? 'ℓ' : 'kg';
+    const displayList = visibleData?.filter(data => data.unit == unit ?? false);
+    setPieData(
+      displayList?.map(data => {
+        const colors = getColor();
+        return {
+          value: data.quantity,
+          name: data.name?.eng,
+          unit: data.unit,
+          color: colors[0],
+          gradientCenterColor: colors[1],
+        };
+      }),
+    );
+  }, [type, allData, realm]);
+
+  console.log('Option: ', visibleData.length);
+
+  console.log('Farm ', farm);
+  const handleAddButton = () => {
+    realm.write(() => {
+      const addObj = {
+        name: {eng: 'Test foliar 6', chs: '', cht: ''},
+        unit: 'mass',
+        quantity: 2.5,
+      };
+      farm.foliars.map(f => {
+        if (f.name.eng === addObj.name.eng) {
+          f.quantity = f.quantity + addObj.quantity;
+        }
+      });
+      console.log('Farm foliar', farm.foliars);
+
+      // lacking visible tags and normal tags
+      // realm.create('farms', farm, 'modified');
+      console.log('Successfully added');
+    });
+  };
 
   const getTotal = data => {
     return data.reduce((a, b) => a + b.value, 0);
@@ -29,7 +83,8 @@ const InventoryDetails = ({route, navigation, pieData, type}) => {
     titleText: {
       fontSize: 20,
       fontWeight: 'bold',
-      textAlign: 'center',
+      paddingLeft: 10,
+      // textAlign: 'center',
     },
     legendMainRow: {
       flexDirection: 'row',
@@ -55,7 +110,7 @@ const InventoryDetails = ({route, navigation, pieData, type}) => {
     addStockButton: {
       backgroundColor: selectedCardColor,
       marginTop: 30,
-      width: '85%',
+      width: '100%',
       alignSelf: 'center',
     },
   });
@@ -64,19 +119,19 @@ const InventoryDetails = ({route, navigation, pieData, type}) => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleText}>{type.toUpperCase()}</Text>
       <PieChartComponent
-        pieData={pieData}
+        pieData={pieData ?? []}
         getTotal={getTotal}
         calculatePercentage={calculatePercentage}
       />
       <InventoryPercentage
-        pieData={pieData}
+        pieData={pieData ?? []}
         calculatePercentage={calculatePercentage}
         icon={selectedIcon}
       />
       <Button
         mode="contained"
         style={styles.addStockButton}
-        onPress={() => console.log('Add New Stock')}>
+        onPress={() => handleAddButton()}>
         Add Stock
       </Button>
     </SafeAreaView>

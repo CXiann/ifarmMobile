@@ -39,7 +39,6 @@ export default function MainNav() {
             name="Inventory Detail"
             component={InventoryScreenDetail}
           />
-          <Stack.Screen name="Sort" component={ActivityScreenSort} />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
           <Stack.Screen

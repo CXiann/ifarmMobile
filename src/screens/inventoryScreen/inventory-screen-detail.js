@@ -64,11 +64,10 @@ const InventoryScreenDetail = ({route, navigation}) => {
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
-        style={{flex: 1}}>
+        style={{flex: 1, padding: 16}}>
         <AutocompleteDropdown
           inputContainerStyle={{
             marginVertical: 10,
-            marginHorizontal: 20,
             borderRadius: 10,
           }}
           textInputProps={{

@@ -9,7 +9,7 @@ import {
   Text,
   KeyboardAvoidingView,
 } from 'react-native';
-// import {Text} from 'react-native-paper';
+import {useTheme} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import StockCard from '../components/stockCard';
@@ -19,14 +19,28 @@ import {getVisibleTagsItems} from '../utils/visibleTagsItems-utils';
 import {Item_Props as itemProps} from '../constants/item-props';
 
 const HomeScreen = ({navigation}) => {
+  const {colors} = useTheme();
   const {setIsLoading, farmName, farmId} = useGlobal();
   const {useRealm} = realmContext;
   const realm = useRealm();
   const today = new Date();
 
-  useEffect(() => {
-    // setIsLoading(true);
+  const styles = StyleSheet.create({
+    container: {
+      padding: 20,
+    },
+    farmTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.primary,
+    },
+    stockCardContainer: {},
+    stockCardRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
   });
+
   console.log('FarmId: ', farmId);
 
   const selectedFarmAllProps = realm
@@ -87,20 +101,5 @@ const HomeScreen = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  farmTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  stockCardContainer: {},
-  stockCardRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-});
 
 export default HomeScreen;

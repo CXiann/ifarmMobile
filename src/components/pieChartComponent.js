@@ -47,42 +47,52 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
 
   return (
     <>
-      <SafeAreaView style={styles.chartContainer}>
-        <PieChart
-          data={pieData}
-          donut
-          focusOnPress
-          showGradient
-          sectionAutoFocus
-          radius={90}
-          innerRadius={35}
-          showValuesAsLabels
-          // innerCircleColor={'#232B5D'}
-          // centerLabelComponent={centerLabelComponent}
-        />
-        <SafeAreaView style={styles.rightSideOfChart}>
-          <Text style={styles.stockText}>Total In Stock</Text>
-          <Text style={styles.stockValueText}>
-            {getTotal(pieData).toFixed(2)}
+      {pieData.length == 0 ? (
+        <SafeAreaView
+          style={{
+            marginTop: 30,
+          }}>
+          <Text
+            variant="bodyLarge"
+            style={{color: 'gray', textAlign: 'center'}}>
+            No Data to show
           </Text>
-          {renderLegendComponent()}
         </SafeAreaView>
-      </SafeAreaView>
+      ) : (
+        <SafeAreaView style={styles.chartContainer}>
+          <PieChart
+            data={pieData}
+            donut
+            focusOnPress
+            showGradient
+            sectionAutoFocus
+            radius={90}
+            innerRadius={35}
+            showValuesAsLabels
+            // innerCircleColor={'#232B5D'}
+            // centerLabelComponent={centerLabelComponent}
+          />
+          <SafeAreaView style={styles.rightSideOfChart}>
+            <Text style={styles.stockText}>Total In Stock</Text>
+            <Text style={styles.stockValueText}>
+              {getTotal(pieData).toFixed(2)}
+            </Text>
+            {renderLegendComponent()}
+          </SafeAreaView>
+        </SafeAreaView>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
   chartContainer: {
-    padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
   },
   rightSideOfChart: {
     flexDirection: 'column',
-    justifyContent: 'start',
-    marginLeft: 20,
+    maxWidth: '40%',
   },
   stockText: {fontSize: 11, color: '#5F6369'},
   stockValueText: {
@@ -92,12 +102,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   legendContainer: {
-    flexDirection: 'column',
+    maxWidth: '90%',
   },
   legendColumn: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 120,
     marginBottom: 8,
   },
   legendText: {
