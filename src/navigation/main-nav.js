@@ -12,6 +12,7 @@ import TaskScreenMain from '../screens/taskScreen/task-screen-main';
 import TaskScreenAddForm from '../screens/taskScreen/task-screen-add-form';
 import ActivityScreenSort from '../screens/activityScreen/activity-screen-sort';
 import {useNetInfo} from '@react-native-community/netinfo';
+import InventoryScreenDetail from '../screens/inventoryScreen/inventory-screen-detail';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,10 @@ export default function MainNav() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Farm Selector" component={FarmSelectorScreen} />
           <Stack.Screen name="Tabs" component={TabsNavbar} />
+          <Stack.Screen
+            name="Inventory Detail"
+            component={InventoryScreenDetail}
+          />
           <Stack.Screen name="Sort" component={ActivityScreenSort} />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
