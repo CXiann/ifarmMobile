@@ -8,7 +8,7 @@ import {
 } from 'react-native-paper';
 import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 import MainNav from './src/navigation/main-nav';
-
+import NotificationHandler from './src/components/notificationHandler';
 import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
