@@ -476,7 +476,131 @@ export const Activity_Props = [
     units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
   },
   {
-    id: 6,
+    id: '6',
+    bgcolor: 'wheat',
+    action: 'Add Inventory',
+    title: 'ADD INVENTORY',
+    type: {
+      eng: 'Add Inventory',
+      chs: '添加存货',
+      cht: '添加存貨',
+    },
+    icon: 'inbox-full',
+    fields: [
+      {
+        id: 'date',
+        name: 'Date',
+        type: 'date',
+        validate: v => {
+          return !!v;
+        },
+        width: '15%',
+      },
+      {
+        id: 'category',
+        name: 'Item Category',
+        type: 'autocomplete',
+        options: 'categories',
+        validate: v => {
+          return !!v.eng || !!v.chs || !!v.cht;
+        },
+        width: '25%',
+      },
+      {
+        id: 'item',
+        name: 'Item Name',
+        type: 'autocompleteInventory',
+        options: o => {
+          let items;
+          switch (o.category.eng) {
+            case 'Foliar':
+              items = 'foliars';
+              break;
+            case 'Pesticide':
+              items = 'pesticides';
+              break;
+            case 'Fungicide':
+              items = 'fungicides';
+              break;
+            case 'Fertilizer':
+              items = 'fertilizers';
+              break;
+            default:
+              items = '';
+              break;
+          }
+          return items;
+        },
+        validate: async (v, d) => {
+          let items;
+          switch (d.category.eng) {
+            case 'Foliar':
+              items = 'foliars';
+              break;
+            case 'Pesticide':
+              items = 'pesticides';
+              break;
+            case 'Fungicide':
+              items = 'fungicides';
+              break;
+            case 'Fertilizer':
+              items = 'fertilizers';
+              break;
+            default:
+              items = '';
+              break;
+          }
+          const res = await query(`farms/name/${d.farmId}`);
+          console.log('ResData: ', res.data[items]);
+          let isMatch = true;
+          if (res.data[items]) {
+            isMatch = res.data[items]?.some(item => {
+              return (
+                item.name.eng === v.eng &&
+                item.name.chs === v.chs &&
+                item.name.cht === v.cht
+              );
+            });
+          }
+          return (!!v.eng || !!v.chs || !!v.cht) && isMatch;
+        },
+        width: '25%',
+      },
+      {
+        id: 'quantity',
+        name: 'Quantity',
+        type: 'number',
+        props: {type: 'number'},
+        validate: v => {
+          return v > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'unit',
+        name: 'Unit',
+        type: 'unit',
+        validate: v => {
+          return !!v;
+        },
+        units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+        width: '12%',
+      },
+      {
+        id: 'price',
+        name: 'Price(RM)',
+        type: 'price',
+        validate: v => {
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+    ],
+    standardUnit: 'ℓ',
+    units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+  },
+  {
+    id: 7,
     action: 'Harvest',
     icon: 'sickle',
     bgColor: 'forestgreen',
@@ -558,7 +682,7 @@ export const Activity_Props = [
     units: ['g', 'kg', 'pieces'],
   },
   {
-    id: 7,
+    id: 8,
     action: 'Sales',
     icon: 'currency-usd',
     bgColor: 'red',
@@ -641,7 +765,7 @@ export const Activity_Props = [
     units: ['kg', 'pack (1kg)', 'pack (500g)'],
   },
   {
-    id: 8,
+    id: 9,
     action: 'Transplant',
     icon: 'swap-horizontal',
     bgColor: 'greenyellow',
@@ -710,7 +834,7 @@ export const Activity_Props = [
     units: ['pieces'],
   },
   {
-    id: 9,
+    id: 10,
     action: 'Others',
     icon: 'unfold-more-vertical',
     bgColor: 'dodgerblue',

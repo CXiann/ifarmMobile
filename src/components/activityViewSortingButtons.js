@@ -27,7 +27,14 @@ const ActivityViewSortingButtons = ({dataForm, setDataForm, props}) => {
               icon: '',
               value: '',
               label: '',
-              style: {},
+              style:
+                i == props.length - 1 && i % 2 == 0 //odd number options
+                  ? {
+                      borderRightWidth: 1,
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                    }
+                  : {},
             };
             newObj['icon'] = prop.icon;
             newObj['value'] = prop.action;

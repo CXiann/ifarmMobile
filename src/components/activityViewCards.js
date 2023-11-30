@@ -9,6 +9,7 @@ const ActivityViewCards = ({item, actProps}) => {
     card: {
       marginVertical: 5,
       minWidth: '100%',
+      backgroundColor: colors.secondaryContainer,
     },
     cardTitle: {
       fontWeight: 'bold',
@@ -34,11 +35,15 @@ const ActivityViewCards = ({item, actProps}) => {
   });
 
   const getActionFromActivityProp = action => {
-    return actProps.find(item => item.action == action).icon;
+    return action === 'Add Inventory'
+      ? 'inbox-full'
+      : actProps.find(item => item.action == action).icon;
   };
 
   const getBgColorFromActivityProp = action => {
-    return actProps.find(item => item.action == action).bgColor;
+    return action === 'Add Inventory'
+      ? 'wheat'
+      : actProps.find(item => item.action == action).bgColor;
   };
 
   return (
@@ -54,6 +59,7 @@ const ActivityViewCards = ({item, actProps}) => {
             icon={getActionFromActivityProp(item.action)}
             style={{
               backgroundColor: getBgColorFromActivityProp(item.action),
+              elevation: 3,
             }}
           />
         )}
@@ -73,11 +79,7 @@ const ActivityViewCards = ({item, actProps}) => {
                 fontSize: 20,
                 color: 'yellowgreen',
               }}>
-              {' (Std. unit: ' +
-                item.quantity +
-                ' ' +
-                actProps.find(prop => prop.action == item.action).standardUnit +
-                ')'}
+              {' (Std. unit: ' + item.quantity + ' ' + item.unit + ')'}
             </Text>
           </Text>
         )}
