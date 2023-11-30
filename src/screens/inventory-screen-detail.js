@@ -81,31 +81,23 @@ const InventoryScreenDetail = ({route, navigation}) => {
   //     gradientCenterColor: '#FF7F97',
   //   },
   // ];
+  console.log('Farm ', farm);
   const handleAddButton = () => {
-    const newObject = {
-      _id: new BSON.ObjectId(),
-      name: {eng: 'test'},
-      foliars: allData,
-    };
-
-    // {
-    //   _id: new BSON.ObjectId(),
-    //   name: {eng: 'Test foliar 6', chs: '', cht: ''},
-    //   tags: ['all'],
-    //   quantity: {mass: 0, volume: 11.3},
-    // },
-    // console.log('Add: ', newObject['foliars'][1].quantity.volume);
     realm.write(() => {
-      console.log('Length', allData);
-      farm.foliars = farm.foliars.concat({
-        _id: new BSON.ObjectId(),
+      const addObj = {
         name: {eng: 'Test foliar 6', chs: '', cht: ''},
-        tags: ['all'],
         unit: 'mass',
-        quantity: 1.5,
+        quantity: 2.5,
+      };
+      farm.foliars.map(f => {
+        if (f.name.eng === addObj.name.eng) {
+          f.quantity = f.quantity + addObj.quantity;
+        }
       });
+      console.log('Farm foliar', farm.foliars);
+
       // lacking visible tags and normal tags
-      // realm.create('farms', newObject, 'modified');
+      // realm.create('farms', farm, 'modified');
       console.log('Successfully added');
     });
   };
