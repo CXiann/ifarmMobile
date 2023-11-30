@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar, Card, Text} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 
-const StockCard = ({stockName, navigation}) => {
+const StockCard = ({stockName, navigation, data, fullData}) => {
   const getCardProps = stockName => {
     switch (stockName) {
       case 'Fertilizer':
@@ -10,7 +10,6 @@ const StockCard = ({stockName, navigation}) => {
         iconColor = '#F69865';
         cardIcon = 'flower-pollen-outline';
         titleColor = 'white';
-        quantityAvailable = 10;
         break;
 
       case 'Fungicide':
@@ -18,7 +17,6 @@ const StockCard = ({stockName, navigation}) => {
         iconColor = '#D09FD0';
         cardIcon = 'mushroom';
         titleColor = '#fdfffc';
-        quantityAvailable = 10;
         break;
 
       case 'Pesticide':
@@ -26,7 +24,6 @@ const StockCard = ({stockName, navigation}) => {
         iconColor = '#6699CC';
         cardIcon = 'bug';
         titleColor = 'white';
-        quantityAvailable = 10;
         break;
 
       case 'Foliar':
@@ -34,13 +31,12 @@ const StockCard = ({stockName, navigation}) => {
         iconColor = '#7EC8C5';
         cardIcon = 'leaf';
         titleColor = 'white';
-        quantityAvailable = 10;
         break;
 
       default:
         break;
     }
-    return {cardColor, iconColor, cardIcon, titleColor, quantityAvailable};
+    return {cardColor, iconColor, cardIcon, titleColor};
   };
 
   const styles = StyleSheet.create({
@@ -73,6 +69,8 @@ const StockCard = ({stockName, navigation}) => {
 
   const handleStockCardPressed = stockName => {
     navigation.navigate('Inventory Detail', {
+      data: data,
+      fullData: fullData,
       stockName: stockName,
       cardColor: getCardProps(stockName).cardColor,
       iconName: getCardProps(stockName).cardIcon,
@@ -91,7 +89,7 @@ const StockCard = ({stockName, navigation}) => {
           color={iconColor}
         />
         <Text style={styles.stockTitle}>{stockName}</Text>
-        <Text style={styles.stockAvailable}>{quantityAvailable}</Text>
+        <Text style={styles.stockAvailable}>{data.length}</Text>
         <Text style={styles.stockAvailableText}>Stock Available</Text>
       </Card.Content>
     </Card>

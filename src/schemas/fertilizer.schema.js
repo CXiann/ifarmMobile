@@ -11,6 +11,16 @@ export class Fertilizer_Name extends Realm.Object {
     },
   };
 }
+export class Fertilizer_Quantity extends Realm.Object {
+  static schema = {
+    name: 'fertilizers_quantity',
+    embedded: true,
+    properties: {
+      volume: 'double?',
+      mass: 'double?',
+    },
+  };
+}
 // Define your object model
 export class Fertilizer extends Realm.Object {
   static schema = {

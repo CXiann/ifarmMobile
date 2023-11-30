@@ -20,6 +20,8 @@ export class Farm_Fertilizers extends Realm.Object {
       _id: 'objectId?',
       name: 'farm_fertilizers_name',
       tags: 'string[]',
+      unit: 'string?',
+      quantity: 'double?',
     },
   };
 }
@@ -44,6 +46,8 @@ export class Farm_Foliars extends Realm.Object {
       _id: 'objectId?',
       name: 'farm_foliars_name',
       tags: 'string[]',
+      unit: 'string?',
+      quantity: 'double?',
     },
   };
 }
@@ -80,6 +84,8 @@ export class Farm_Pesticides extends Realm.Object {
       _id: 'objectId?',
       name: 'farm_pesticides_name',
       tags: 'string[]',
+      unit: 'string?',
+      quantity: 'double?',
     },
   };
 }
@@ -104,6 +110,8 @@ export class Farm_Fungicides extends Realm.Object {
       _id: 'objectId?',
       name: 'farm_fungicides_name',
       tags: 'string[]',
+      unit: 'string?',
+      quantity: 'double?',
     },
   };
 }
