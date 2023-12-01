@@ -92,6 +92,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
           }}
         />
         <InventoryScreenType
+          action={selectedStock}
           route={route}
           navigation={navigation}
           type={selectedOption.title}

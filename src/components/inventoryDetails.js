@@ -11,14 +11,13 @@ import {Farm} from '../schemas/farm.schema';
 import PieChartComponent from './pieChartComponent';
 import InventoryPercentage from './inventoryPercentage';
 
-const InventoryDetails = ({route, navigation, type}) => {
+const InventoryDetails = ({route, navigation, type, action}) => {
   const {useObject, useRealm} = realmContext;
   const realm = useRealm();
   const {farmId} = useGlobal();
   const farm = useObject(Farm, BSON.ObjectId(farmId));
   const [pieData, setPieData] = useState(null);
 
-  //all data
   const visibleData = route.params.data;
   const allData = route.params.fullData;
   const selectedStock = route.params.stockName;
@@ -46,23 +45,7 @@ const InventoryDetails = ({route, navigation, type}) => {
 
   console.log('Farm ', farm);
   const handleAddButton = () => {
-    realm.write(() => {
-      const addObj = {
-        name: {eng: 'Test foliar 6', chs: '', cht: ''},
-        unit: 'mass',
-        quantity: 2.5,
-      };
-      farm.foliars.map(f => {
-        if (f.name.eng === addObj.name.eng) {
-          f.quantity = f.quantity + addObj.quantity;
-        }
-      });
-      console.log('Farm foliar', farm.foliars);
-
-      // lacking visible tags and normal tags
-      // realm.create('farms', farm, 'modified');
-      console.log('Successfully added');
-    });
+    navigation.navigate('Add Item', {action: action});
   };
 
   const getTotal = data => {
@@ -132,7 +115,7 @@ const InventoryDetails = ({route, navigation, type}) => {
         mode="contained"
         style={styles.addStockButton}
         onPress={() => handleAddButton()}>
-        Add Stock
+        Add Inventory
       </Button>
     </SafeAreaView>
   );

@@ -9,6 +9,7 @@ import LoginScreen from '../screens/authScreen/login-screen';
 import ActivityScreenAddForm from '../screens/activityScreen/activity-screen-add-form';
 import FarmSelectorScreen from '../screens/farm-selector-screen';
 import TaskScreenMain from '../screens/taskScreen/task-screen-main';
+import InventoryScreenAddForm from '../screens/inventoryScreen/inventory-screen-add-form';
 import TaskScreenAddForm from '../screens/taskScreen/task-screen-add-form';
 import ActivityScreenSort from '../screens/activityScreen/activity-screen-sort';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -39,7 +40,9 @@ export default function MainNav() {
             name="Inventory Detail"
             component={InventoryScreenDetail}
           />
+          <Stack.Screen name="Sort" component={ActivityScreenSort} />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
+          <Stack.Screen name="Add Item" component={InventoryScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
           <Stack.Screen
             name="Add New Task"
