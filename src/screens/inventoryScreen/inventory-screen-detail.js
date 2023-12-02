@@ -8,8 +8,8 @@ import {useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 
 const InventoryScreenDetail = ({route, navigation}) => {
-  const selectedStock = route.params.stockName;
-  const selectedCardColor = route.params.cardColor;
+  const {data, field} = route.params;
+  const selectedCardColor = field.cardColor;
 
   const dataSetType = [
     {id: '1', title: 'Solid'},
@@ -57,7 +57,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
         />
         <SafeAreaView style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
-            {selectedStock} Details
+            {field.label} Details
           </Text>
         </SafeAreaView>
       </SafeAreaView>
@@ -92,8 +92,8 @@ const InventoryScreenDetail = ({route, navigation}) => {
           }}
         />
         <InventoryScreenType
-          action={selectedStock}
-          route={route}
+          data={data}
+          field={field}
           navigation={navigation}
           type={selectedOption.title}
         />

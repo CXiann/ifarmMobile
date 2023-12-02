@@ -1,5 +1,7 @@
 export const getVisibleTagsItems = (selectedFarmAllProps, options) => {
-  const allSelectedActionItems = [...selectedFarmAllProps[0][options]] || [];
+  const allSelectedActionItems = convertToArray(
+    [...selectedFarmAllProps[0][options]] || [],
+  );
   console.log(
     'Current Farm Selected Item Props length: ',
     allSelectedActionItems.length,
@@ -18,3 +20,9 @@ export const getVisibleTagsItems = (selectedFarmAllProps, options) => {
     });
   return visibleTagsOptions;
 };
+
+function convertToArray(realmObjectsArray) {
+  let copyOfJsonArray = Array.from(realmObjectsArray);
+  let jsonArray = JSON.parse(JSON.stringify(copyOfJsonArray));
+  return jsonArray;
+}

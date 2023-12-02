@@ -1,28 +1,23 @@
 import React, {useState, useEffect} from 'react';
-import {BSON} from 'realm';
-import {realmContext} from '../../RealmContext';
+
 import {StyleSheet} from 'react-native';
-import {Text, IconButton, Button} from 'react-native-paper';
+import {Text, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getColor} from '../utils/colorGenerator-utils';
-import {useGlobal} from '../contexts/GlobalContext';
-import {Farm} from '../schemas/farm.schema';
 
 import PieChartComponent from './pieChartComponent';
 import InventoryPercentage from './inventoryPercentage';
 
-const InventoryDetails = ({route, navigation, type, action}) => {
-  const {useObject, useRealm} = realmContext;
-  const realm = useRealm();
-  const {farmId} = useGlobal();
-  const farm = useObject(Farm, BSON.ObjectId(farmId));
+const InventoryDetails = ({navigation, type, data, field}) => {
   const [pieData, setPieData] = useState(null);
+  const [visibleData, setVisibleData] = useState(data[field.options] ?? []);
 
-  const visibleData = route.params.data;
-  const allData = route.params.fullData;
-  const selectedStock = route.params.stockName;
-  const selectedCardColor = route.params.cardColor;
-  const selectedIcon = route.params.iconName;
+  const selectedCardColor = field.cardColor;
+  const selectedIcon = field.icon;
+
+  useEffect(() => {
+    setVisibleData(data[field.options]);
+  }, [data]);
 
   useEffect(() => {
     const unit = type == 'Liquid' ? 'ℓ' : 'kg';
@@ -39,13 +34,12 @@ const InventoryDetails = ({route, navigation, type, action}) => {
         };
       }),
     );
-  }, [type, allData, realm]);
+  }, [type]);
 
-  console.log('Option: ', visibleData.length);
+  // console.log('Option: ', visibleData.length);
 
-  console.log('Farm ', farm);
   const handleAddButton = () => {
-    navigation.navigate('Add Item', {action: action});
+    navigation.navigate('Add Item', {action: field.label});
   };
 
   const getTotal = data => {
