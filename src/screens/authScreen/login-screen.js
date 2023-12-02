@@ -1,11 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Keyboard} from 'react-native';
-import {Text, TextInput, Button} from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  Keyboard,
+  Image,
+  KeyboardAvoidingView,
+} from 'react-native';
+import {Text, TextInput, Button, useTheme} from 'react-native-paper';
 import * as bcrypt from 'bcryptjs';
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../../contexts/GlobalContext';
+import logo from '../../assets/images/logo.png';
 
 import {User} from '../../schemas/user.schema';
 
@@ -14,7 +21,11 @@ const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHidden, setIsHidden] = useState(true);
+  const [passFocus, setPassFocus] = useState(false);
   const {setIsLoading} = useGlobal();
+  const [err, setErr] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const {colors} = useTheme();
 
   const {useQuery, useRealm} = realmContext;
   const realm = useRealm();
@@ -48,9 +59,11 @@ const LoginScreen = ({navigation}) => {
     setIsLoading(true);
     const isMatch = await validateCredentials();
     if (isMatch) {
+      setErr(false);
       console.log('Login: ' + isMatch);
       navigation.navigate('Farm Selector');
     } else {
+      setErr(true);
       console.log('Login: ' + isMatch);
       setIsLoading(false);
     }
@@ -63,48 +76,101 @@ const LoginScreen = ({navigation}) => {
     return isMatch;
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      backgroundColor: colors.secondaryContainer,
+    },
+    imageContainer: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    inputContainer: {
+      padding: 20,
+      flex: 1,
+      backgroundColor: 'white',
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      elevation: 10,
+    },
+    button: {
+      alignSelf: 'center',
+      minWidth: '90%',
+      position: 'absolute',
+      bottom: '5%',
+    },
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text variant="headlineMedium">Login</Text>
-      <TextInput
-        mode="outlined"
-        label="Email"
-        value={email}
-        onChangeText={email => setEmail(email)}
-      />
-      <TextInput
-        mode="outlined"
-        label="Password"
-        secureTextEntry={isHidden}
-        right={
-          <TextInput.Icon
-            icon="eye"
-            onPress={() => {
-              setIsHidden(!isHidden);
+    <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.imageContainer}>
+          <Image
+            source={logo}
+            alt="logo"
+            resizeMode="contain"
+            style={{
+              maxWidth: '100%', // Set the maximum width
+              maxHeight: 200, // Set the maximum height if needed
             }}
           />
-        }
-        value={password}
-        onChangeText={password => setPassword(password)}
-      />
-      <Button
-        mode="contained"
-        onPress={() => {
-          handleLogIn();
-        }}
-        style={{width: 100, alignSelf: 'flex-end', margin: 20}}>
-        Log In
-      </Button>
+        </SafeAreaView>
+        <SafeAreaView style={styles.inputContainer}>
+          <Text
+            variant="titleLarge"
+            style={{marginBottom: 13, fontWeight: 'bold'}}>
+            Login
+          </Text>
+          <TextInput
+            mode="flat"
+            label="Email"
+            placeholder="Enter Email"
+            style={{marginBottom: 5, backgroundColor: 'white'}}
+            error={err}
+            value={email}
+            onChangeText={email => setEmail(email)}
+          />
+          <TextInput
+            mode="flat"
+            label="Password"
+            error={err}
+            onFocus={() => setPassFocus(true)}
+            onBlur={() => setPassFocus(false)}
+            secureTextEntry={isHidden}
+            placeholder="Enter Password"
+            style={{backgroundColor: 'white'}}
+            right={
+              <TextInput.Icon
+                icon={isHidden ? 'eye' : 'eye-off'}
+                color={
+                  passFocus
+                    ? colors.primary
+                    : err
+                    ? colors.error
+                    : colors.outline
+                }
+                onPress={() => {
+                  setIsHidden(!isHidden);
+                }}
+              />
+            }
+            value={password}
+            onChangeText={password => setPassword(password)}
+          />
+          {err && <Text style={{color: colors.error}}>Invalid Credential</Text>}
+          <Button
+            mode="contained"
+            onPress={() => {
+              handleLogIn();
+            }}
+            style={styles.button}>
+            Log In
+          </Button>
+        </SafeAreaView>
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    margin: 20,
-  },
-});

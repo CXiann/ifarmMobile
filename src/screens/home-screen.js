@@ -46,6 +46,7 @@ const HomeScreen = ({navigation}) => {
       fontSize: 20,
       fontWeight: 'bold',
       color: colors.primary,
+      marginBottom: 20,
     },
     stockCardContainer: {},
     stockCardRow: {

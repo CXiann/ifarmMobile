@@ -143,6 +143,8 @@ const ActivityScreenView = ({navigation}) => {
       <SafeAreaView style={{flexDirection: 'row'}}>
         <Button
           style={{marginEnd: 20}}
+          buttonColor="honeydew"
+          // textColor="white"
           icon="plus"
           mode="elevated"
           onPress={() => navigation.navigate('Add Activity')}>

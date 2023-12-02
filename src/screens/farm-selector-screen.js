@@ -49,7 +49,7 @@ const FarmSelectorScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={style.container}>
-      <Text>Select the farm you wish to manage</Text>
+      <Text style={{fontWeight: 'bold'}}>Select the farm to manage</Text>
       <AutocompleteFarmInput
         dataSet={allFarmData} // Array of data to filter
         id={'_id'}
