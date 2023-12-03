@@ -11,6 +11,7 @@ import InventoryPercentage from './inventoryPercentage';
 const InventoryDetails = ({navigation, type, data, field}) => {
   const [pieData, setPieData] = useState(null);
   const [visibleData, setVisibleData] = useState(data[field.options] ?? []);
+  const [selectedData, setSelectedData] = useState('');
 
   const selectedCardColor = field.cardColor;
   const selectedIcon = field.icon;
@@ -22,24 +23,36 @@ const InventoryDetails = ({navigation, type, data, field}) => {
   useEffect(() => {
     const unit = type == 'Liquid' ? 'ℓ' : 'kg';
     const displayList = visibleData?.filter(data => data.unit == unit ?? false);
-    setPieData(
-      displayList?.map(data => {
-        const colors = getColor();
-        return {
-          value: data.quantity,
-          name: data.name?.eng,
-          unit: data.unit,
-          color: colors[0],
-          gradientCenterColor: colors[1],
-        };
-      }),
-    );
+    const noTextList = displayList?.map(data => {
+      const colors = getColor();
+      return {
+        value: data.quantity,
+        name: data.name?.eng,
+        unit: data.unit,
+        color: colors[0],
+        gradientCenterColor: colors[1],
+      };
+    });
+    const pieDataList = noTextList.map(data => {
+      return {
+        ...data,
+        text: calculatePercentage(noTextList, data.value).toString() + '%',
+      };
+    });
+    setPieData(pieDataList);
   }, [type]);
 
   // console.log('Option: ', visibleData.length);
 
   const handleAddButton = () => {
-    navigation.navigate('Add Item', {action: field.label});
+    navigation.navigate('Add Item', {
+      action: field.label,
+      field: field,
+    });
+  };
+
+  const setSelectedDataFromPie = data => {
+    setSelectedData(data);
   };
 
   const getTotal = data => {
@@ -87,6 +100,7 @@ const InventoryDetails = ({navigation, type, data, field}) => {
     addStockButton: {
       backgroundColor: selectedCardColor,
       marginTop: 30,
+      marginBottom: 30,
       width: '100%',
       alignSelf: 'center',
     },
@@ -99,11 +113,15 @@ const InventoryDetails = ({navigation, type, data, field}) => {
         pieData={pieData ?? []}
         getTotal={getTotal}
         calculatePercentage={calculatePercentage}
+        type={type}
+        setSelectedData={setSelectedDataFromPie}
       />
       <InventoryPercentage
         pieData={pieData ?? []}
         calculatePercentage={calculatePercentage}
         icon={selectedIcon}
+        selectedData={selectedData}
+        setSelectedData={setSelectedDataFromPie}
       />
       <Button
         mode="contained"

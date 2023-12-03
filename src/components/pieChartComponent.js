@@ -4,7 +4,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text} from 'react-native-paper';
 import {PieChart} from 'react-native-gifted-charts';
 
-const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
+const PieChartComponent = ({
+  pieData,
+  getTotal,
+  calculatePercentage,
+  type,
+  setSelectedData,
+}) => {
   const renderDot = color => {
     return (
       <SafeAreaView
@@ -18,7 +24,7 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
       />
     );
   };
-
+  console.log('pie data: ', pieData);
   const renderLegendComponent = () => {
     return (
       <SafeAreaView style={styles.legendContainer}>
@@ -66,16 +72,22 @@ const PieChartComponent = ({pieData, getTotal, calculatePercentage}) => {
             focusOnPress
             showGradient
             sectionAutoFocus
-            radius={90}
-            innerRadius={35}
+            radius={80}
+            innerRadius={30}
             showValuesAsLabels
+            textColor="black"
+            textSize={10}
+            showText
+            onPress={item => {
+              setSelectedData(item.name);
+            }}
             // innerCircleColor={'#232B5D'}
             // centerLabelComponent={centerLabelComponent}
           />
           <SafeAreaView style={styles.rightSideOfChart}>
             <Text style={styles.stockText}>Total In Stock</Text>
             <Text style={styles.stockValueText}>
-              {getTotal(pieData).toFixed(2)}
+              {getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
             </Text>
             {renderLegendComponent()}
           </SafeAreaView>

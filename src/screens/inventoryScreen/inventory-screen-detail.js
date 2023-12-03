@@ -3,9 +3,10 @@ import {StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import InventoryScreenType from './inventory-screen-type';
+import InventoryDetails from '../../components/inventoryDetails';
 import {useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const InventoryScreenDetail = ({route, navigation}) => {
   const {data, field} = route.params;
@@ -15,7 +16,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
     {id: '1', title: 'Solid'},
     {id: '2', title: 'Liquid'},
   ];
-
+  const [isFocus, setIsFocus] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
     id: '1',
     title: 'solid',
@@ -43,6 +44,18 @@ const InventoryScreenDetail = ({route, navigation}) => {
       marginLeft: '3%',
       color: 'white',
     },
+    dropdown: {
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      marginBottom: 10,
+    },
+    selectedTextStyle: {
+      fontSize: 16,
+      color: 'black',
+    },
   });
 
   return (
@@ -65,7 +78,29 @@ const InventoryScreenDetail = ({route, navigation}) => {
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         style={{flex: 1, padding: 16}}>
-        <AutocompleteDropdown
+        <Dropdown
+          style={[
+            styles.dropdown,
+            isFocus && {borderColor: colors.primary, borderWidth: 1},
+          ]}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          itemTextStyle={{color: 'black'}}
+          itemContainerStyle={{}}
+          data={dataSetType}
+          // search
+          maxHeight={180}
+          labelField="title"
+          valueField="id"
+          // placeholder={!isFocus ? 'Select item' : '...'}
+          value={selectedOption}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setSelectedOption(item);
+          }}
+        />
+        {/* <AutocompleteDropdown
           inputContainerStyle={{
             marginVertical: 10,
             borderRadius: 10,
@@ -90,8 +125,8 @@ const InventoryScreenDetail = ({route, navigation}) => {
           onSelectItem={item => {
             item && setSelectedOption(item);
           }}
-        />
-        <InventoryScreenType
+        /> */}
+        <InventoryDetails
           data={data}
           field={field}
           navigation={navigation}

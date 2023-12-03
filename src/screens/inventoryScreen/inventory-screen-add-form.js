@@ -19,6 +19,7 @@ import {convertItemName} from '../../utils/convertAction-utils';
 const InventoryScreenAddForm = ({route, navigation}) => {
   //find the input fields for corresponding action selected
   const items = convertItemName(route.params.action);
+  const field = route.params.field;
 
   const {userId, farmId, userName, farmName} = useGlobal();
 
@@ -155,6 +156,33 @@ const InventoryScreenAddForm = ({route, navigation}) => {
     setVisible(true);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    topBar: {
+      backgroundColor: field.cardColor,
+      maxHeight: '15%',
+      minWidth: '100%',
+      flexDirection: 'row',
+    },
+    topBarText: {
+      justifyContent: 'center',
+      marginLeft: '3%',
+      color: 'black',
+    },
+    inputContainer: {
+      flex: 1,
+      padding: 16,
+      alignItems: 'center',
+    },
+    button: {
+      marginVertical: 10,
+      minWidth: '100%',
+      backgroundColor: field.cardColor,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.topBar}>
@@ -258,26 +286,3 @@ const InventoryScreenAddForm = ({route, navigation}) => {
 };
 
 export default InventoryScreenAddForm;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topBar: {
-    backgroundColor: 'white',
-    maxHeight: '15%',
-    minWidth: '100%',
-    flexDirection: 'row',
-  },
-  topBarText: {
-    justifyContent: 'center',
-    marginLeft: '3%',
-    color: 'black',
-  },
-  inputContainer: {
-    flex: 1,
-    padding: 16,
-    alignItems: 'center',
-  },
-  button: {marginVertical: 10, minWidth: '100%'},
-});

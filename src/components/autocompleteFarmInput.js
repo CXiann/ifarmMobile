@@ -81,7 +81,10 @@ const AutocompleteFarmInput = ({
     // />
     <SafeAreaView style={style.containerNew}>
       <Dropdown
-        style={[style.dropdown, isFocus && {borderColor: colors.primary}]}
+        style={[
+          style.dropdown,
+          isFocus && {borderColor: colors.primary, borderWidth: 1},
+        ]}
         selectedTextStyle={style.selectedTextStyle}
         inputSearchStyle={style.inputSearchStyle}
         itemTextStyle={{color: 'black'}}
