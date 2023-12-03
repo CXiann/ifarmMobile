@@ -169,6 +169,18 @@ const ActivityScreenView = ({navigation}) => {
           }>
           Filter
         </Button>
+        <Button
+          icon="filter-variant"
+          mode="elevated"
+          onPress={() =>
+            navigation.navigate('Activity Chart', {
+              dataForm: dataForm,
+              setDataForm: setDataForm,
+              actProps: actProps,
+            })
+          }>
+          Chart
+        </Button>
       </SafeAreaView>
       <SafeAreaView style={styles.dateInputContainer}>
         <DateInput

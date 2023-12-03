@@ -43,57 +43,46 @@ const PieChartComponent = ({
   const centerLabelComponent = () => {
     return (
       <SafeAreaView style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{fontSize: 22, color: 'white', fontWeight: 'bold'}}>
-          47%
+        <Text style={{fontSize: 14, color: 'black', fontWeight: 'bold'}}>
+          {getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
         </Text>
-        <Text style={{fontSize: 14, color: 'white'}}>Excellent</Text>
+        <Text style={{fontSize: 14, color: 'black'}}>Total</Text>
       </SafeAreaView>
     );
   };
 
   return (
-    <>
-      {pieData.length == 0 ? (
-        <SafeAreaView
-          style={{
-            marginTop: 30,
-          }}>
-          <Text
-            variant="bodyLarge"
-            style={{color: 'gray', textAlign: 'center'}}>
-            No Data to show
-          </Text>
-        </SafeAreaView>
-      ) : (
-        <SafeAreaView style={styles.chartContainer}>
-          <PieChart
-            data={pieData}
-            donut
-            focusOnPress
-            showGradient
-            sectionAutoFocus
-            radius={80}
-            innerRadius={30}
-            showValuesAsLabels
-            textColor="black"
-            textSize={10}
-            showText
-            onPress={item => {
-              setSelectedData(item.name);
-            }}
-            // innerCircleColor={'#232B5D'}
-            // centerLabelComponent={centerLabelComponent}
-          />
-          <SafeAreaView style={styles.rightSideOfChart}>
-            <Text style={styles.stockText}>Total In Stock</Text>
-            <Text style={styles.stockValueText}>
-              {getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
-            </Text>
-            {renderLegendComponent()}
-          </SafeAreaView>
-        </SafeAreaView>
-      )}
-    </>
+    <SafeAreaView style={styles.chartContainer}>
+      <PieChart
+        data={
+          pieData.length === 0 ? [{value: 100, color: 'lightgray'}] : pieData
+        }
+        donut
+        focusOnPress
+        showGradient
+        sectionAutoFocus
+        radius={80}
+        innerRadius={30}
+        showValuesAsLabels
+        textColor="black"
+        textSize={10}
+        showText={pieData.length === 0 ? false : true}
+        onPress={item => {
+          setSelectedData(item.name);
+        }}
+        // innerCircleColor={'#232B5D'}
+        centerLabelComponent={centerLabelComponent}
+      />
+      <SafeAreaView style={styles.rightSideOfChart}>
+        <Text style={styles.stockText}>Total In Stock</Text>
+        <Text style={styles.stockValueText}>
+          {pieData.length === 0
+            ? 'No Data'
+            : getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
+        </Text>
+        {renderLegendComponent()}
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 

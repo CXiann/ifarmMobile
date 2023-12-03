@@ -139,7 +139,7 @@ const LoginScreen = ({navigation}) => {
             onBlur={() => setPassFocus(false)}
             secureTextEntry={isHidden}
             placeholder="Enter Password"
-            style={{backgroundColor: 'white'}}
+            style={{backgroundColor: 'white', marginBottom: 10}}
             right={
               <TextInput.Icon
                 icon={isHidden ? 'eye' : 'eye-off'}
@@ -158,7 +158,9 @@ const LoginScreen = ({navigation}) => {
             value={password}
             onChangeText={password => setPassword(password)}
           />
-          {err && <Text style={{color: colors.error}}>Invalid Credential</Text>}
+          {err && (
+            <Text style={{color: colors.error}}>Invalid Login Credential</Text>
+          )}
           <Button
             mode="contained"
             onPress={() => {

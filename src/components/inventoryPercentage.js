@@ -48,9 +48,10 @@ const InventoryPercentage = ({
       marginBottom: 5,
     },
     itemNameTextSelected: {
-      fontSize: 20,
+      fontSize: 18,
       fontWeight: 'bold',
       color: 'red',
+      // maxWidth: '85%',
     },
     itemValueTextSelected: {
       fontSize: 16,
