@@ -74,33 +74,52 @@ const TaskScreenAddForm = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <DateInput
-        label={'Date'}
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        minWidth={'100%'}
-        dateFieldName={'date'}
-      />
-      <TaskInput label={'Task'} dataForm={dataForm} setDataForm={setDataForm} />
-      <AutoCompleteAssigneeInput
-        label={'Assignee'}
-        dataSet={allUsers}
-        id={'_id'}
-        title={'name'}
-        dataForm={dataForm}
-        setDataForm={setDataForm}
-        initialValue={true}
-      />
-      <Button mode="contained" style={styles.button} onPress={handleAddTask}>
-        Add
-      </Button>
-      <SnackbarBottom
-        label={'Dismiss'}
-        title={'Successfully Created Task.'}
-        visible={visible}
-        dismiss={onDismissSnackBar}
-      />
+    <SafeAreaView style={styles.outter}>
+      <SafeAreaView style={styles.topBar}>
+        <IconButton
+          icon="arrow-left"
+          iconColor="black"
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+        <SafeAreaView style={styles.topBarText}>
+          <Text variant="titleLarge" style={{fontWeight: 700}}>
+            {'Add Task'}
+          </Text>
+        </SafeAreaView>
+      </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <DateInput
+          label={'Date'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          minWidth={'100%'}
+          dateFieldName={'date'}
+        />
+        <TaskInput
+          label={'Task'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+        />
+        <AutoCompleteAssigneeInput
+          label={'Assignee'}
+          dataSet={allUsers}
+          id={'_id'}
+          title={'name'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          initialValue={true}
+        />
+        <Button mode="contained" style={styles.button} onPress={handleAddTask}>
+          Add
+        </Button>
+        <SnackbarBottom
+          label={'Dismiss'}
+          title={'Successfully Created Task.'}
+          visible={visible}
+          dismiss={onDismissSnackBar}
+        />
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
@@ -108,10 +127,25 @@ const TaskScreenAddForm = ({navigation}) => {
 export default TaskScreenAddForm;
 
 const styles = StyleSheet.create({
+  outter: {
+    flex: 1,
+  },
   container: {
     padding: 16,
     flex: 1,
     alignItems: 'center',
   },
   button: {marginVertical: 10, minWidth: '100%'},
+  topBar: {
+    backgroundColor: '#4CB963',
+    maxHeight: '15%',
+    minWidth: '100%',
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  topBarText: {
+    justifyContent: 'center',
+    marginLeft: '3%',
+    color: 'black',
+  },
 });
