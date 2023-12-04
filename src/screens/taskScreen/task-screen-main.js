@@ -42,6 +42,12 @@ const TaskScreenMain = ({navigation}) => {
   ];
 
   const today = new Date();
+  const todayYear = today.getUTCFullYear();
+  const todayMonth = today.getUTCMonth();
+  const todayDay = today.getUTCDate();
+
+  const startDateFutureTask = new Date(todayYear, todayMonth, todayDay + 1);
+  const endDateFutureTask = new Date(todayYear, todayMonth, todayDay + 7); // Add 7 to day to include all events on that day
 
   const [selectedDate, setSelectedDate] = useState(today);
 
@@ -53,6 +59,14 @@ const TaskScreenMain = ({navigation}) => {
     setSelectedDate(date);
     console.log('selectedDate: ', selectedDate);
   };
+
+  const initialValues = {
+    startDate: startDateFutureTask,
+    endDate: endDateFutureTask,
+    selectedStatus: 'all',
+  };
+
+  const [filterValues, setFilterValues] = useState(initialValues);
 
   // Get Task According to Date
   const {useRealm, useQuery} = realmContext;
@@ -94,47 +108,86 @@ const TaskScreenMain = ({navigation}) => {
       farmId.toString(),
     );
 
-    const currentUserFutureTasks = allTasks.filtered(
-      'date >= $0 && assigneeId CONTAINS $1 && farmId CONTAINS $2',
-      endDate,
-      userId.toString(),
-      farmId.toString(),
-    );
-
+    const currentUserFutureTasks = filterTasks();
     setFutureTasksToDisplay(currentUserFutureTasks);
     console.log(
       'Total currentUserFutureTasks: ',
       currentUserFutureTasks.length,
     );
+
     setTodayTasksToDisplay(currentUserTodayTasks);
     console.log('Total currentUserTodayTasks: ', currentUserTodayTasks.length);
     setIsLoading(false);
-  }, [selectedDate]);
+  }, [selectedDate, filterValues]);
 
-  const testPushNotification = () => {
-    getChannels();
-    console.log('Entered testPushNotification');
-    PushNotification.localNotification({
-      channelId: 'channel-1',
-      title: 'TestNoti', // (optional)
-      message: 'This is a Test Notification Message', // (required)
-    });
-  };
+  // const testPushNotification = () => {
+  //   getChannels();
+  //   console.log('Entered testPushNotification');
+  //   PushNotification.localNotification({
+  //     channelId: 'channel-1',
+  //     title: 'TestNoti', // (optional)
+  //     message: 'This is a Test Notification Message', // (required)
+  //   });
+  // };
 
-  const createChannel = () => {
-    PushNotification.createChannel(
-      {
-        channelId: 'channel-1',
-        channelName: 'Test Channel',
-      },
-      created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-    );
-  };
+  // const createChannel = () => {
+  //   PushNotification.createChannel(
+  //     {
+  //       channelId: 'channel-1',
+  //       channelName: 'Test Channel',
+  //     },
+  //     created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+  //   );
+  // };
 
-  const getChannels = () => {
-    PushNotification.getChannels(function (channel_ids) {
-      console.log('Channel-ids: ' + channel_ids); // ['channel_id_1']
-    });
+  // const getChannels = () => {
+  //   PushNotification.getChannels(function (channel_ids) {
+  //     console.log('Channel-ids: ' + channel_ids); // ['channel_id_1']
+  //   });
+  // };
+
+  const filterTasks = () => {
+    let taskStatus;
+    let taskAll = false;
+    switch (filterValues['selectedStatus']) {
+      case 'all':
+        taskAll = true;
+        break;
+
+      case 'pending':
+        taskStatus = false;
+        break;
+
+      case 'completed':
+        taskStatus = true;
+        break;
+
+      default:
+        break;
+    }
+
+    let currentUserFutureTasks = null;
+
+    if (taskAll) {
+      currentUserFutureTasks = allTasks.filtered(
+        'date >= $0 && date < $1 && assigneeId CONTAINS $2 && farmId CONTAINS $3',
+        filterValues['startDate'],
+        filterValues['endDate'],
+        userId.toString(),
+        farmId.toString(),
+      );
+    } else {
+      currentUserFutureTasks = allTasks.filtered(
+        'date >= $0 && date < $1 &&  completed == $2 &&assigneeId CONTAINS $3 && farmId CONTAINS $4',
+        filterValues['startDate'],
+        filterValues['endDate'],
+        taskStatus,
+        userId.toString(),
+        farmId.toString(),
+      );
+    }
+
+    return currentUserFutureTasks;
   };
 
   const renderTaskCard = ({taskToDisplay}) => {
@@ -198,7 +251,9 @@ const TaskScreenMain = ({navigation}) => {
             {/* <DateCardCarousel handleChangeDate={handleChangeDate} /> */}
             <TaskProgressCard
               totalTasks={todayTasksToDisplay.length}
-              completedTasks={0}
+              completedTasks={
+                todayTasksToDisplay.filter(task => task.completed).length
+              }
               month={monthOfYear[selectedDate.getMonth()]}
               day={selectedDate.getDate()}
             />
@@ -222,9 +277,23 @@ const TaskScreenMain = ({navigation}) => {
             {renderTaskCard({taskToDisplay: todayTasksToDisplay})}
           </SafeAreaView>
           <SafeAreaView style={styles.bottomFuture}>
-            <Text variant="titleLarge" style={styles.bottomTitle}>
-              Future Tasks
-            </Text>
+            <SafeAreaView style={{flexDirection: 'row'}}>
+              <Text variant="titleLarge" style={styles.bottomTitle}>
+                Future Tasks
+              </Text>
+              <Button
+                icon="filter-variant"
+                mode="elevated"
+                style={styles.filterButton}
+                onPress={() =>
+                  navigation.navigate('Filter Task', {
+                    filterValues: filterValues,
+                    setFilterValues: setFilterValues,
+                  })
+                }>
+                Filter
+              </Button>
+            </SafeAreaView>
             {renderTaskCard({taskToDisplay: futureTasksToDisplay})}
           </SafeAreaView>
         </SafeAreaView>
@@ -311,6 +380,11 @@ const styles = StyleSheet.create({
   taskCardColumn: {
     flexDirection: 'column',
     width: '90%',
+  },
+  filterButton: {
+    alignSelf: 'center',
+    marginLeft: 20,
+    marginBottom: 10,
   },
 });
 
