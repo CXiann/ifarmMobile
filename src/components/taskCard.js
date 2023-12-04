@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, SafeAreaView} from 'react-native';
 import {
   Button,
   Text,
@@ -10,11 +10,21 @@ import {
   Portal,
   PaperProvider,
 } from 'react-native-paper';
+import {
+  SafeAreaSafe,
+  SafeAreaViewAreaView,
+} from 'react-native-safe-area-context';
 
 import {realmContext} from '../../RealmContext';
 import {Task} from '../schemas/task.schema';
 
-const TaskCard = ({taskTitle, taskCompleted, taskObject, showSnackBar}) => {
+const TaskCard = ({
+  taskTitle,
+  taskCompleted,
+  taskDate,
+  taskObject,
+  showSnackBar,
+}) => {
   // const getTaskTypeStyle = taskType => {
   //   switch (taskType) {
   //     case 'Urgent':
@@ -78,28 +88,37 @@ const TaskCard = ({taskTitle, taskCompleted, taskObject, showSnackBar}) => {
   const taskStatusBgColor = getTaskStatusColor(taskCompleted);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.statusIndicator}>
+    <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.statusIndicator}>
         <Avatar.Icon
           size={22}
           icon={taskStatusIcon}
           style={taskStatusBgColor}
           color="#ffffff"
         />
-        <View style={styles.dottedLine}>
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-        </View>
-      </View>
+        <SafeAreaView style={styles.dottedLine}>
+          <SafeAreaView style={styles.dot} />
+          <SafeAreaView style={styles.dot} />
+          <SafeAreaView style={styles.dot} />
+          <SafeAreaView style={styles.dot} />
+          <SafeAreaView style={styles.dot} />
+        </SafeAreaView>
+      </SafeAreaView>
       <Card style={styles.taskCard}>
         <Card.Content>
           <Text style={styles.taskTitle}>{taskTitle}</Text>
-          {/* <View style={[styles.taskType, taskTypeStyle]}>
+          {/* <SafeAreaView style={[styles.taskType, taskTypeStyle]}>
             <Text style={styles.taskTypeText}>{props.taskType}</Text>
-          </View> */}
+          </SafeAreaView> */}
+          <SafeAreaView>
+            <Text style={styles.taskDate}>
+              {taskDate.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </Text>
+          </SafeAreaView>
         </Card.Content>
         <Card.Actions>
           <IconButton
@@ -122,25 +141,25 @@ const TaskCard = ({taskTitle, taskCompleted, taskObject, showSnackBar}) => {
             Confirm Task is Completed
           </Dialog.Title>
           <Dialog.Content>
-            <View style={styles.dialogContainer}>
+            <SafeAreaView style={styles.dialogContainer}>
               <Text variant="bodyMedium">
                 Do you confirm to mark the task as completed?
               </Text>
-            </View>
+            </SafeAreaView>
           </Dialog.Content>
           <Dialog.Actions>
-            <View style={styles.buttonRow}>
+            <SafeAreaView style={styles.buttonRow}>
               <Button textColor="#C23E3B" onPress={hideConfirmDialog}>
                 Cancel
               </Button>
               <Button textColor="#62A87C" onPress={handleMarkTaskAsCompleted}>
                 Confirm
               </Button>
-            </View>
+            </SafeAreaView>
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -158,6 +177,11 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  taskDate: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#7b7b7b',
   },
   taskType: {
     marginTop: 5,

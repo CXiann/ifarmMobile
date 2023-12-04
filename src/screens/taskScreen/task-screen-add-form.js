@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import DateInput from '../../components/dateInput';
 import TaskInput from '../../components/taskInput';
 import AutoCompleteAssigneeInput from '../../components/autocompleteAssigneeInput';
 
@@ -12,6 +11,7 @@ import {useGlobal} from '../../contexts/GlobalContext';
 import {User} from '../../schemas/user.schema';
 import {Task} from '../../schemas/task.schema';
 import SnackbarBottom from '../../components/snackbarBottom';
+import DateInput from '../../components/dateInput';
 
 const TaskScreenAddForm = ({navigation}) => {
   const {useQuery, useRealm} = realmContext;
@@ -75,7 +75,13 @@ const TaskScreenAddForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DateInput label={'Date'} data={dataForm} setData={setDataForm} />
+      <DateInput
+        label={'Date'}
+        dataForm={dataForm}
+        setDataForm={setDataForm}
+        minWidth={'100%'}
+        dateFieldName={'date'}
+      />
       <TaskInput label={'Task'} dataForm={dataForm} setDataForm={setDataForm} />
       <AutoCompleteAssigneeInput
         label={'Assignee'}
