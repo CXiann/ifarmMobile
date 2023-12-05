@@ -28,7 +28,6 @@ const InventoryScreenDetail = ({route, navigation}) => {
     container: {
       flex: 1,
       backgroundColor: 'white',
-      paddingBottom: 16,
     },
     topBar: {
       backgroundColor: selectedCardColor,
@@ -44,6 +43,8 @@ const InventoryScreenDetail = ({route, navigation}) => {
       marginLeft: '3%',
       color: 'white',
     },
+    dropdownContainer: {flex: 1, padding: 16},
+    dropdownLabel: {fontWeight: 'bold', paddingBottom: 5},
     dropdown: {
       height: 50,
       borderColor: 'gray',
@@ -77,29 +78,32 @@ const InventoryScreenDetail = ({route, navigation}) => {
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
-        style={{flex: 1, padding: 16}}>
-        <Dropdown
-          style={[
-            styles.dropdown,
-            isFocus && {borderColor: colors.primary, borderWidth: 1},
-          ]}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          itemTextStyle={{color: 'black'}}
-          itemContainerStyle={{}}
-          data={dataSetType}
-          // search
-          maxHeight={180}
-          labelField="title"
-          valueField="id"
-          // placeholder={!isFocus ? 'Select item' : '...'}
-          value={selectedOption}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setSelectedOption(item);
-          }}
-        />
+        style={{flex: 1}}>
+        <SafeAreaView style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>Select Inventory Type</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              isFocus && {borderColor: colors.primary, borderWidth: 1},
+            ]}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            itemTextStyle={{color: 'black'}}
+            itemContainerStyle={{}}
+            data={dataSetType}
+            // search
+            maxHeight={180}
+            labelField="title"
+            valueField="id"
+            // placeholder={!isFocus ? 'Select item' : '...'}
+            value={selectedOption}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={item => {
+              setSelectedOption(item);
+            }}
+          />
+        </SafeAreaView>
         {/* <AutocompleteDropdown
           inputContainerStyle={{
             marginVertical: 10,

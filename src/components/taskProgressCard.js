@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   leftContainer: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    width: '70%',
+    width: '65%',
     backgroundColor: '#FF9F1C',
     padding: 16,
     borderTopLeftRadius: 10,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '30%',
+    width: '35%',
     backgroundColor: '#FDFFFC',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,

@@ -16,6 +16,7 @@ import DateInput from '../../components/dateInput';
 const TaskScreenFilter = ({navigation, route}) => {
   const {colors} = useTheme();
   const {filterValues, setFilterValues} = route.params;
+  const [tempForm, setTempForm] = useState(filterValues);
 
   const [radioButtonValue, setRadioButtonValue] = useState(
     filterValues['selectedStatus'],
@@ -23,7 +24,7 @@ const TaskScreenFilter = ({navigation, route}) => {
 
   const handleRadioButtonClicked = newValue => {
     setRadioButtonValue(newValue);
-    setFilterValues({...filterValues, selectedStatus: newValue});
+    setTempForm({...tempForm, selectedStatus: newValue});
   };
 
   const styles = StyleSheet.create({
@@ -79,15 +80,15 @@ const TaskScreenFilter = ({navigation, route}) => {
         <SafeAreaView style={styles.dateInputContainer}>
           <DateInput
             label={'From'}
-            dataForm={filterValues}
-            setDataForm={setFilterValues}
+            dataForm={tempForm}
+            setDataForm={setTempForm}
             dateFieldName={'startDate'}
             minWidth={'48%'}
           />
           <DateInput
             label={'To'}
-            dataForm={filterValues}
-            setDataForm={setFilterValues}
+            dataForm={tempForm}
+            setDataForm={setTempForm}
             dateFieldName={'endDate'}
             minWidth={'48%'}
           />
@@ -132,6 +133,7 @@ const TaskScreenFilter = ({navigation, route}) => {
             labelStyle={{color: colors.primary}}
             mode="contained"
             onPress={() => {
+              setFilterValues({...filterValues, ...tempForm});
               navigation.navigate('Task');
             }}>
             Filter
