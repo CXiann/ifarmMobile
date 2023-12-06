@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Realm, {BSON} from 'realm';
 import {
-  ScrollView,
   StatusBar,
   StyleSheet,
   View,
@@ -9,6 +8,7 @@ import {
   Text,
   KeyboardAvoidingView,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {useTheme} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import {Farm} from '../schemas/farm.schema';
 import {getVisibleTagsItems} from '../utils/visibleTagsItems-utils';
 import {Item_Props as itemProps} from '../constants/item-props';
 import {FlatList} from 'react-native-gesture-handler';
+import WeatherMainCard from '../components/weatherMainCard';
 
 const HomeScreen = ({navigation}) => {
   const initialState = {
@@ -42,17 +43,24 @@ const HomeScreen = ({navigation}) => {
       flex: 1,
       padding: 16,
     },
+    inventoryContainer: {
+      height: 'auto',
+    },
     farmTitle: {
       fontSize: 20,
       fontWeight: 'bold',
       color: colors.primary,
-      marginBottom: 20,
+      marginBottom: 10,
     },
     stockCardContainer: {},
     stockCardRow: {
       flexDirection: 'row',
       minWidth: '50%',
       justifyContent: 'center',
+    },
+    weatherContainer: {
+      flex: 1,
+      marginTop: 0,
     },
   });
 
@@ -83,22 +91,29 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.farmTitle}>
-        {farmName} ({today.getDate()}/{today.getMonth() + 1}/
-        {today.getFullYear()})
-      </Text>
-      <FlatList
-        data={filteredItemProps}
-        keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
-        numColumns={2}
-        columnWrapperStyle={{
-          justifyContent: 'space-between',
-          marginBottom: 8,
-        }}
-        renderItem={({item}) => (
-          <StockCard navigation={navigation} data={itemList} field={item} />
-        )}
-      />
+      <ScrollView>
+        <SafeAreaView style={styles.inventoryContainer}>
+          <Text style={styles.farmTitle}>
+            {farmName} ({today.getDate()}/{today.getMonth() + 1}/
+            {today.getFullYear()})
+          </Text>
+          <FlatList
+            data={filteredItemProps}
+            keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
+            numColumns={2}
+            columnWrapperStyle={{
+              justifyContent: 'space-between',
+              marginBottom: 8,
+            }}
+            renderItem={({item}) => (
+              <StockCard navigation={navigation} data={itemList} field={item} />
+            )}
+          />
+        </SafeAreaView>
+        <SafeAreaView style={styles.weatherContainer}>
+          <WeatherMainCard />
+        </SafeAreaView>
+      </ScrollView>
     </SafeAreaView>
   );
 };

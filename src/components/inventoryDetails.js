@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import {StyleSheet} from 'react-native';
-import {Text, Button} from 'react-native-paper';
+import {Text, Button, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getColor} from '../utils/colorGenerator-utils';
 
@@ -12,6 +12,7 @@ const InventoryDetails = ({navigation, type, data, field}) => {
   const [pieData, setPieData] = useState(null);
   const [visibleData, setVisibleData] = useState(data[field.options] ?? []);
   const [selectedData, setSelectedData] = useState('');
+  const {colors} = useTheme();
 
   const selectedCardColor = field.cardColor;
   const selectedIcon = field.icon;
@@ -68,12 +69,17 @@ const InventoryDetails = ({navigation, type, data, field}) => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'white',
+      padding: 16,
+      backgroundColor: field.softColor,
+      borderTopLeftRadius: 35,
+      borderTopRightRadius: 35,
+      elevation: 8,
+      minHeight: 700,
     },
     titleText: {
       fontSize: 20,
       fontWeight: 'bold',
-      paddingLeft: 10,
+      // padding: 16,
       // textAlign: 'center',
     },
     legendMainRow: {

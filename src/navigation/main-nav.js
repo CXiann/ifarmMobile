@@ -48,13 +48,7 @@ export default function MainNav() {
           <Stack.Screen name="Add Item" component={InventoryScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}
           <Stack.Screen name="Filter Task" component={TaskScreenFilter} />
-          <Stack.Screen
-            name="Add New Task"
-            component={TaskScreenAddForm}
-            options={({route}) => ({
-              headerShown: true,
-            })}
-          />
+          <Stack.Screen name="Add New Task" component={TaskScreenAddForm} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

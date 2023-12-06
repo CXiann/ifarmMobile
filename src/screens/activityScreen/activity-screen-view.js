@@ -62,7 +62,7 @@ const ActivityScreenView = ({navigation}) => {
   };
 
   const [dataForm, setDataForm] = useState(initialValues);
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
   const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
 
   console.log('Prev value: ', dataForm['previousValue']);
@@ -160,6 +160,7 @@ const ActivityScreenView = ({navigation}) => {
         <Button
           icon="filter-variant"
           mode="elevated"
+          style={{marginEnd: 20}}
           onPress={() =>
             navigation.navigate('Sort', {
               dataForm: dataForm,
@@ -170,7 +171,7 @@ const ActivityScreenView = ({navigation}) => {
           Filter
         </Button>
         <Button
-          icon="filter-variant"
+          icon="chart-bar"
           mode="elevated"
           onPress={() =>
             navigation.navigate('Activity Chart', {
@@ -205,7 +206,7 @@ const ActivityScreenView = ({navigation}) => {
         keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
         renderItem={renderItem}
       />
-      {visible && (
+      {/* {visible && (
         <ActivityScreenViewSort
           visible={visible}
           showModal={showModal}
@@ -213,7 +214,7 @@ const ActivityScreenView = ({navigation}) => {
           setDataForm={setDataForm}
           actProps={actProps}
         />
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

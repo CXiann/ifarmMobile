@@ -51,7 +51,7 @@ const InventoryPercentage = ({
       fontSize: 18,
       fontWeight: 'bold',
       color: 'red',
-      // maxWidth: '85%',
+      maxWidth: '85%',
     },
     itemValueTextSelected: {
       fontSize: 16,
@@ -72,6 +72,7 @@ const InventoryPercentage = ({
     },
     itemNameText: {
       fontSize: 16,
+      maxWidth: '85%',
     },
     itemValueText: {
       fontSize: 14,
