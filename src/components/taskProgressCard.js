@@ -4,7 +4,10 @@ import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
-  const progressPercentage = Math.round((completedTasks / totalTasks) * 100);
+  let progressPercentage = 0;
+  if (totalTasks > 0) {
+    progressPercentage = Math.round((completedTasks / totalTasks) * 100);
+  }
 
   return (
     <SafeAreaView style={styles.card}>
