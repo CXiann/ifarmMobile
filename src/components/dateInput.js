@@ -10,6 +10,7 @@ const DateInput = ({
   setDataForm,
   minWidth,
   dateFieldName,
+  minimumDate,
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -58,6 +59,7 @@ const DateInput = ({
           value={dataForm[dateFieldName]}
           mode="date"
           onChange={handleDateCalendar}
+          minimumDate={minimumDate}
         />
       )}
     </SafeAreaView>

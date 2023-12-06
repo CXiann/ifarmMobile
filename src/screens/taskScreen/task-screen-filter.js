@@ -83,6 +83,7 @@ const TaskScreenFilter = ({navigation, route}) => {
             setDataForm={setFilterValues}
             dateFieldName={'startDate'}
             minWidth={'48%'}
+            minimumDate={filterValues['startDate']}
           />
           <DateInput
             label={'To'}
@@ -90,6 +91,7 @@ const TaskScreenFilter = ({navigation, route}) => {
             setDataForm={setFilterValues}
             dateFieldName={'endDate'}
             minWidth={'48%'}
+            minimumDate={filterValues['startDate']}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.radioButtonContainer}>
