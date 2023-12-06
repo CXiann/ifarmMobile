@@ -8,6 +8,8 @@ import {
   IconButton,
   Text,
   useTheme,
+  Portal,
+  Dialog,
 } from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,11 +19,18 @@ import ActivitiesScreenNav from './activity-screen-nav';
 import TestScreen from '../screens/test-screen';
 import TaskScreenNav from './task-screen-nav';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {MMKVLoader} from 'react-native-mmkv-storage';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavbar({route}) {
   const {colors} = useTheme();
+  const MMKV = new MMKVLoader().initialize();
+  const [visible, setVisible] = React.useState(false);
+
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
 
   const style = StyleSheet.create({
     rightContainer: {
@@ -75,18 +84,60 @@ export default function TabsNavbar({route}) {
               labelStyle={{color: colors.outline}}
               style={{
                 margin: 4,
+                maxWidth: '80%',
               }}>
               <Text
-                style={{alignSelf: 'center', fontWeight: 'bold'}}
-                variant="labelLarge">
-                {'Farm: '}
-                <Text
-                  variant="titleMedium"
-                  style={{color: colors.tertiary, fontWeight: 'bold'}}>
-                  {route.params.farmName}
-                </Text>
+                variant="titleMedium"
+                style={{
+                  color: colors.tertiary,
+                  fontWeight: 'bold',
+                  fontSize: 15,
+                }}>
+                {route.params.farmName}
               </Text>
             </Button>
+            <IconButton
+              icon="logout-variant"
+              iconColor="gray"
+              style={{
+                marginTop: 10,
+                // backgroundColor: colors.secondaryContainer,
+              }}
+              size={20}
+              onPress={() => showDialog()}
+            />
+            <Portal>
+              <Dialog visible={visible} onDismiss={hideDialog}>
+                <Dialog.Title>
+                  Confirm Logout
+                  <Icon name="alert-circle-outline" color="red" size={30} />
+                </Dialog.Title>
+                <Dialog.Content>
+                  <Text variant="bodyMedium">
+                    Are you sure you want to logout?
+                  </Text>
+                </Dialog.Content>
+                <Dialog.Actions>
+                  <Button
+                    style={{marginRight: 20, width: 80}}
+                    onPress={hideDialog}>
+                    No
+                  </Button>
+                  <Button
+                    mode="contained"
+                    style={{width: 80}}
+                    onPress={() => {
+                      hideDialog();
+                      MMKV.setBool('persistAccount', false);
+                      MMKV.removeItem('persistEmail');
+                      MMKV.removeItem('persistPassword');
+                      navigation.navigate('Login');
+                    }}>
+                    Yes
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
           </SafeAreaView>
         ),
       })}

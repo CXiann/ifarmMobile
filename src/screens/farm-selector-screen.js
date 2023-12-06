@@ -19,9 +19,9 @@ const FarmSelectorScreen = ({navigation}) => {
 
   useEffect(() => {
     setIsLoading(false);
-    navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-    });
+    // navigation.addListener('beforeRemove', e => {
+    //   e.preventDefault();
+    // });
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Farm));

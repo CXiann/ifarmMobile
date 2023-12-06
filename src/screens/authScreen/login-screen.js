@@ -6,17 +6,20 @@ import {
   Image,
   KeyboardAvoidingView,
 } from 'react-native';
-import {Text, TextInput, Button, useTheme} from 'react-native-paper';
+import {Text, TextInput, Button, useTheme, Checkbox} from 'react-native-paper';
 import * as bcrypt from 'bcryptjs';
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../../contexts/GlobalContext';
 import logo from '../../assets/images/logo.png';
+import {MMKVLoader} from 'react-native-mmkv-storage';
 
 import {User} from '../../schemas/user.schema';
 
 const LoginScreen = ({navigation}) => {
+  const MMKV = new MMKVLoader().initialize();
+
   const {userData, setUserId, setUserData, setUserName} = useGlobal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +27,7 @@ const LoginScreen = ({navigation}) => {
   const [passFocus, setPassFocus] = useState(false);
   const {setIsLoading} = useGlobal();
   const [err, setErr] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [checked, setChecked] = useState(false);
   const {colors} = useTheme();
 
   const {useQuery, useRealm} = realmContext;
@@ -32,46 +35,78 @@ const LoginScreen = ({navigation}) => {
   const users = useQuery(User);
 
   useEffect(() => {
+    console.log('persistAccount: ', MMKV.getBool('persistAccount'));
+    console.log('persistEmail: ', MMKV.getString('persistEmail'));
+    console.log('persistPassword: ', MMKV.getString('persistPassword'));
+    setIsLoading(true);
+    const checkPersist = async () => {
+      if (MMKV.getBool('persistAccount')) {
+        var isValid = false;
+        const currentUser = users.filtered(
+          'email CONTAINS $0',
+          MMKV.getString('persistEmail'),
+        )[0];
+        console.log('Current User: ', currentUser ? true : false);
+        if (currentUser) {
+          isValid = await bcrypt.compare(
+            MMKV.getString('persistPassword'),
+            currentUser.password,
+          );
+        }
+        console.log('IsValid: ', isValid);
+        if (isValid) {
+          console.log('Login: ' + isValid);
+          setUserData(currentUser);
+          setUserId(currentUser?._id);
+          setUserName(currentUser?.name.eng);
+          navigation.navigate('Farm Selector');
+        } else {
+          console.log('Credential Lost');
+        }
+      }
+      setIsLoading(false);
+    };
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(User));
     });
     console.log('Total users: ', users.length);
-    const currentUser = users.filtered(
-      'email CONTAINS $0',
-      'farmowner@ifarm.com',
-    )[0];
-    setUserData(currentUser);
-    setUserId(currentUser?._id);
-    setUserName(currentUser?.name.eng);
-    setIsLoading(false);
+    checkPersist();
   }, [realm]);
 
-  // const app = useApp();
-  // async function handleLogIn() {
-  //   // When anonymous authentication is enabled, users can immediately log
-  //   // into your app without providing any identifying information.
-  //   await app.logIn(Realm.Credentials.anonymous());
-  // }
-
   const handleLogIn = async () => {
+    var isValid = false;
     Keyboard.dismiss();
     setIsLoading(true);
-    const isMatch = await validateCredentials();
-    if (isMatch) {
+    const currentUser = users.filtered('email CONTAINS $0', email)[0];
+    if (currentUser) {
+      isValid = await validateCredentials(currentUser);
+    }
+    console.log('Valid: ', isValid);
+    if (isValid) {
       setErr(false);
-      console.log('Login: ' + isMatch);
+      console.log('Login: ' + isValid);
+      if (checked) {
+        MMKV.setString('persistEmail', email);
+        MMKV.setString('persistPassword', password);
+        MMKV.setBool('persistAccount', true);
+      }
+      setUserData(currentUser);
+      setUserId(currentUser?._id);
+      setUserName(currentUser?.name.eng);
       navigation.navigate('Farm Selector');
     } else {
       setErr(true);
-      console.log('Login: ' + isMatch);
+      console.log('Login: ' + isValid);
       setIsLoading(false);
     }
+    setEmail('');
+    setPassword('');
   };
 
-  const validateCredentials = async () => {
+  const validateCredentials = async currentUserData => {
     var isMatch = false;
-    const currentUserPassword = userData.password;
+    const currentUserPassword = currentUserData.password;
     isMatch = await bcrypt.compare(password, currentUserPassword);
     return isMatch;
   };
@@ -158,6 +193,15 @@ const LoginScreen = ({navigation}) => {
             value={password}
             onChangeText={password => setPassword(password)}
           />
+          <SafeAreaView style={{flexDirection: 'row'}}>
+            <Checkbox
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setChecked(!checked);
+              }}
+            />
+            <Text style={{alignSelf: 'center'}}>Keep me logged in</Text>
+          </SafeAreaView>
           {err && (
             <Text style={{color: colors.error}}>Invalid Login Credential</Text>
           )}

@@ -29,8 +29,14 @@ const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
         </SafeAreaView>
       </SafeAreaView>
       <SafeAreaView style={styles.rightContainer}>
-        <Text style={styles.progressPercentage}>{progressPercentage}%</Text>
-        <Text style={styles.label}>Completed</Text>
+        {!isNaN(progressPercentage) ? (
+          <>
+            <Text style={styles.progressPercentage}>{progressPercentage}%</Text>
+            <Text style={styles.label}>Completed</Text>
+          </>
+        ) : (
+          <Text style={styles.label}>No Data</Text>
+        )}
       </SafeAreaView>
     </SafeAreaView>
   );
