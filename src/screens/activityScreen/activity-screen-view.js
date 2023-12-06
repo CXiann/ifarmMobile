@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {TextInput, Card, Avatar, Text, useTheme} from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {useTheme, Button, FAB, TextInput, IconButton} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -11,129 +10,211 @@ import {useGlobal} from '../../contexts/GlobalContext';
 
 import {Activity} from '../../schemas/activity.schema';
 import {Activity_Props as actProps} from '../../constants/activity-props';
-import DateInput from '../../components/dateInput';
 
-const ActivityScreenView = () => {
+import DateInput from '../../components/dateInput';
+import ActivityScreenViewSort from './activity-screen-view-sort';
+import ActivityViewCards from '../../components/activityViewCards';
+
+const ActivityScreenView = ({navigation}) => {
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
   const {userId, farmId, setIsLoading} = useGlobal();
   const {colors} = useTheme();
-
-  const defaultActProps = actProps[9];
+  const farm = useQuery(Activity);
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
-      padding: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
     },
-    card: {
-      marginVertical: 5,
-      minWidth: '100%',
-    },
-    cardTitle: {
-      fontWeight: 'bold',
-    },
-    cardSubtitle: {
-      color: colors.primary,
-    },
-    cardBottom: {
+    dateInputContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      marginTop: 5,
+      marginBottom: 10,
     },
-    textInput: {
-      marginHorizontal: 10,
-      marginVertical: 5,
-      backgroundColor: '#ffffff',
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
     },
   });
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const initialValues = {
+    startDate: new Date(),
+    endDate: new Date(),
+    plants: '',
+    fertilizers: '',
+    pesticides: '',
+    foliars: '',
+    fungicides: '',
+    selectedValue: [],
+    options: [],
+    previousValue: {
+      plants: '',
+      fertilizers: '',
+      pesticides: '',
+      foliars: '',
+      fungicides: '',
+    },
+  };
 
-  const allActivities = useQuery(Activity);
-  const [activitiesToDisplay, setActivitiesToDisplay] = useState(allActivities);
+  const [dataForm, setDataForm] = useState(initialValues);
+  // const [visible, setVisible] = useState(false);
+  const [activitiesToDisplay, setActivitiesToDisplay] = useState([]);
+
+  console.log('Prev value: ', dataForm['previousValue']);
 
   useEffect(() => {
     setIsLoading(true);
+    const keysToExtract = [
+      'plants',
+      'fertilizers',
+      'pesticides',
+      'foliars',
+      'fungicides',
+    ];
+    const propsForQuery = keysToExtract.map(key => dataForm[key]);
+    console.log('Props: ', propsForQuery);
+    var currentUserAllActivities = farm
+      .filtered(
+        'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3' +
+          (dataForm['selectedValue'].length > 0 ? ' && action IN $4' : ''),
+        new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
+        new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
+        userId.toString(),
+        farmId.toString(),
+        dataForm['selectedValue'],
+      )
+      .sorted('date', true);
+
+    function containsOnlyOneNonEmptyString(arrs) {
+      const nonEmptyStrings = arrs.filter(str => str != '');
+      return nonEmptyStrings.length == 1;
+    }
+    function containsMoreThanOneNonEmptyString(arrs) {
+      const nonEmptyStrings = arrs.filter(str => str != '');
+      return nonEmptyStrings.length > 1;
+    }
+    function getNonEmptyStringValue(arrs) {
+      for (const str of arrs) {
+        if (str !== '') {
+          return str;
+        }
+      }
+      return null;
+    }
+    //just to return empty Realm.Results
+    if (containsMoreThanOneNonEmptyString(propsForQuery)) {
+      currentUserAllActivities = currentUserAllActivities.filtered(
+        'isActual == $0',
+        false,
+      );
+    }
+
+    if (containsOnlyOneNonEmptyString(propsForQuery)) {
+      currentUserAllActivities = currentUserAllActivities.filtered(
+        'item.eng == $0',
+        getNonEmptyStringValue(propsForQuery),
+      );
+    }
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
-      mutableSubs.add(realm.objects(Activity));
+      mutableSubs.add(currentUserAllActivities);
     });
-  }, [realm]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const currentUserAllActivities = allActivities.filtered(
-      'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3',
-      new Date(startDate.setHours(0, 0, 0, 0)), //set earliest possible starting of date
-      new Date(endDate.setHours(23, 59, 59, 999)), //set latest possible ending of date
-      userId.toString(),
-      farmId.toString(),
-    );
-    setActivitiesToDisplay(currentUserAllActivities);
     setIsLoading(false);
-  }, [startDate, endDate, setActivitiesToDisplay]);
+    setActivitiesToDisplay(currentUserAllActivities);
+    console.log('Done useeffect');
+  }, [realm, dataForm]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 
-  const getActionFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0]?.icon;
-  };
+  // const showModal = useCallback(() => setVisible(!visible), [visible]);
+  console.log('Selected action: ', dataForm['selectedValue']);
 
-  const getBgColorFromActivityProp = action => {
-    return actProps.filter(item => item.action == action)[0]?.bgColor;
-  };
+  const renderItem = ({item}) => (
+    <ActivityViewCards item={item} actProps={actProps} />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <DateInput label={'From'} data={startDate} setData={setStartDate} />
-      <DateInput label={'To'} data={endDate} setData={setEndDate} />
+      <SafeAreaView style={{flexDirection: 'row'}}>
+        <Button
+          style={{marginEnd: 20}}
+          buttonColor="honeydew"
+          // textColor="white"
+          icon="plus"
+          mode="elevated"
+          onPress={() => navigation.navigate('Add Activity')}>
+          Add
+        </Button>
+        {/* Test old filter */}
+        {/* <Button
+          icon="filter-variant"
+          mode="elevated"
+          onPress={() => showModal()}>
+          Filter
+        </Button> */}
+        <Button
+          icon="filter-variant"
+          mode="elevated"
+          style={{marginEnd: 20}}
+          onPress={() =>
+            navigation.navigate('Sort', {
+              dataForm: dataForm,
+              setDataForm: setDataForm,
+              actProps: actProps,
+            })
+          }>
+          Filter
+        </Button>
+        <Button
+          icon="chart-bar"
+          mode="elevated"
+          onPress={() =>
+            navigation.navigate('Activity Chart', {
+              dataForm: dataForm,
+              setDataForm: setDataForm,
+              actProps: actProps,
+            })
+          }>
+          Chart
+        </Button>
+      </SafeAreaView>
+      <SafeAreaView style={styles.dateInputContainer}>
+        <DateInput
+          label={'From'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          dateFieldName={'startDate'}
+          minWidth={'48%'}
+        />
+        <DateInput
+          label={'To'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          dateFieldName={'endDate'}
+          minWidth={'48%'}
+        />
+      </SafeAreaView>
       <FlatList
         removeClippedSubviews={true}
         data={activitiesToDisplay}
         initialNumToRender={4}
         keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
-        renderItem={({item}) => (
-          <Card mode="contained" style={styles.card}>
-            <Card.Title
-              title={item?.action}
-              titleStyle={styles.cardTitle}
-              subtitle={item?.item.eng}
-              subtitleStyle={styles.cardSubtitle}
-              left={props => (
-                <Avatar.Icon
-                  {...props}
-                  icon={
-                    getActionFromActivityProp(item.action) ||
-                    defaultActProps.icon
-                  }
-                  style={{
-                    backgroundColor:
-                      getBgColorFromActivityProp(item.action) ||
-                      defaultActProps.bgColor,
-                  }}
-                />
-              )}
-            />
-            <Card.Content>
-              {item?.unit && (
-                <Text variant="titleLarge">
-                  {item?.quantity + ' ' + item?.unit}
-                </Text>
-              )}
-              <SafeAreaView style={styles.cardBottom}>
-                <Text variant="bodyLarge">
-                  {'F' + item?.field + ' R' + item?.row}
-                </Text>
-                <Text variant="bodyLarge">
-                  {item?.date.toLocaleDateString()}
-                </Text>
-              </SafeAreaView>
-            </Card.Content>
-          </Card>
-        )}
+        renderItem={renderItem}
       />
+      {/* {visible && (
+        <ActivityScreenViewSort
+          visible={visible}
+          showModal={showModal}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+          actProps={actProps}
+        />
+      )} */}
     </SafeAreaView>
   );
 };

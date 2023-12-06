@@ -1,4 +1,5 @@
 import Realm, {BSON} from 'realm';
+import {useState, useEffect, useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -10,42 +11,79 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({
-  label,
-  id,
-  title, //key of database prop
+  label, //labeling for input
+  id, //unique key id of database prop
+  title, //unique key of database prop(To display as options)
   options,
   dataForm,
   setDataForm,
   initialValue,
+  setRefItemFunction,
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
-  const {useQuery} = realmContext;
+  const {useRealm} = realmContext;
+  const realm = useRealm();
   const {farmId} = useGlobal();
+  const [loading, setLoading] = useState(true);
+  const dropdownController = useRef(null);
+  const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
+    {
+      id: '',
+      title: '',
+    },
+  ]);
 
-  const currentUserSelectedFarmAllProps = useQuery(Farm).filtered(
-    '_id == $0',
-    BSON.ObjectId(farmId),
-  );
-  console.log('Current Farm All Props: ', currentUserSelectedFarmAllProps);
+  useEffect(() => {
+    setRefItemFunction(dropdownController);
+  }, []);
 
-  const currentUserAllSelectedActionItems =
-    currentUserSelectedFarmAllProps[0][options] || [];
-  console.log(
-    'Current Farm Selected Item Props length: ',
-    currentUserAllSelectedActionItems.length,
-  );
+  useEffect(() => {
+    const selectedFarmAllProps = realm
+      .objects(Farm)
+      .filtered('_id == $0', BSON.ObjectId(farmId));
+    // console.log('Current Farm All Props: ', selectedFarmAllProps);
 
-  const getDataSetFormat = items => {
-    return items.map(item => {
-      const newObj = {id: '', title: ''};
-      newObj['id'] = item[id];
-      newObj['title'] = item[title].eng;
-      return newObj;
+    const allSelectedActionItems = [...selectedFarmAllProps[0][options]] || [];
+    console.log(
+      'Current Farm Selected Item Props length: ',
+      allSelectedActionItems.length,
+    );
+    const allSelectedFarmVisibleTags =
+      [...selectedFarmAllProps[0]['visibleTags']] || [];
+    console.log('Current Farm Visible Tags: ', allSelectedFarmVisibleTags);
+
+    const visibleTagsOptions = allSelectedActionItems
+      .filter(item =>
+        item['tags'].some(tag => allSelectedFarmVisibleTags.includes(tag)),
+      )
+      .sort((a, b) => {
+        const nameA = a['name']['eng'];
+        const nameB = b['name']['eng'];
+
+        // Compare the names
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+
+    console.log('Display: ', visibleTagsOptions.length);
+    const getDataSetFormat = items => {
+      return items.map(item => {
+        const newObj = {id: '', title: ''};
+        newObj['id'] = options + '_' + item[id];
+        newObj['title'] = item[title].eng;
+        return newObj;
+      });
+    };
+
+    setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
+    realm.subscriptions.update(mutableSubs => {
+      // Create subscription for filtered results.
+      mutableSubs.add(realm.objects(options));
     });
-  };
-
-  const dataSetFormatFarm = getDataSetFormat(currentUserAllSelectedActionItems);
+    setLoading(false);
+  }, [realm]);
 
   const style = StyleSheet.create({
     container: {
@@ -53,7 +91,7 @@ const AutocompleteItemInput = ({
       paddingTop: 8,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
-      margin: 10,
+      marginVertical: 5,
       borderRadius: 5,
       borderBottomWidth: 1,
       borderBottomColor: colors.outline,
@@ -66,13 +104,22 @@ const AutocompleteItemInput = ({
       minWidth: '100%',
     },
   });
-
+  if (loading) {
+    return (
+      <SafeAreaView style={style.container}>
+        {/* <ActivityIndicator animating={true} /> */}
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
       <AutocompleteDropdown
+        controller={controller => {
+          dropdownController.current = controller;
+        }}
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
@@ -86,7 +133,6 @@ const AutocompleteItemInput = ({
         suggestionsListTextStyle={{
           color: colors.primary,
         }}
-        suggestionsListContainerStyle={{}}
         renderItem={(item, text) => (
           <Text style={{color: colors.primary, padding: 15}}>{item.title}</Text>
         )}
@@ -99,10 +145,21 @@ const AutocompleteItemInput = ({
         closeOnBlur={true}
         closeOnSubmit={true}
         initialValue={initialValue ? dataSetFormatFarm[0] : ''}
+        showClear={true}
+        onClear={() =>
+          setDataForm({
+            ...dataForm,
+            item: {eng: '', chs: '', cht: ''},
+          })
+        }
         onSelectItem={item => {
-          item && setDataForm({...dataForm, item: {eng: item.title}});
+          item &&
+            setDataForm({
+              ...dataForm,
+              item: {...dataForm.item, eng: item.title},
+            });
         }}
-        dataSet={dataSetFormatFarm}
+        dataSet={dataSetFormatFarm || []}
       />
     </SafeAreaView>
   );

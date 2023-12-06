@@ -14,7 +14,7 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={actProps.filter(item => item.action != 'default')}
+        data={actProps.filter(actProp => actProp.action !== 'Add Inventory')}
         keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
         numColumns={2}
         columnWrapperStyle={{
@@ -39,14 +39,6 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
                 />
               )}
             />
-            {/* <Card.Content>
-              <Text variant="titleLarge">
-                {item?.quantity + ' ' + item?.unit}
-              </Text>
-              <Text variant="bodyLarge">
-                {'F' + item?.field + ' R' + item?.row}
-              </Text>
-            </Card.Content> */}
           </Card>
         )}
       />

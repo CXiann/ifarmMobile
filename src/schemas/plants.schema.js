@@ -19,6 +19,8 @@ export class Plant extends Realm.Object {
       _id: {type: 'objectId', default: () => new BSON.ObjectId()},
       name: 'plants_name',
       tags: 'string[]',
+      unitType: 'string?',
+      _v: 'int?',
     },
     primaryKey: '_id',
   };

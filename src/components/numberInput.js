@@ -7,7 +7,6 @@ const NumberInput = ({label, dataFormOption, dataForm, setDataForm}) => {
 
   const styles = StyleSheet.create({
     textInput: {
-      marginHorizontal: 10,
       marginVertical: 5,
       minWidth: '100%',
     },
@@ -24,7 +23,7 @@ const NumberInput = ({label, dataFormOption, dataForm, setDataForm}) => {
     <TextInput
       label={label}
       mode="flat"
-      value={dataForm?.dataFormOption?.toString()}
+      value={dataForm[dataFormOption]}
       onChangeText={value => handleOnChangeText(value)}
       style={styles.textInput}
       contentStyle={styles.content}

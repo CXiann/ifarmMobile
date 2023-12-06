@@ -9,96 +9,93 @@ import {
 import {AutocompleteDropdownContextProvider} from 'react-native-autocomplete-dropdown';
 import MainNav from './src/navigation/main-nav';
 import NotificationHandler from './src/components/notificationHandler';
-
 import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
 import {GlobalProvider} from './src/contexts/GlobalContext';
 import LoadingOverlay from './src/components/loadingOverlay';
-import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
-
 const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
   return (
-    // logger includes a default that prints level and message
-    <AppProvider
-      id={APP_ID}
-      logLevel={'trace'}
-      logger={(level, message) => console.log(`[${level}]: ${message}`)}>
-      <UserProvider fallback={LogIn}>
-        <PaperProvider
-          theme={THEME}
-          // settings={{
-          //   icon: props => <Icon {...props} />,
-          // }}
-        >
+    <GlobalProvider>
+      <AppProvider
+        id={APP_ID}
+        logLevel={'trace'}
+        logger={(level, message) => console.log(`[${level}]: ${message}`)}>
+        <UserProvider fallback={LogIn}>
           <App />
-        </PaperProvider>
-      </UserProvider>
-    </AppProvider>
+        </UserProvider>
+      </AppProvider>
+    </GlobalProvider>
   );
 }
 const App = () => {
   useEffect(() => {
-    PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function (token) {
-        console.log('TOKEN:', token);
-      },
-
-      // (required) Called when a remote is received or opened, or local notification is opened
-      onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification);
-
-        // process the notification
-
-        // (required) Called when a remote is received or opened, or local notification is opened
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-      },
-
-      channelId: 'channel-1',
-
-      // IOS ONLY (optional): default: all - Permissions to register.
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true,
-      },
-
-      popInitialNotification: true,
-
-      requestPermissions: Platform.OS === 'ios',
-    });
+    // PushNotification.configure({
+    //   // (optional) Called when Token is generated (iOS and Android)
+    //   onRegister: function (token) {
+    //     console.log('TOKEN:', token);
+    //   },
+    //   // (required) Called when a remote is received or opened, or local notification is opened
+    //   onNotification: function (notification) {
+    //     console.log('NOTIFICATION:', notification);
+    //     // process the notification
+    //     // (required) Called when a remote is received or opened, or local notification is opened
+    //     notification.finish(PushNotificationIOS.FetchResult.NoData);
+    //   },
+    //   onRegistrationError: function (err) {
+    //     console.error(err.message, err);
+    //   },
+    //   // IOS ONLY (optional): default: all - Permissions to register.
+    //   permissions: {
+    //     alert: true,
+    //     badge: true,
+    //     sound: true,
+    //   },
+    //   popInitialNotification: true,
+    //   requestPermissions: Platform.OS === 'ios',
+    // });
   }, []);
 
   return (
-    <GlobalProvider>
-      <RealmProvider
-        fallback={<LoadingOverlay />}
-        sync={{
-          flexible: true,
-          clientReset: {
-            mode: 'discardUnsyncedChanges',
-            onBefore: realm => {
-              console.log('Beginning client reset for ', realm.path);
-            },
-            onAfter: (beforeRealm, afterRealm) => {
-              console.log('Finished client reset for', beforeRealm.path);
-              console.log('New realm path', afterRealm.path);
-            },
+    <RealmProvider
+      // fallback={<LoadingOverlay />}
+      sync={{
+        flexible: true,
+        initialSubscriptions: {
+          update(subs, realm) {
+            subs.add(realm.objects('users'));
+            subs.add(realm.objects('farms'));
+            subs.add(realm.objects('activities'));
+            subs.add(realm.objects('foliars'));
+            subs.add(realm.objects('pesticides'));
+            subs.add(realm.objects('plants'));
+            subs.add(realm.objects('fertilizers'));
+            subs.add(realm.objects('fungicides'));
           },
-          onError: console.error,
-        }}>
-        <AutocompleteDropdownContextProvider>
+        },
+        clientReset: {
+          mode: 'discardUnsyncedChanges',
+          onBefore: realm => {
+            console.log('Beginning client reset for ', realm.path);
+          },
+          onAfter: (beforeRealm, afterRealm) => {
+            console.log('Finished client reset for', beforeRealm.path);
+            console.log('New realm path', afterRealm.path);
+          },
+        },
+        onError: console.error,
+      }}>
+      <AutocompleteDropdownContextProvider>
+        <PaperProvider theme={THEME}>
           <LoadingOverlay />
           <MainNav />
           <NotificationHandler />
-        </AutocompleteDropdownContextProvider>
-      </RealmProvider>
-    </GlobalProvider>
+        </PaperProvider>
+      </AutocompleteDropdownContextProvider>
+    </RealmProvider>
   );
 };
 // const THEME = {
@@ -111,10 +108,10 @@ const App = () => {
 // };
 
 async function handleSyncError(session, syncError) {
-  // const realm = useRealm();
   if (syncError.name == 'ClientReset') {
     console.log(syncError);
     try {
+      const realm = useRealm();
       console.log('error type is ClientReset....');
       const path = realm.path; // realm.path will not be accessible after realm.close()
       realm.close();

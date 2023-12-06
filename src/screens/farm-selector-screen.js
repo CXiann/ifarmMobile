@@ -11,21 +11,23 @@ import {Farm} from '../schemas/farm.schema';
 
 const FarmSelectorScreen = ({navigation}) => {
   const {useQuery, useRealm} = realmContext;
-  const {userData, setFarmId} = useGlobal();
+  const {userData, setFarmId, setIsLoading, setFarmName} = useGlobal();
   const realm = useRealm();
-  const {setIsLoading} = useGlobal();
 
   const farms = useQuery(Farm);
   const [selectedFarm, setSelectedFarm] = useState({id: '', title: ''}); //store farm information in {id:objectId(string), title:}
 
   useEffect(() => {
+    setIsLoading(false);
+    navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+    });
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Farm));
     });
     console.log('Total farms: ', farms.length);
-    setIsLoading(false);
-  }, [realm]);
+  }, [realm, navigation]);
 
   const currentUserAllFarmBSONId = userData?.farms?.map(
     farmIdStr => new BSON.ObjectId(farmIdStr),
@@ -35,11 +37,11 @@ const FarmSelectorScreen = ({navigation}) => {
   console.log('Selected farm: ', selectedFarm);
 
   const handleManageButton = () => {
-    setIsLoading(true);
     console.log('Before navigating: ', Object.values(selectedFarm));
     setFarmId(selectedFarm.id);
-    if (selectedFarm) {
-      navigation.navigate('Tabs');
+    setFarmName(selectedFarm.title);
+    if (selectedFarm.title) {
+      navigation.navigate('Tabs', {farmName: selectedFarm.title});
     } else {
       console.log('No farm selected');
     }
@@ -47,13 +49,13 @@ const FarmSelectorScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={style.container}>
-      <Text>Select the farm you wish to manage</Text>
+      <Text style={{fontWeight: 'bold'}}>Select the farm to manage</Text>
       <AutocompleteFarmInput
         dataSet={allFarmData} // Array of data to filter
         id={'_id'}
         title={'name'}
+        selectedOption={selectedFarm}
         setSelectedOption={setSelectedFarm}
-        initialValue={true}
       />
       <Button
         style={style.button}

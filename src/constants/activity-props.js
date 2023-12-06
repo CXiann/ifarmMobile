@@ -1,3 +1,5 @@
+import {validateRange} from '../utils/field-utils';
+
 export const Activity_Props = [
   {
     id: 0,
@@ -22,7 +24,7 @@ export const Activity_Props = [
       },
       {
         id: 'row',
-        name: 'Row Range*',
+        name: 'Row Range',
         type: 'number',
         validate: v => {
           if (parseInt(v) === 0) return false;
@@ -52,19 +54,21 @@ export const Activity_Props = [
         name: 'Plant Name',
         type: 'autocomplete',
         options: 'plants',
-        validate: v => !!v.eng || !!v.chs || !!v.cht,
+        validate: v => {
+          return !!v.eng; //temporary
+        },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
-        validate: v => v > 0,
+        validate: v => parseFloat(v) > 0,
         width: '10%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => !!v,
@@ -96,7 +100,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '10%',
       },
@@ -144,22 +148,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'fertilizers',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -192,7 +196,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -231,22 +235,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'pesticides',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -279,7 +283,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -318,22 +322,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'foliars',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -366,7 +370,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -386,6 +390,217 @@ export const Activity_Props = [
   },
   {
     id: 5,
+    action: 'Fungicide',
+    icon: 'mushroom',
+    bgColor: 'purple',
+    fields: [
+      {
+        id: 'date',
+        name: 'Date',
+        type: 'date',
+        validate: v => {
+          return !!v;
+        },
+        width: '15%',
+      },
+      {
+        id: 'item',
+        name: 'Fungicide Name',
+        type: 'autocomplete',
+        options: 'fungicides',
+        validate: v => {
+          return !!v.eng; //temporary
+        },
+        width: '25%',
+      },
+      {
+        id: 'originalQuantity',
+        name: 'Quantity',
+        type: 'number',
+        props: {type: 'number'},
+        validate: v => {
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'originalUnit',
+        name: 'Unit',
+        type: 'unit',
+        validate: v => {
+          return !!v;
+        },
+        units: [
+          {id: '0', title: 'g'},
+          {id: '1', title: 'kg'},
+          {id: '2', title: 'mg'},
+          {id: '3', title: 'pack (1kg)'},
+          {id: '4', title: 'pack (500g)'},
+          {id: '5', title: 'mℓ'},
+          {id: '6', title: 'ℓ'},
+        ],
+        width: '12%',
+      },
+      {
+        id: 'field',
+        name: 'Field Number',
+        type: 'field',
+        props: {type: 'number'},
+        validate: v => {
+          if (parseInt(v) === 0) return true; //field number 0 is valid
+          return parseInt(v) > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'row',
+        name: 'Row Range',
+        type: 'number',
+        validate: v => {
+          return !!validateRange(v).length != 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'price',
+        name: 'Price(RM)',
+        type: 'number',
+        validate: v => {
+          if (parseFloat(v) === 0) return true; //price 0 is valid
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+    ],
+    standardUnit: 'ℓ',
+    units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+  },
+  {
+    id: '6',
+    bgcolor: 'wheat',
+    action: 'Add Inventory',
+    title: 'ADD INVENTORY',
+    type: {
+      eng: 'Add Inventory',
+      chs: '添加存货',
+      cht: '添加存貨',
+    },
+    icon: 'inbox-full',
+    fields: [
+      {
+        id: 'date',
+        name: 'Date',
+        type: 'date',
+        validate: v => {
+          return !!v;
+        },
+        width: '15%',
+      },
+      {
+        id: 'category',
+        name: 'Item Category',
+        type: 'autocomplete',
+        options: 'categories',
+        validate: v => {
+          return !!v.eng || !!v.chs || !!v.cht;
+        },
+        width: '25%',
+      },
+      {
+        id: 'item',
+        name: 'Item Name',
+        type: 'autocompleteInventory',
+        options: o => {
+          let items;
+          switch (o.category.eng) {
+            case 'Foliar':
+              items = 'foliars';
+              break;
+            case 'Pesticide':
+              items = 'pesticides';
+              break;
+            case 'Fungicide':
+              items = 'fungicides';
+              break;
+            case 'Fertilizer':
+              items = 'fertilizers';
+              break;
+            default:
+              items = '';
+              break;
+          }
+          return items;
+        },
+        validate: async (v, d) => {
+          let items;
+          switch (d.category.eng) {
+            case 'Foliar':
+              items = 'foliars';
+              break;
+            case 'Pesticide':
+              items = 'pesticides';
+              break;
+            case 'Fungicide':
+              items = 'fungicides';
+              break;
+            case 'Fertilizer':
+              items = 'fertilizers';
+              break;
+            default:
+              items = '';
+              break;
+          }
+          const res = await query(`farms/name/${d.farmId}`);
+          console.log('ResData: ', res.data[items]);
+          let isMatch = true;
+          if (res.data[items]) {
+            isMatch = res.data[items]?.some(item => {
+              return (
+                item.name.eng === v.eng &&
+                item.name.chs === v.chs &&
+                item.name.cht === v.cht
+              );
+            });
+          }
+          return (!!v.eng || !!v.chs || !!v.cht) && isMatch;
+        },
+        width: '25%',
+      },
+      {
+        id: 'quantity',
+        name: 'Quantity',
+        type: 'number',
+        props: {type: 'number'},
+        validate: v => {
+          return v > 0;
+        },
+        width: '12%',
+      },
+      {
+        id: 'unit',
+        name: 'Unit',
+        type: 'unit',
+        validate: v => {
+          return !!v;
+        },
+        units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+        width: '12%',
+      },
+      {
+        id: 'price',
+        name: 'Price(RM)',
+        type: 'price',
+        validate: v => {
+          return parseFloat(v) > 0;
+        },
+        width: '12%',
+      },
+    ],
+    standardUnit: 'ℓ',
+    units: ['g', 'kg', 'mg', 'pack (1kg)', 'pack (500g)', 'mℓ', 'ℓ'],
+  },
+  {
+    id: 7,
     action: 'Harvest',
     icon: 'sickle',
     bgColor: 'forestgreen',
@@ -405,22 +620,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '10%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -449,7 +664,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -458,7 +673,7 @@ export const Activity_Props = [
         name: 'Average kg per 1 piece',
         type: 'number',
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '15%',
       },
@@ -467,7 +682,7 @@ export const Activity_Props = [
     units: ['g', 'kg', 'pieces'],
   },
   {
-    id: 6,
+    id: 8,
     action: 'Sales',
     icon: 'currency-usd',
     bgColor: 'red',
@@ -487,22 +702,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '12%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -531,7 +746,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '12%',
       },
@@ -550,7 +765,7 @@ export const Activity_Props = [
     units: ['kg', 'pack (1kg)', 'pack (500g)'],
   },
   {
-    id: 7,
+    id: 9,
     action: 'Transplant',
     icon: 'swap-horizontal',
     bgColor: 'greenyellow',
@@ -570,22 +785,22 @@ export const Activity_Props = [
         type: 'autocomplete',
         options: 'plants',
         validate: v => {
-          return !!v.eng || !!v.chs || !!v.cht;
+          return !!v.eng;
         },
         width: '25%',
       },
       {
-        id: 'quantity',
+        id: 'originalQuantity',
         name: 'Quantity',
         type: 'number',
         props: {type: 'number'},
         validate: v => {
-          return v > 0;
+          return parseFloat(v) > 0;
         },
         width: '15%',
       },
       {
-        id: 'unit',
+        id: 'originalUnit',
         name: 'Unit',
         type: 'unit',
         validate: v => {
@@ -610,7 +825,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '15%',
       },
@@ -619,7 +834,7 @@ export const Activity_Props = [
     units: ['pieces'],
   },
   {
-    id: 8,
+    id: 10,
     action: 'Others',
     icon: 'unfold-more-vertical',
     bgColor: 'dodgerblue',
@@ -659,19 +874,12 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '20%',
       },
     ],
     standardUnit: '',
     units: [],
-  },
-  {
-    id: 9,
-    action: 'default',
-    icon: 'file-image',
-    bgColor: 'grey',
-    fields: [],
   },
 ];

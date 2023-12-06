@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {TextInput, useTheme} from 'react-native-paper';
+import {StyleSheet, Keyboard} from 'react-native';
+import {TextInput, useTheme, Button, IconButton} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FieldInput = ({label, dataForm, setDataForm}) => {
   const {colors} = useTheme();
 
   const styles = StyleSheet.create({
     textInput: {
-      marginHorizontal: 10,
-      marginVertical: 5,
-      minWidth: '100%',
+      minWidth: '70%',
+      borderRadius: 0,
+      flex: 1,
     },
     content: {
       color: colors.primary,
@@ -17,39 +18,23 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
   });
 
   const handleOnChangeText = value => {
-    const numericPattern = /^[0-9]+$/;
     console.log(value);
-    // if (numericPattern.test(value)) {
-    //   setDataForm({...dataForm, field: value});
-    // }
     setDataForm({...dataForm, field: value});
   };
-  console.log('field: ', dataForm.field);
 
   return (
-    <TextInput
-      label={label}
-      mode="flat"
-      value={dataForm.field}
-      onChangeText={value => handleOnChangeText(value)}
-      right={
-        <TextInput.Icon
-          icon="chevron-up"
-          color={colors.primary}
-          onPress={() => {
-            setDataForm({
-              ...dataForm,
-              field: (
-                parseInt(dataForm.field == '' ? 0 : dataForm.field) + 1
-              ).toString(),
-            });
-          }}
-        />
-      }
-      left={
-        <TextInput.Icon
+    <SafeAreaView style={{flexDirection: 'row'}}>
+      <SafeAreaView
+        style={{
+          backgroundColor: colors.surfaceVariant,
+          maxWidth: '15%',
+          flex: 1,
+          alignItems: 'center',
+          borderTopLeftRadius: 5,
+        }}>
+        <IconButton
           icon="chevron-down"
-          color={colors.primary}
+          iconColor={colors.primary}
           onPress={() => {
             setDataForm({
               ...dataForm,
@@ -59,10 +44,39 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
             });
           }}
         />
-      }
-      style={styles.textInput}
-      contentStyle={styles.content}
-    />
+      </SafeAreaView>
+      <SafeAreaView style={{backgroundColor: colors.surfaceVariant}}>
+        <TextInput
+          label={label}
+          mode="flat"
+          value={dataForm.field}
+          onChangeText={value => handleOnChangeText(value)}
+          style={styles.textInput}
+          contentStyle={styles.content}
+        />
+      </SafeAreaView>
+      <SafeAreaView
+        style={{
+          backgroundColor: colors.surfaceVariant,
+          maxWidth: '15%',
+          flex: 1,
+          alignItems: 'center',
+          borderTopRightRadius: 5,
+        }}>
+        <IconButton
+          icon="chevron-up"
+          iconColor={colors.primary}
+          onPress={() => {
+            setDataForm({
+              ...dataForm,
+              field: (
+                parseInt(dataForm.field == '' ? 0 : dataForm.field) + 1
+              ).toString(),
+            });
+          }}
+        />
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 

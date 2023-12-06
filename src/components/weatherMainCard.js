@@ -1,5 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, SafeAreaView, Image} from 'react-native';
+import {
+  SafeAreaSafeA,
+  SafeAreaViewreaView,
+} from 'react-native-safe-area-context';
 import {Card, Text, Avatar, IconButton} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
 import LocationInput from './locationInput';
@@ -25,11 +29,11 @@ const WeatherMainCard = () => {
   }, [city]);
 
   return (
-    <View style={styles.weatherCardWrapper}>
+    <SafeAreaView style={styles.weatherCardWrapper}>
       <Card style={styles.weatherCard}>
         <Card.Content>
-          <View style={styles.container}>
-            <View style={styles.topRow}>
+          <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.topRow}>
               <Avatar.Icon
                 size={33}
                 icon="pin"
@@ -41,34 +45,34 @@ const WeatherMainCard = () => {
                 city={city}
                 setCity={setCity}
                 country={currentWeatherData.location?.country}></LocationInput>
-              <View></View>
-            </View>
-            <View style={styles.middleRow}>
-              <View style={styles.temperatureColumn}>
+              <SafeAreaView></SafeAreaView>
+            </SafeAreaView>
+            <SafeAreaView style={styles.middleRow}>
+              <SafeAreaView style={styles.temperatureColumn}>
                 <Text style={styles.numTemperature}>
                   {currentWeatherData.current?.temp_c}°C
                 </Text>
                 <Text style={styles.unitTemperature}>Celsius</Text>
-              </View>
-              <View style={styles.weatherIconColumn}>
+              </SafeAreaView>
+              <SafeAreaView style={styles.weatherIconColumn}>
                 <Image
                   style={styles.weatherIcon}
                   source={{
                     uri: 'https:' + currentWeatherData.current?.condition.icon,
                   }}
                 />
-              </View>
-            </View>
-            <View style={styles.descriptionRow}>
+              </SafeAreaView>
+            </SafeAreaView>
+            <SafeAreaView style={styles.descriptionRow}>
               <Text style={styles.weatherDescription}>
                 {currentWeatherData.current?.condition.text} with{' '}
                 {currentWeatherData.current?.humidity}% humidity
               </Text>
-            </View>
-          </View>
+            </SafeAreaView>
+          </SafeAreaView>
         </Card.Content>
       </Card>
-    </View>
+    </SafeAreaView>
   );
 };
 
