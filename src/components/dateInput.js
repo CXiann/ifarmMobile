@@ -10,7 +10,7 @@ const DateInput = ({
   setDataForm,
   minWidth,
   dateFieldName,
-  minimumDate,
+  minimumDate = null,
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({

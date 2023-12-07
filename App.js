@@ -13,7 +13,7 @@ import Realm from 'realm';
 import {useApp, AppProvider, UserProvider} from '@realm/react';
 import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
-import {GlobalProvider} from './src/contexts/GlobalContext';
+import {GlobalProvider, useGlobal} from './src/contexts/GlobalContext';
 import LoadingOverlay from './src/components/loadingOverlay';
 const {RealmProvider, useRealm} = realmContext;
 
@@ -127,8 +127,8 @@ async function handleSyncError(session, syncError) {
   }
 }
 
-function LogIn() {
-  logInUser();
+const LogIn = () => {
+  const {isLoading, setIsLoading} = useGlobal();
   async function logInUser() {
     const app = useApp(APP_ID);
     try {
@@ -144,7 +144,14 @@ function LogIn() {
       }
     }
   }
-}
+  logInUser();
+
+  return (
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <Text>Test</Text>
+    </View>
+  );
+};
 
 const LightTheme = require('./src/assets/LightTheme.json');
 const THEME = {

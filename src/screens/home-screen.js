@@ -27,6 +27,20 @@ const HomeScreen = ({navigation}) => {
     foliars: [],
     fungicides: [],
   };
+  const monthOfYear = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'July',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   const {colors} = useTheme();
   const {setIsLoading, farmName, farmId} = useGlobal();
   const {useRealm, useQuery, useObject} = realmContext;
@@ -43,9 +57,6 @@ const HomeScreen = ({navigation}) => {
       flex: 1,
       padding: 16,
     },
-    inventoryContainer: {
-      height: 'auto',
-    },
     farmTitle: {
       fontSize: 20,
       fontWeight: 'bold',
@@ -61,9 +72,9 @@ const HomeScreen = ({navigation}) => {
     weatherContainer: {
       flex: 1,
       marginTop: 0,
+      alignSelf: 'center',
     },
   });
-
   console.log('FarmId: ', farmId);
 
   useEffect(() => {
@@ -91,29 +102,32 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <SafeAreaView style={styles.inventoryContainer}>
-          <Text style={styles.farmTitle}>
-            {farmName} ({today.getDate()}/{today.getMonth() + 1}/
-            {today.getFullYear()})
-          </Text>
-          <FlatList
-            data={filteredItemProps}
-            keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
-            numColumns={2}
-            columnWrapperStyle={{
-              justifyContent: 'space-between',
-              marginBottom: 8,
-            }}
-            renderItem={({item}) => (
-              <StockCard navigation={navigation} data={itemList} field={item} />
-            )}
-          />
-        </SafeAreaView>
-        <SafeAreaView style={styles.weatherContainer}>
-          <WeatherMainCard />
-        </SafeAreaView>
-      </ScrollView>
+      <Text style={{color: 'yellowgreen'}}>Farm Name</Text>
+      <SafeAreaView
+        style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text style={styles.farmTitle}>{farmName}</Text>
+        <Text>
+          {today.getDate()} {monthOfYear[today.getMonth()]}{' '}
+          {today.getFullYear()}
+        </Text>
+      </SafeAreaView>
+      <SafeAreaView style={styles.weatherContainer}>
+        <WeatherMainCard />
+      </SafeAreaView>
+      <SafeAreaView>
+        <FlatList
+          data={filteredItemProps}
+          keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
+          numColumns={2}
+          columnWrapperStyle={{
+            justifyContent: 'space-between',
+            marginBottom: 8,
+          }}
+          renderItem={({item}) => (
+            <StockCard navigation={navigation} data={itemList} field={item} />
+          )}
+        />
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
