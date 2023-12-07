@@ -69,11 +69,6 @@ const HomeScreen = ({navigation}) => {
       minWidth: '50%',
       justifyContent: 'center',
     },
-    weatherContainer: {
-      flex: 1,
-      marginTop: 0,
-      alignSelf: 'center',
-    },
   });
   console.log('FarmId: ', farmId);
 
@@ -106,28 +101,25 @@ const HomeScreen = ({navigation}) => {
       <SafeAreaView
         style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={styles.farmTitle}>{farmName}</Text>
-        <Text>
+        <Text style={{color: colors.outline}}>
           {today.getDate()} {monthOfYear[today.getMonth()]}{' '}
           {today.getFullYear()}
         </Text>
       </SafeAreaView>
-      <SafeAreaView style={styles.weatherContainer}>
-        <WeatherMainCard />
-      </SafeAreaView>
-      <SafeAreaView>
-        <FlatList
-          data={filteredItemProps}
-          keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: 'space-between',
-            marginBottom: 8,
-          }}
-          renderItem={({item}) => (
-            <StockCard navigation={navigation} data={itemList} field={item} />
-          )}
-        />
-      </SafeAreaView>
+      <WeatherMainCard />
+      <FlatList
+        // style={{flex: 1}}
+        data={filteredItemProps}
+        keyExtractor={item => item.id.toString()} // Replace 'id' with the unique identifier in your data
+        numColumns={2}
+        columnWrapperStyle={{
+          justifyContent: 'space-between',
+          marginBottom: 8,
+        }}
+        renderItem={({item}) => (
+          <StockCard navigation={navigation} data={itemList} field={item} />
+        )}
+      />
     </SafeAreaView>
   );
 };

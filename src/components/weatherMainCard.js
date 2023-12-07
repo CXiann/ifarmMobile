@@ -32,7 +32,7 @@ const WeatherMainCard = () => {
     <SafeAreaView style={styles.weatherCardWrapper}>
       <Card style={styles.weatherCard}>
         <Card.Content>
-          <SafeAreaView style={styles.container}>
+          <SafeAreaView>
             <SafeAreaView style={styles.topRow}>
               <Avatar.Icon
                 size={33}
@@ -78,26 +78,19 @@ const WeatherMainCard = () => {
 
 const styles = StyleSheet.create({
   weatherCardWrapper: {
-    flex: 1,
-    justifyContent: 'start',
     margin: 10,
-    width: '90%',
   },
   weatherCard: {
     width: '100%',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingBottom: 15,
+    paddingLeft: 15,
     borderRadius: 30,
     backgroundColor: '#01B67D',
-  },
-  container: {
-    // flex: 1,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: 10,
   },
   locationIcon: {
     backgroundColor: '#6BF216',
@@ -124,7 +117,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   numTemperature: {
-    fontSize: 40,
+    fontSize: 35,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -134,7 +127,7 @@ const styles = StyleSheet.create({
     height: 80,
   },
   unitTemperature: {
-    fontSize: 20,
+    fontSize: 17,
     color: 'white',
   },
   descriptionRow: {

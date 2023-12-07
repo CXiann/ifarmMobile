@@ -23,7 +23,7 @@ const FarmSelectorScreen = ({navigation}) => {
   const {userData, setFarmId, setIsLoading, setFarmName} = useGlobal();
   const realm = useRealm();
   const {colors} = useTheme();
-  const [searchResult, setSearchResult] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
   const [searchText, setSearchText] = useState('');
 
   const farms = useQuery(Farm);
@@ -65,6 +65,7 @@ const FarmSelectorScreen = ({navigation}) => {
     // console.log('Before navigating: ', Object.values(farm));
     setFarmId(farm._id);
     setFarmName(farm.name.eng);
+    setSearchText('');
     if (farm.name.eng) {
       navigation.navigate('Tabs', {farmName: farm.name.eng});
     } else {
@@ -72,76 +73,87 @@ const FarmSelectorScreen = ({navigation}) => {
     }
   };
 
+  const style = StyleSheet.create({
+    container: {
+      flex: 1,
+      // padding: 16,
+      // paddingBottom: 40,
+      justifyContent: 'center',
+    },
+    headerContainer: {
+      // flex: 1,
+      padding: 16,
+    },
+  });
+
   return (
     <SafeAreaView style={style.container}>
-      <Text
-        variant="bodyLarge"
-        style={{fontWeight: 'bold', marginVertical: 20, marginLeft: 5}}>
-        Select the farm to manage
-      </Text>
-      <TextInput
-        mode="flat"
-        label="Search Farm"
-        style={{marginBottom: 10}}
-        right={<TextInput.Icon icon="magnify" />}
-        value={searchText}
-        onChangeText={text => setSearchText(text)}
-      />
-      {/* <AutocompleteFarmInput
-        dataSet={allFarmData} // Array of data to filter
-        id={'_id'}
-        title={'name'}
-        selectedOption={selectedFarm}
-        setSelectedOption={setSelectedFarm}
-      /> */}
-      <FlatList
-        data={searchResult}
-        keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
-        renderItem={({item}) => (
-          <Card style={{margin: 5, padding: 5}}>
-            {/* <Card.Title title={item.name.eng} subtitle="Card Subtitle" /> */}
-            <Card.Content>
-              <Text variant="titleLarge" style={{marginBottom: 15}}>
-                {item.name.eng}
-              </Text>
-              <SafeAreaView style={{flexDirection: 'row', marginBottom: 5}}>
-                <Icon name="location-on" color="blue" size={20} />
-                <Text variant="bodyMedium" style={{marginLeft: 5}}>
-                  {item.address.eng}
+      <SafeAreaView style={style.headerContainer}>
+        <Text
+          variant="bodyLarge"
+          style={{fontWeight: 'bold', marginTop: 10, marginLeft: 5}}>
+          Select the farm to manage
+        </Text>
+        <TextInput
+          mode="flat"
+          label="Search Farm"
+          style={{marginBottom: 10, backgroundColor: 'transparent'}}
+          right={<TextInput.Icon icon="magnify" />}
+          value={searchText}
+          onChangeText={text => setSearchText(text)}
+        />
+      </SafeAreaView>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: '#adf7ad',
+          padding: 15,
+          borderRadius: 30,
+          elevation: 5,
+        }}>
+        <FlatList
+          data={searchResult}
+          keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
+          renderItem={({item}) => (
+            <Card style={{margin: 5, padding: 5, marginBottom: 10}}>
+              {/* <Card.Title title={item.name.eng} subtitle="Card Subtitle" /> */}
+              <Card.Content>
+                <Text
+                  variant="titleLarge"
+                  style={{marginBottom: 15, fontWeight: 'bold'}}>
+                  {item.name.eng}
                 </Text>
-              </SafeAreaView>
-              <SafeAreaView style={{flexDirection: 'row'}}>
-                <Icon2 name="tag" color="red" size={20} />
-                <Text variant="bodyMedium" style={{marginLeft: 5}}>
-                  {item.tags.join(', ')}
-                </Text>
-              </SafeAreaView>
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                mode="contained-tonal"
-                style={{backgroundColor: colors.secondaryContainer}}
-                onPress={() => handleManageButton(item)}>
-                Manage
-              </Button>
-            </Card.Actions>
-          </Card>
-        )}
-      />
+                <SafeAreaView style={{flexDirection: 'row', marginBottom: 5}}>
+                  <Icon name="location-on" color="blue" size={20} />
+                  <Text
+                    variant="bodyMedium"
+                    style={{marginLeft: 5, color: 'gray'}}>
+                    {item.address.eng}
+                  </Text>
+                </SafeAreaView>
+                <SafeAreaView style={{flexDirection: 'row'}}>
+                  <Icon2 name="tag" color="red" size={20} />
+                  <Text
+                    variant="bodyMedium"
+                    style={{marginLeft: 5, color: 'gray'}}>
+                    {item.tags.join(', ')}
+                  </Text>
+                </SafeAreaView>
+              </Card.Content>
+              <Card.Actions>
+                <Button
+                  mode="contained-tonal"
+                  style={{backgroundColor: colors.secondaryContainer}}
+                  onPress={() => handleManageButton(item)}>
+                  Manage
+                </Button>
+              </Card.Actions>
+            </Card>
+          )}
+        />
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
 
 export default FarmSelectorScreen;
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    paddingBottom: 40,
-    justifyContent: 'center',
-    // flexDirection: 'row',
-    // flexDirection: 'column-reverse',
-  },
-  button: {width: '40%', alignSelf: 'flex-end', marginTop: 16},
-});
