@@ -71,7 +71,10 @@ const TaskScreenMain = ({navigation}) => {
   // Get Task According to Date
   const {useRealm, useQuery} = realmContext;
   const realm = useRealm();
-  const {userId, farmId, setIsLoading} = useGlobal();
+  const {userId, farmId, setIsLoading, userData} = useGlobal();
+
+  console.log("User's role: ", userData['role']);
+  const [disableAddTask, setDisableAddTask] = useState(false);
 
   const allTasks = useQuery(Task);
   const [todayTasksToDisplay, setTodayTasksToDisplay] = useState([]);
@@ -87,6 +90,10 @@ const TaskScreenMain = ({navigation}) => {
   }, [realm]);
 
   useEffect(() => {
+    if (userData['role'] == 'farmer') {
+      setDisableAddTask(true);
+    }
+
     setIsLoading(true);
     const selectedDateChangeToDateType = new Date(selectedDate);
 
@@ -241,6 +248,7 @@ const TaskScreenMain = ({navigation}) => {
                   iconColor="white"
                   mode="contained-tonal"
                   size={20}
+                  disabled={disableAddTask}
                   style={styles.addTaskButton}
                   accessibilityLabel="Add New Task"
                   onPress={() =>
