@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTheme, Button, FAB, TextInput, IconButton} from 'react-native-paper';
+import {useTheme, Button, Text} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
 import Realm from 'realm';
@@ -199,22 +199,20 @@ const ActivityScreenView = ({navigation}) => {
           minWidth={'48%'}
         />
       </SafeAreaView>
-      <FlatList
-        removeClippedSubviews={true}
-        data={activitiesToDisplay}
-        initialNumToRender={4}
-        keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
-        renderItem={renderItem}
-      />
-      {/* {visible && (
-        <ActivityScreenViewSort
-          visible={visible}
-          showModal={showModal}
-          dataForm={dataForm}
-          setDataForm={setDataForm}
-          actProps={actProps}
+      {activitiesToDisplay.length == 0 ? (
+        <SafeAreaView
+          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text variant="bodyLarge">No Activities Recorded</Text>
+        </SafeAreaView>
+      ) : (
+        <FlatList
+          removeClippedSubviews={true}
+          data={activitiesToDisplay}
+          initialNumToRender={4}
+          keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
+          renderItem={renderItem}
         />
-      )} */}
+      )}
     </SafeAreaView>
   );
 };

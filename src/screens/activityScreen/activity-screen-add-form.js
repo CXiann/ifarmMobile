@@ -19,6 +19,7 @@ import {convertItemName} from '../../utils/convertAction-utils';
 const ActivityScreenAddForm = ({route, navigation}) => {
   //find the input fields for corresponding action selected
   const selectedAction = route.params.action;
+  const themeColor = route.params.color;
   const selectedActionAllProps = actProps.find(
     act => act.action == selectedAction,
   );
@@ -217,6 +218,33 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     setVisible(true);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    topBar: {
+      backgroundColor: themeColor,
+      maxHeight: '15%',
+      minWidth: '100%',
+      flexDirection: 'row',
+    },
+    topBarText: {
+      justifyContent: 'center',
+      marginLeft: '3%',
+      color: 'black',
+    },
+    inputContainer: {
+      flex: 1,
+      padding: 16,
+      alignItems: 'center',
+    },
+    button: {
+      marginVertical: 10,
+      minWidth: '100%',
+      backgroundColor: themeColor,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.topBar}>
@@ -330,26 +358,3 @@ const ActivityScreenAddForm = ({route, navigation}) => {
 };
 
 export default ActivityScreenAddForm;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topBar: {
-    backgroundColor: 'white',
-    maxHeight: '15%',
-    minWidth: '100%',
-    flexDirection: 'row',
-  },
-  topBarText: {
-    justifyContent: 'center',
-    marginLeft: '3%',
-    color: 'black',
-  },
-  inputContainer: {
-    flex: 1,
-    padding: 16,
-    alignItems: 'center',
-  },
-  button: {marginVertical: 10, minWidth: '100%'},
-});

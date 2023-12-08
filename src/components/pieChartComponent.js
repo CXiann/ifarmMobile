@@ -44,13 +44,13 @@ const PieChartComponent = ({
     return (
       <SafeAreaView style={{justifyContent: 'center', alignItems: 'center'}}>
         <Text style={{fontSize: 14, color: 'black', fontWeight: 'bold'}}>
-          {getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
+          {getTotal(pieData).toFixed(2) + (type == 'Liquid' ? 'ℓ' : 'kg')}
         </Text>
         <Text style={{fontSize: 14, color: 'black'}}>Total</Text>
       </SafeAreaView>
     );
   };
-
+  console.log('Type: ', type);
   return (
     <SafeAreaView style={styles.chartContainer}>
       <PieChart
@@ -78,7 +78,7 @@ const PieChartComponent = ({
         <Text style={styles.stockValueText}>
           {pieData.length === 0
             ? 'No Data'
-            : getTotal(pieData).toFixed(2) + (type === 'Solid' ? 'kg' : 'ℓ')}
+            : getTotal(pieData).toFixed(2) + (type == 'Liquid' ? 'ℓ' : 'kg')}
         </Text>
         {renderLegendComponent()}
       </SafeAreaView>

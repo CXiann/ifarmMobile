@@ -239,12 +239,8 @@ const styles = StyleSheet.create({
   },
   confirmDialog: {
     backgroundColor: 'white',
-    padding: 20,
-    marginHorizontal: 35,
-    borderRadius: 50,
   },
   dialogTitle: {
-    textAlign: 'center',
     fontSize: 20,
   },
   buttonRow: {

@@ -81,6 +81,13 @@ const AutoCompleteAssigneeInput = ({
         closeOnSubmit={true}
         useFilter={false}
         initialValue={initialValue ? dataSetFormatUser[0] : ''}
+        onClear={() =>
+          setDataForm({
+            ...dataForm,
+            assigneeId: '',
+            assigneeName: {eng: ''},
+          })
+        }
         onSelectItem={item => {
           item &&
             setDataForm({

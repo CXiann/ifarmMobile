@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Keyboard} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskInput from '../../components/taskInput';
@@ -20,6 +20,7 @@ const TaskScreenAddForm = ({navigation}) => {
 
   const users = useQuery(User);
   const [selectedUser, setSelectedUser] = useState({id: '', title: ''});
+  const [msg, setMsg] = useState(null);
 
   const currentFarmBSONID = new BSON.ObjectId(farmId);
 
@@ -58,18 +59,26 @@ const TaskScreenAddForm = ({navigation}) => {
   }, [realm]);
 
   const handleAddTask = () => {
+    Keyboard.dismiss();
     console.log('dataForm: ', dataForm);
-    realm.write(() => {
-      realm.create('tasks', {
-        ...dataForm,
-        title: dataForm['title'],
-        date: new Date(dataForm['date'].toISOString()),
-        assigneeId: dataForm['assigneeId'],
-        assigneeName: dataForm['assigneeName'],
+    if (dataForm.title && dataForm.assigneeId) {
+      realm.write(() => {
+        realm.create('tasks', {
+          ...dataForm,
+          title: dataForm['title'],
+          date: new Date(dataForm['date'].toISOString()),
+          assigneeId: dataForm['assigneeId'],
+          assigneeName: dataForm['assigneeName'],
+        });
       });
-    });
-    console.log('Successfully created data');
-    setDataForm(initialValueTasks);
+      console.log('Successfully created data');
+      setDataForm(initialValueTasks);
+      setMsg('Successfully created data.');
+    } else {
+      console.log('Error');
+      setMsg('Incorrect Input Data.');
+    }
+
     setVisible(true);
   };
 
@@ -115,8 +124,11 @@ const TaskScreenAddForm = ({navigation}) => {
         </Button>
         <SnackbarBottom
           label={'Dismiss'}
-          title={'Successfully Created Task.'}
+          title={msg}
           visible={visible}
+          textColor={
+            msg == 'Successfully created data.' ? 'yellowgreen' : 'red'
+          }
           dismiss={onDismissSnackBar}
         />
       </SafeAreaView>

@@ -107,34 +107,39 @@ export default function TabsNavbar({route}) {
               onPress={() => showDialog()}
             />
             <Portal>
-              <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>
-                  Confirm Logout
-                  <Icon name="alert-circle-outline" color="red" size={30} />
-                </Dialog.Title>
+              <Dialog
+                visible={visible}
+                onDismiss={hideDialog}
+                style={{backgroundColor: 'white'}}>
+                <Dialog.Icon icon="alert-circle" size={30} />
+                <Dialog.Title>Confirm Logout</Dialog.Title>
                 <Dialog.Content>
                   <Text variant="bodyMedium">
                     Are you sure you want to logout?
                   </Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button
-                    style={{marginRight: 20, width: 80}}
-                    onPress={hideDialog}>
-                    No
-                  </Button>
-                  <Button
-                    mode="contained"
-                    style={{width: 80}}
-                    onPress={() => {
-                      hideDialog();
-                      MMKV.setBool('persistAccount', false);
-                      MMKV.removeItem('persistEmail');
-                      MMKV.removeItem('persistPassword');
-                      navigation.navigate('Login');
-                    }}>
-                    Yes
-                  </Button>
+                  <SafeAreaView
+                    style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                    <Button
+                      textColor="#C23E3B"
+                      // style={{marginRight: 20}}
+                      onPress={hideDialog}>
+                      No
+                    </Button>
+                    <Button
+                      textColor="#62A87C"
+                      // style={{width: 80}}
+                      onPress={() => {
+                        hideDialog();
+                        MMKV.setBool('persistAccount', false);
+                        MMKV.removeItem('persistEmail');
+                        MMKV.removeItem('persistPassword');
+                        navigation.navigate('Login');
+                      }}>
+                      Yes
+                    </Button>
+                  </SafeAreaView>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
