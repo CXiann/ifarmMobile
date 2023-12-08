@@ -75,9 +75,6 @@ const TaskScreenMain = ({navigation}) => {
 
   console.log("User's role: ", userData['role']);
   const [disableAddTask, setDisableAddTask] = useState(false);
-  if (userData['role'] == 'farmer') {
-    setDisableAddTask(true);
-  }
 
   const allTasks = useQuery(Task);
   const [todayTasksToDisplay, setTodayTasksToDisplay] = useState([]);
@@ -93,6 +90,10 @@ const TaskScreenMain = ({navigation}) => {
   }, [realm]);
 
   useEffect(() => {
+    if (userData['role'] == 'farmer') {
+      setDisableAddTask(true);
+    }
+
     setIsLoading(true);
     const selectedDateChangeToDateType = new Date(selectedDate);
 
