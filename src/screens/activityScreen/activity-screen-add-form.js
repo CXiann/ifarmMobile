@@ -62,7 +62,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
   useEffect(() => {
     realm.subscriptions.update(mutableSubs => {
       // Create subscription for filtered results.
-      mutableSubs.add(realm.objects('activites'));
+      mutableSubs.add(realm.objects('activities'));
       mutableSubs.add(realm.objects('farms'));
     });
   }, [realm]);

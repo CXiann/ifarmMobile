@@ -16,6 +16,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import InventoryScreenDetail from '../screens/inventoryScreen/inventory-screen-detail';
 import ActivityScreenChart from '../screens/activityScreen/activity-screen-chart';
 import TaskScreenFilter from '../screens/taskScreen/task-screen-filter';
+import NotificationNav from './notification-nav';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ export default function MainNav() {
             component={InventoryScreenDetail}
           />
           <Stack.Screen name="Sort" component={ActivityScreenSort} />
+          <Stack.Screen name="Notification" component={NotificationNav} />
           <Stack.Screen name="Activity Chart" component={ActivityScreenChart} />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           <Stack.Screen name="Add Item" component={InventoryScreenAddForm} />

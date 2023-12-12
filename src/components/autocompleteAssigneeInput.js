@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -13,9 +13,11 @@ const AutoCompleteAssigneeInput = ({
   dataForm,
   setDataForm,
   initialValue,
+  setRefAssigneeFunction,
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
+  const dropdownController = useRef(null);
 
   const getDataSetFormatUser = users => {
     return users?.map(user => {
@@ -25,6 +27,10 @@ const AutoCompleteAssigneeInput = ({
       return newObj;
     });
   };
+
+  useEffect(() => {
+    setRefAssigneeFunction(dropdownController);
+  }, []);
 
   const dataSetFormatUser = getDataSetFormatUser(dataSet);
 
@@ -54,6 +60,9 @@ const AutoCompleteAssigneeInput = ({
         {label}
       </Text>
       <AutocompleteDropdown
+        controller={controller => {
+          dropdownController.current = controller;
+        }}
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',

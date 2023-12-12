@@ -37,7 +37,6 @@ const LoginScreen = ({navigation}) => {
   useEffect(() => {
     console.log('persistAccount: ', MMKV.getBool('persistAccount'));
     console.log('persistEmail: ', MMKV.getString('persistEmail'));
-    console.log('persistPassword: ', MMKV.getString('persistPassword'));
     setIsLoading(true);
     const checkPersist = async () => {
       if (MMKV.getBool('persistAccount')) {
@@ -79,8 +78,10 @@ const LoginScreen = ({navigation}) => {
     Keyboard.dismiss();
     setIsLoading(true);
     const currentUser = users.filtered('email CONTAINS $0', email)[0];
-    if (currentUser) {
+    if (currentUser && currentUser.role != 'admin') {
       isValid = await validateCredentials(currentUser);
+    } else {
+      setTimeout(() => {}, 5000);
     }
     console.log('Valid: ', isValid);
     if (isValid) {
@@ -132,8 +133,7 @@ const LoginScreen = ({navigation}) => {
     button: {
       alignSelf: 'center',
       minWidth: '90%',
-      position: 'absolute',
-      bottom: '5%',
+      marginTop: '25%',
     },
   });
 

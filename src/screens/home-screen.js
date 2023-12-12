@@ -42,7 +42,7 @@ const HomeScreen = ({navigation}) => {
     'Dec',
   ];
   const {colors} = useTheme();
-  const {setIsLoading, farmName, farmId} = useGlobal();
+  const {userName, userData, farmName, farmId} = useGlobal();
   const {useRealm, useQuery, useObject} = realmContext;
   const realm = useRealm();
   const today = new Date();
@@ -62,6 +62,7 @@ const HomeScreen = ({navigation}) => {
       fontWeight: 'bold',
       color: colors.primary,
       marginBottom: 10,
+      width: '70%',
     },
     stockCardContainer: {},
     stockCardRow: {
@@ -88,10 +89,6 @@ const HomeScreen = ({navigation}) => {
       };
     });
     // }
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(currentUserAllActivities);
-    });
     setItemList(filteredTagsList);
   }, [realm]);
 
@@ -106,7 +103,11 @@ const HomeScreen = ({navigation}) => {
           {today.getFullYear()}
         </Text>
       </SafeAreaView>
-      <WeatherMainCard />
+      <Text style={{color: 'yellowgreen'}}>User Name</Text>
+      <Text style={styles.farmTitle}>
+        {userName}
+        <Text style={{color: 'yellowgreen'}}>({userData.role})</Text>
+      </Text>
       <FlatList
         // style={{flex: 1}}
         data={filteredItemProps}
@@ -116,6 +117,7 @@ const HomeScreen = ({navigation}) => {
           justifyContent: 'space-between',
           marginBottom: 8,
         }}
+        ListHeaderComponent={<WeatherMainCard />}
         renderItem={({item}) => (
           <StockCard navigation={navigation} data={itemList} field={item} />
         )}

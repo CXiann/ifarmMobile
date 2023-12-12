@@ -6,6 +6,12 @@ import {Pesticide, Pesticide_Name} from './src/schemas/pesticide.schema';
 import {Fungicide, Fungicide_Name} from './src/schemas/fungicide.schema';
 import {User_Name, User} from './src/schemas/user.schema';
 import {
+  Notification,
+  Notification_FarmName,
+  Notification_UserName,
+  Notification_AssigneeName,
+} from './src/schemas/notification.schema';
+import {
   Task_FarmName,
   Creator_Name,
   Assignee_Name,
@@ -68,5 +74,9 @@ export const realmContext = createRealmContext({
     Creator_Name,
     Assignee_Name,
     Task,
+    Notification,
+    Notification_FarmName,
+    Notification_UserName,
+    Notification_AssigneeName,
   ],
 });

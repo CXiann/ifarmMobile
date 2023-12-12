@@ -27,7 +27,8 @@ const NumberInput = ({label, dataFormOption, dataForm, setDataForm}) => {
       onChangeText={value => handleOnChangeText(value)}
       style={styles.textInput}
       contentStyle={styles.content}
-      placeholder={label + '(e.g.: 1,3-5)'}
+      placeholderTextColor={'lightgray'}
+      placeholder={label == 'Row Range' ? 'e.g.: 1,3-5' : ''}
     />
   );
 };

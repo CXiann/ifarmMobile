@@ -17,6 +17,7 @@ import {
 
 import {realmContext} from '../../RealmContext';
 import {Task} from '../schemas/task.schema';
+import {useGlobal} from '../contexts/GlobalContext';
 
 const TaskCard = ({
   taskTitle,
@@ -25,6 +26,7 @@ const TaskCard = ({
   taskObject,
   showSnackBar,
 }) => {
+  const {userId, userName} = useGlobal();
   // const getTaskTypeStyle = taskType => {
   //   switch (taskType) {
   //     case 'Urgent':
@@ -58,6 +60,24 @@ const TaskCard = ({
   const handleMarkTaskAsCompleted = () => {
     realm.write(() => {
       taskObject.completed = true;
+      const userIsCreator = userId == taskObject.creatorId;
+      realm.create('notifications', {
+        userId: userId.toString(),
+        userName: {eng: userName, chs: '', cht: ''},
+        farmId: taskObject.farmId,
+        farmName: taskObject.farmName,
+        assigneeId: userIsCreator
+          ? taskObject.assigneeId
+          : taskObject.creatorId,
+        assigneeName: userIsCreator
+          ? taskObject.assigneeName
+          : taskObject.creatorName,
+        content: taskObject.title,
+        date: new Date(taskObject['date'].toISOString()),
+        createdAt: new Date(new Date().toISOString()),
+        readUsers: [],
+        category: 'completed',
+      });
     });
     hideConfirmDialog();
     showSnackBar();

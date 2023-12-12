@@ -44,7 +44,9 @@ const FarmSelectorScreen = ({navigation}) => {
   const currentUserAllFarmBSONId = userData?.farms?.map(
     farmIdStr => new BSON.ObjectId(farmIdStr),
   );
-  const allFarmData = farms.filtered('_id IN $0', currentUserAllFarmBSONId);
+  const allFarmData = farms
+    .filtered('_id IN $0', currentUserAllFarmBSONId)
+    .sorted('name.eng');
 
   useEffect(() => {
     const filterData = () => {

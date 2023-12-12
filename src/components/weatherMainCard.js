@@ -1,16 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, SafeAreaView, Image} from 'react-native';
-import {
-  SafeAreaSafeA,
-  SafeAreaViewreaView,
-} from 'react-native-safe-area-context';
 import {Card, Text, Avatar, IconButton} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
 import LocationInput from './locationInput';
 
 const WeatherMainCard = () => {
   const apiKey = '49fc111d10474a59b9e115511232710';
-  const days = 5;
+  const days = '12';
   const apiUrl = 'https://api.weatherapi.com/v1/forecast.json';
 
   const [city, setCity] = useState('Kuala Lumpur');
@@ -23,10 +19,12 @@ const WeatherMainCard = () => {
         `${apiUrl}?key=${apiKey}&q=${city}&days=${days}&aqi=no&alerts=yes`,
       );
       await setCurrentWeatherData(await response.json());
-      console.log('Weather Data: ', currentWeatherData);
+      // console.log('Weather Data: ', currentWeatherData);
     };
     fetchWeatherData();
   }, [city]);
+
+  console.log('Weather Data: ', currentWeatherData);
 
   return (
     <SafeAreaView style={styles.weatherCardWrapper}>
