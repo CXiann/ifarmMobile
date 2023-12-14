@@ -60,18 +60,15 @@ const TaskCard = ({
   const handleMarkTaskAsCompleted = () => {
     realm.write(() => {
       taskObject.completed = true;
-      const userIsCreator = userId == taskObject.creatorId;
       realm.create('notifications', {
-        userId: userId.toString(),
-        userName: {eng: userName, chs: '', cht: ''},
+        userId: taskObject.creatorId,
+        userName: taskObject.creatorName,
         farmId: taskObject.farmId,
         farmName: taskObject.farmName,
-        assigneeId: userIsCreator
-          ? taskObject.assigneeId
-          : taskObject.creatorId,
-        assigneeName: userIsCreator
-          ? taskObject.assigneeName
-          : taskObject.creatorName,
+        assigneeId: taskObject.assigneeId,
+        assigneeName: taskObject.assigneeName,
+        markedId: userId.toString(),
+        markedName: {eng: userName, chs: '', cht: ''},
         content: taskObject.title,
         date: new Date(taskObject['date'].toISOString()),
         createdAt: new Date(new Date().toISOString()),

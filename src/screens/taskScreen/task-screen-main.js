@@ -108,9 +108,10 @@ const TaskScreenMain = ({navigation}) => {
 
     // Filter tasks in the database using a range for the date field
     const currentUserTodayTasks = allTasks.filtered(
-      'date >= $0 && date < $1 && assigneeId CONTAINS $2 && farmId CONTAINS $3',
+      'date >= $0 && date < $1 && (assigneeId CONTAINS $2 || creatorId CONTAINS $3) && farmId CONTAINS $4',
       startDate,
       endDate,
+      userId.toString(),
       userId.toString(),
       farmId.toString(),
     );
@@ -177,18 +178,20 @@ const TaskScreenMain = ({navigation}) => {
 
     if (taskAll) {
       currentUserFutureTasks = allTasks.filtered(
-        'date >= $0 && date < $1 && assigneeId CONTAINS $2 && farmId CONTAINS $3',
+        'date >= $0 && date < $1 && (assigneeId CONTAINS $3|| creatorId CONTAINS $4) && farmId CONTAINS $3',
         filterValues['startDate'],
         filterValues['endDate'],
+        userId.toString(),
         userId.toString(),
         farmId.toString(),
       );
     } else {
       currentUserFutureTasks = allTasks.filtered(
-        'date >= $0 && date < $1 &&  completed == $2 &&assigneeId CONTAINS $3 && farmId CONTAINS $4',
+        'date >= $0 && date < $1 && completed == $2 && (assigneeId CONTAINS $3 || creatorId CONTAINS $4) && farmId CONTAINS $5',
         filterValues['startDate'],
         filterValues['endDate'],
         taskStatus,
+        userId.toString(),
         userId.toString(),
         farmId.toString(),
       );

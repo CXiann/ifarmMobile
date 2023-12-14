@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
@@ -30,23 +30,32 @@ export default function TabsNavbar({route}) {
   const {colors} = useTheme();
   const userRole = userData?.role;
   const notifications = useQuery('notifications').sorted('createdAt', true);
+  const [newNotiLength, setNewNotiLength] = useState(0);
 
-  console.log('all noti: ', notifications);
-  const commonFilter = 'farmId CONTAINS $0 && NONE readUsers == $2';
-  const newNotiLength = notifications.filtered(
-    `${commonFilter} && ${
-      userRole == 'farmer' ? 'assigneeId CONTAINS $1' : 'userId != $1'
-    }`,
-    farmId.toString(),
-    userId.toString(),
-    userId.toString(),
-  ).length;
+  console.log('newNotiLength: ', newNotiLength);
   const MMKV = new MMKVLoader().initialize();
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);
 
   const hideDialog = () => setVisible(false);
+
+  useEffect(() => {
+    console.log('GetNoti');
+    const commonFilter =
+      'farmId CONTAINS $0 && NONE readUsers == $2 && markedId != $3';
+    setNewNotiLength(
+      notifications.filtered(
+        `${commonFilter} && ${
+          userRole == 'farmer' ? 'assigneeId CONTAINS $1' : 'userId != $1'
+        }`,
+        farmId.toString(),
+        userId.toString(),
+        userId.toString(),
+        userId.toString(),
+      ).length,
+    );
+  }, [notifications, farmId, userId]);
 
   const style = StyleSheet.create({
     rightContainer: {

@@ -36,6 +36,18 @@ export class Notification_AssigneeName extends Realm.Object {
   };
 }
 
+export class Notification_MarkedName extends Realm.Object {
+  static schema = {
+    name: 'notification_markedName',
+    embedded: true,
+    properties: {
+      chs: 'string?',
+      cht: 'string?',
+      eng: 'string?',
+    },
+  };
+}
+
 export class Notification extends Realm.Object {
   static schema = {
     name: 'notifications',
@@ -47,6 +59,8 @@ export class Notification extends Realm.Object {
       farmName: 'notification_farmName',
       assigneeId: 'string?',
       assigneeName: 'notification_assigneeName',
+      markedId: 'string?',
+      markedName: 'notification_markedName',
       content: 'string',
       createdAt: 'date',
       date: 'date',

@@ -10,6 +10,7 @@ import {
   Notification_FarmName,
   Notification_UserName,
   Notification_AssigneeName,
+  Notification_MarkedName,
 } from './src/schemas/notification.schema';
 import {
   Task_FarmName,
@@ -78,5 +79,6 @@ export const realmContext = createRealmContext({
     Notification_FarmName,
     Notification_UserName,
     Notification_AssigneeName,
+    Notification_MarkedName,
   ],
 });

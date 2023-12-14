@@ -41,23 +41,25 @@ const NotificationTaskScreen = ({navigation}) => {
   const realm = useRealm();
   const {userId, farmId, userData} = useGlobal();
 
-  const isFarmer = userData?.role == 'farmer';
+  const isUserFarmer = userData?.role == 'farmer';
   const notifications = useQuery('notifications').sorted('createdAt', true);
 
   console.log('all noti: ', notifications.length);
-  const userNotiList = isFarmer
+  const userNotiList = isUserFarmer
     ? notifications
         .filtered(
-          'farmId CONTAINS $0 && assigneeId CONTAINS $1 && category IN $2',
+          'farmId CONTAINS $0 && assigneeId CONTAINS $1 && markedId != $2 && category IN $3',
           farmId.toString(),
+          userId.toString(),
           userId.toString(),
           ['completed', 'task'],
         )
         .slice(0, 10)
     : notifications
         .filtered(
-          'farmId CONTAINS $0 && userId != $1 && category IN $2',
+          'farmId CONTAINS $0 && userId != $1 && markedId != $2 &&category IN $3',
           farmId.toString(),
+          userId.toString(),
           userId.toString(),
           ['completed', 'task'],
         )
@@ -122,7 +124,20 @@ const NotificationTaskScreen = ({navigation}) => {
     };
     const processDate = convertDate(item.date);
     const processDateCreated = convertDateCreated(item.createdAt);
-    const isAssignee = item.assigneeId == userId;
+    const isUserAssignee = item.assigneeId == userId;
+    const isUserAssigner = item.userId == userId;
+    const isTask = item.category == 'task';
+    const isAssigneeFarmer =
+      realm
+        .objects('users')
+        .filtered('_id == $0', BSON.ObjectId(item.assigneeId))[0]?.role ==
+      'farmer';
+    const isMarkedFarmer =
+      realm
+        .objects('users')
+        .filtered('_id == $0', BSON.ObjectId(item.markedId))[0]?.role ==
+      'farmer';
+
     return (
       <SafeAreaView
         style={
@@ -130,15 +145,19 @@ const NotificationTaskScreen = ({navigation}) => {
             ? styles.containerSeen
             : styles.containerXSeen
         }>
-        <Avatar.Icon {...avatarStyle} />
+        <SafeAreaView style={{justifyContent: 'center'}}>
+          <Avatar.Icon {...avatarStyle} />
+        </SafeAreaView>
         <SafeAreaView style={styles.contentContainer}>
           <Text
             style={styles.contentTop}
-            numberOfLines={3}
+            numberOfLines={4}
             ellipsizeMode="tail">
-            <Text style={styles.boldText}>{item.userName.eng}</Text>
-            {item.category == 'task' ? (
-              isFarmer || isAssignee ? (
+            <Text style={styles.boldText}>
+              {isTask ? item.userName?.eng : item.markedName?.eng}
+            </Text>
+            {isTask ? (
+              isUserFarmer || isUserAssignee ? (
                 <>
                   <Text>{' has assigned you a task to be completed by '}</Text>
                   <Text style={styles.boldText}>{processDate}</Text>
@@ -146,30 +165,63 @@ const NotificationTaskScreen = ({navigation}) => {
               ) : (
                 <>
                   <Text>{' has assigned '}</Text>
-                  <Text style={styles.boldText}>{item.assigneeName.eng}</Text>
+                  <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
                   <Text>{' a task to be completed by '}</Text>
                   <Text style={styles.boldText}>{processDate}</Text>
                 </>
               )
-            ) : isFarmer || isAssignee ? (
+            ) : isUserFarmer || isUserAssignee ? (
+              <>
+                <Text>{' has marked '}</Text>
+                <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                <Text>{' on a task assigned by '}</Text>
+                <Text style={styles.boldText}>{item.userName?.eng}</Text>
+                <Text>{' to you on '}</Text>
+                <Text style={styles.boldText}>{processDate}</Text>
+              </>
+            ) : isUserAssigner ? (
               <>
                 <Text>{' has marked '}</Text>
                 <Text style={styles.boldText}>{'COMPLETE'}</Text>
                 <Text>{' on a task assigned by you on '}</Text>
                 <Text style={styles.boldText}>{processDate}</Text>
               </>
-            ) : (
+            ) : isAssigneeFarmer ? (
               <>
                 <Text>{' has marked '}</Text>
                 <Text style={styles.boldText}>{'COMPLETE'}</Text>
                 <Text>{' on a task assigned by '}</Text>
-                <Text style={styles.boldText}>{item.assigneeName.eng}</Text>
+                <Text style={styles.boldText}>{item.userName?.eng}</Text>
+                <Text>{' to '}</Text>
+                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
+                <Text>{' on '}</Text>
+                <Text style={styles.boldText}>{processDate}</Text>
+              </>
+            ) : isMarkedFarmer ? (
+              <>
+                <Text>{' has marked '}</Text>
+                <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                <Text>{' on a task assigned by '}</Text>
+                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
+                <Text>{' on '}</Text>
+                <Text style={styles.boldText}>{processDate}</Text>
+              </>
+            ) : (
+              <>
+                <Text>{' has marked '}</Text>
+                <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                <Text>{' on a task assigned to '}</Text>
+                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
                 <Text>{' on '}</Text>
                 <Text style={styles.boldText}>{processDate}</Text>
               </>
             )}
           </Text>
-          <Text style={styles.contentBottom}>{'"' + item.content + '"'}</Text>
+          <Text style={styles.contentBottom}>
+            <Text style={styles.contentBottomLeft}>{'Task: '}</Text>
+            <Text style={styles.contentBottomRight}>{item?.content}</Text>
+          </Text>
+
           <Text style={styles.date}>{processDateCreated}</Text>
         </SafeAreaView>
       </SafeAreaView>
@@ -199,12 +251,19 @@ const NotificationTaskScreen = ({navigation}) => {
     },
     contentTop: {
       color: 'black',
-      maxWidth: '85%',
-      // fontWeight: 'bold',
+      maxWidth: '90%',
     },
     contentBottom: {
+      maxWidth: '90%',
+      marginBottom: 5,
+    },
+    contentBottomLeft: {
+      fontWeight: 'bold',
       color: colors.primary,
-      maxWidth: '85%',
+    },
+    contentBottomRight: {
+      color: colors.primary,
+      fontWeight: 'bold',
     },
     date: {
       color: 'darkgray',
