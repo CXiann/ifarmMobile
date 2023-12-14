@@ -24,6 +24,7 @@ const TaskCard = ({
   taskCompleted,
   taskDate,
   taskObject,
+  taskAssignee,
   showSnackBar,
 }) => {
   const {userId, userName} = useGlobal();
@@ -128,13 +129,20 @@ const TaskCard = ({
             <Text style={styles.taskTypeText}>{props.taskType}</Text>
           </SafeAreaView> */}
           <SafeAreaView>
-            <Text style={styles.taskDate}>
-              {taskDate.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </Text>
+            {taskDate && (
+              <Text style={styles.taskDate}>
+                {taskDate.toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })}
+              </Text>
+            )}
+          </SafeAreaView>
+          <SafeAreaView>
+            {taskAssignee && (
+              <Text style={styles.taskDate}>Assigned to {taskAssignee}</Text>
+            )}
           </SafeAreaView>
         </Card.Content>
         <Card.Actions>

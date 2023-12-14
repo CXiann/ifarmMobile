@@ -64,6 +64,9 @@ const TaskScreenMain = ({navigation}) => {
     startDate: startDateFutureTask,
     endDate: endDateFutureTask,
     selectedStatus: 'all',
+    assigneeId: '',
+    assigneeName: {},
+    selectAllUsers: false,
   };
 
   const [filterValues, setFilterValues] = useState(initialValues);
@@ -106,17 +109,17 @@ const TaskScreenMain = ({navigation}) => {
     const startDate = new Date(selectedYear, selectedMonth, selectedDay);
     const endDate = new Date(selectedYear, selectedMonth, selectedDay + 1); // Add 1 to day to include all events on that day
 
+    const currentUserTaskFilteredByRole = filterTasksAccordingToRole();
     // Filter tasks in the database using a range for the date field
-    const currentUserTodayTasks = allTasks.filtered(
-      'date >= $0 && date < $1 && (assigneeId CONTAINS $2 || creatorId CONTAINS $3) && farmId CONTAINS $4',
+    const currentUserTodayTasks = currentUserTaskFilteredByRole.filtered(
+      'date >= $0 && date < $1',
       startDate,
       endDate,
-      userId.toString(),
-      userId.toString(),
-      farmId.toString(),
     );
 
-    const currentUserFutureTasks = filterTasks();
+    const currentUserFutureTasks = filterFutureTasks(
+      currentUserTaskFilteredByRole,
+    );
     setFutureTasksToDisplay(currentUserFutureTasks);
     console.log(
       'Total currentUserFutureTasks: ',
@@ -154,7 +157,20 @@ const TaskScreenMain = ({navigation}) => {
   //   });
   // };
 
-  const filterTasks = () => {
+  const filterTasksAccordingToRole = () => {
+    if (userData['role'] == 'farmer') {
+      return allTasks.filtered(
+        'assigneeId CONTAINS $0 && farmId CONTAINS $1',
+        userId.toString(),
+        farmId.toString(),
+      );
+    } else if (userData['role'] == 'owner') {
+      return allTasks.filtered('farmId CONTAINS $0', farmId.toString());
+    }
+  };
+
+  const filterFutureTasks = currentUserTaskFilteredByRole => {
+    console.log('Filtered Role: ' + filterValues['assigneeId']);
     let taskStatus;
     let taskAll = false;
     switch (filterValues['selectedStatus']) {
@@ -177,23 +193,32 @@ const TaskScreenMain = ({navigation}) => {
     let currentUserFutureTasks = null;
 
     if (taskAll) {
-      currentUserFutureTasks = allTasks.filtered(
-        'date >= $0 && date < $1 && (assigneeId CONTAINS $3|| creatorId CONTAINS $4) && farmId CONTAINS $3',
+      currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
+        'date >= $0 && date < $1',
         filterValues['startDate'],
         filterValues['endDate'],
-        userId.toString(),
-        userId.toString(),
-        farmId.toString(),
       );
     } else {
-      currentUserFutureTasks = allTasks.filtered(
-        'date >= $0 && date < $1 && completed == $2 && (assigneeId CONTAINS $3 || creatorId CONTAINS $4) && farmId CONTAINS $5',
+      currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
+        'date >= $0 && date < $1 &&  completed == $2',
         filterValues['startDate'],
         filterValues['endDate'],
         taskStatus,
-        userId.toString(),
-        userId.toString(),
-        farmId.toString(),
+      );
+    }
+
+    console.log(
+      'filterValues selectAllUsers: ' + filterValues['selectAllUsers'],
+    );
+
+    if (
+      userData['role'] == 'owner' &&
+      filterValues['assigneeId'] != '' &&
+      filterValues['selectAllUsers'] == false
+    ) {
+      currentUserFutureTasks = currentUserFutureTasks.filtered(
+        'assigneeId CONTAINS $0',
+        filterValues['assigneeId'].toString(),
       );
     }
 
@@ -221,6 +246,7 @@ const TaskScreenMain = ({navigation}) => {
             taskCompleted={task.completed}
             taskDate={task.date}
             taskObject={task}
+            taskAssignee={task.assigneeName['eng']}
             showSnackBar={showSnackBar}
           />
         ))}
