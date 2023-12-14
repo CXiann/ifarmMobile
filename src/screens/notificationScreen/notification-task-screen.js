@@ -57,9 +57,8 @@ const NotificationTaskScreen = ({navigation}) => {
         .slice(0, 10)
     : notifications
         .filtered(
-          'farmId CONTAINS $0 && userId != $1 && markedId != $2 &&category IN $3',
+          'farmId CONTAINS $0 && markedId != $1 &&category IN $2',
           farmId.toString(),
-          userId.toString(),
           userId.toString(),
           ['completed', 'task'],
         )
@@ -139,92 +138,107 @@ const NotificationTaskScreen = ({navigation}) => {
       'farmer';
 
     return (
-      <SafeAreaView
-        style={
-          item.readUsers.includes(userId.toString())
-            ? styles.containerSeen
-            : styles.containerXSeen
-        }>
-        <SafeAreaView style={{justifyContent: 'center'}}>
-          <Avatar.Icon {...avatarStyle} />
-        </SafeAreaView>
-        <SafeAreaView style={styles.contentContainer}>
-          <Text
-            style={styles.contentTop}
-            numberOfLines={4}
-            ellipsizeMode="tail">
-            <Text style={styles.boldText}>
-              {isTask ? item.userName?.eng : item.markedName?.eng}
-            </Text>
-            {isTask ? (
-              isUserFarmer || isUserAssignee ? (
-                <>
-                  <Text>{' has assigned you a task to be completed by '}</Text>
-                  <Text style={styles.boldText}>{processDate}</Text>
-                </>
-              ) : (
-                <>
-                  <Text>{' has assigned '}</Text>
-                  <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
-                  <Text>{' a task to be completed by '}</Text>
-                  <Text style={styles.boldText}>{processDate}</Text>
-                </>
-              )
-            ) : isUserFarmer || isUserAssignee ? (
-              <>
-                <Text>{' has marked '}</Text>
-                <Text style={styles.boldText}>{'COMPLETE'}</Text>
-                <Text>{' on a task assigned by '}</Text>
-                <Text style={styles.boldText}>{item.userName?.eng}</Text>
-                <Text>{' to you on '}</Text>
-                <Text style={styles.boldText}>{processDate}</Text>
-              </>
-            ) : isUserAssigner ? (
-              <>
-                <Text>{' has marked '}</Text>
-                <Text style={styles.boldText}>{'COMPLETE'}</Text>
-                <Text>{' on a task assigned by you on '}</Text>
-                <Text style={styles.boldText}>{processDate}</Text>
-              </>
-            ) : isAssigneeFarmer ? (
-              <>
-                <Text>{' has marked '}</Text>
-                <Text style={styles.boldText}>{'COMPLETE'}</Text>
-                <Text>{' on a task assigned by '}</Text>
-                <Text style={styles.boldText}>{item.userName?.eng}</Text>
-                <Text>{' to '}</Text>
-                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
-                <Text>{' on '}</Text>
-                <Text style={styles.boldText}>{processDate}</Text>
-              </>
-            ) : isMarkedFarmer ? (
-              <>
-                <Text>{' has marked '}</Text>
-                <Text style={styles.boldText}>{'COMPLETE'}</Text>
-                <Text>{' on a task assigned by '}</Text>
-                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
-                <Text>{' on '}</Text>
-                <Text style={styles.boldText}>{processDate}</Text>
-              </>
-            ) : (
-              <>
-                <Text>{' has marked '}</Text>
-                <Text style={styles.boldText}>{'COMPLETE'}</Text>
-                <Text>{' on a task assigned to '}</Text>
-                <Text style={styles.boldText}>{item.assigneeName?.eng}</Text>
-                <Text>{' on '}</Text>
-                <Text style={styles.boldText}>{processDate}</Text>
-              </>
-            )}
-          </Text>
-          <Text style={styles.contentBottom}>
-            <Text style={styles.contentBottomLeft}>{'Task: '}</Text>
-            <Text style={styles.contentBottomRight}>{item?.content}</Text>
-          </Text>
+      <>
+        {(item.category == 'task' && isUserAssigner) ||
+        (item.category == 'completed' && item?.markedId == userId) ? null : (
+          <SafeAreaView
+            style={
+              item.readUsers.includes(userId.toString())
+                ? styles.containerSeen
+                : styles.containerXSeen
+            }>
+            <SafeAreaView style={{justifyContent: 'center'}}>
+              <Avatar.Icon {...avatarStyle} />
+            </SafeAreaView>
+            <SafeAreaView style={styles.contentContainer}>
+              <Text
+                style={styles.contentTop}
+                numberOfLines={4}
+                ellipsizeMode="tail">
+                <Text style={styles.boldText}>
+                  {isTask ? item.userName?.eng : item.markedName?.eng}
+                </Text>
+                {isTask ? (
+                  isUserFarmer || isUserAssignee ? (
+                    <>
+                      <Text>
+                        {' has assigned you a task to be completed by '}
+                      </Text>
+                      <Text style={styles.boldText}>{processDate}</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text>{' has assigned '}</Text>
+                      <Text style={styles.boldText}>
+                        {item.assigneeName?.eng}
+                      </Text>
+                      <Text>{' a task to be completed by '}</Text>
+                      <Text style={styles.boldText}>{processDate}</Text>
+                    </>
+                  )
+                ) : isUserFarmer || isUserAssignee ? (
+                  <>
+                    <Text>{' has marked '}</Text>
+                    <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                    <Text>{' on a task assigned by '}</Text>
+                    <Text style={styles.boldText}>{item.userName?.eng}</Text>
+                    <Text>{' to you on '}</Text>
+                    <Text style={styles.boldText}>{processDate}</Text>
+                  </>
+                ) : isUserAssigner ? (
+                  <>
+                    <Text>{' has marked '}</Text>
+                    <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                    <Text>{' on a task assigned by you on '}</Text>
+                    <Text style={styles.boldText}>{processDate}</Text>
+                  </>
+                ) : isAssigneeFarmer ? (
+                  <>
+                    <Text>{' has marked '}</Text>
+                    <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                    <Text>{' on a task assigned by '}</Text>
+                    <Text style={styles.boldText}>{item.userName?.eng}</Text>
+                    <Text>{' to '}</Text>
+                    <Text style={styles.boldText}>
+                      {item.assigneeName?.eng}
+                    </Text>
+                    <Text>{' on '}</Text>
+                    <Text style={styles.boldText}>{processDate}</Text>
+                  </>
+                ) : isMarkedFarmer ? (
+                  <>
+                    <Text>{' has marked '}</Text>
+                    <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                    <Text>{' on a task assigned by '}</Text>
+                    <Text style={styles.boldText}>
+                      {item.assigneeName?.eng}
+                    </Text>
+                    <Text>{' on '}</Text>
+                    <Text style={styles.boldText}>{processDate}</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text>{' has marked '}</Text>
+                    <Text style={styles.boldText}>{'COMPLETE'}</Text>
+                    <Text>{' on a task assigned to '}</Text>
+                    <Text style={styles.boldText}>
+                      {item.assigneeName?.eng}
+                    </Text>
+                    <Text>{' on '}</Text>
+                    <Text style={styles.boldText}>{processDate}</Text>
+                  </>
+                )}
+              </Text>
+              <Text style={styles.contentBottom}>
+                <Text style={styles.contentBottomLeft}>{'Task: '}</Text>
+                <Text style={styles.contentBottomRight}>{item?.content}</Text>
+              </Text>
 
-          <Text style={styles.date}>{processDateCreated}</Text>
-        </SafeAreaView>
-      </SafeAreaView>
+              <Text style={styles.date}>{processDateCreated}</Text>
+            </SafeAreaView>
+          </SafeAreaView>
+        )}
+      </>
     );
   };
 
