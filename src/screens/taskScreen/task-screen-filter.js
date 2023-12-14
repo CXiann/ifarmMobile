@@ -38,6 +38,12 @@ const TaskScreenFilter = ({navigation, route}) => {
     filterValues['selectedStatus'],
   );
 
+  const [refAssignee, setRefAssignee] = useState(null);
+
+  const setRefAssigneeFunction = useCallback(ref => {
+    setRefAssignee(ref);
+  }, []);
+
   const handleRadioButtonClicked = newValue => {
     setRadioButtonValue(newValue);
     setTempForm({...tempForm, selectedStatus: newValue});
@@ -136,6 +142,7 @@ const TaskScreenFilter = ({navigation, route}) => {
               setDataForm={setTempForm}
               initialValue={true}
               allOption={true}
+              setRefAssigneeFunction={setRefAssigneeFunction}
             />
           )}
         </SafeAreaView>
