@@ -28,7 +28,6 @@ const TaskScreenAddForm = ({navigation}) => {
   const allUsers = filteredUsers.filter(user => {
     return user.farms.some(farmId => farmId.equals(currentFarmBSONID));
   });
-  console.log('Current Farm All Users: ', allUsers?.length);
 
   const farmerUsers = allUsers.filter(user => user.role === 'farmer');
 
