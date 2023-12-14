@@ -12,8 +12,24 @@ import {
 import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DateInput from '../../components/dateInput';
+import AutoCompleteAssigneeInput from '../../components/autocompleteAssigneeInput';
+import {useGlobal} from '../../contexts/GlobalContext';
+import {User} from '../../schemas/user.schema';
+import {BSON} from 'realm';
+import {realmContext} from '../../../RealmContext';
+import {configureLayoutAnimations} from 'react-native-reanimated/lib/typescript/reanimated2/core';
 
 const TaskScreenFilter = ({navigation, route}) => {
+  const {useQuery} = realmContext;
+  const users = useQuery(User);
+  const {userData, farmId, userId} = useGlobal();
+  const currentFarmBSONID = new BSON.ObjectId(farmId);
+
+  const filteredUsers = users.filtered('farms.@size > 0'); // Filter users with non-empty farms
+  const allUsers = filteredUsers.filter(user => {
+    return user.farms.some(farmId => farmId.equals(currentFarmBSONID));
+  });
+
   const {colors} = useTheme();
   const {filterValues, setFilterValues} = route.params;
   const [tempForm, setTempForm] = useState(filterValues);
@@ -58,6 +74,10 @@ const TaskScreenFilter = ({navigation, route}) => {
     radioTitle: {
       fontSize: 17,
       fontWeight: 'bold',
+    },
+    assigneeContainer: {
+      paddingLeft: 0,
+      paddingRight: 16,
     },
   });
 
@@ -105,6 +125,20 @@ const TaskScreenFilter = ({navigation, route}) => {
             <RadioButton.Item label="Completed" value="completed" />
           </RadioButton.Group>
         </SafeAreaView>
+        <SafeAreaView style={styles.assigneeContainer}>
+          {userData['role'] === 'owner' && (
+            <AutoCompleteAssigneeInput
+              label={'Assignee'}
+              dataSet={allUsers}
+              id={'_id'}
+              title={'name'}
+              dataForm={tempForm}
+              setDataForm={setTempForm}
+              initialValue={true}
+              allOption={true}
+            />
+          )}
+        </SafeAreaView>
         <SafeAreaView
           style={{
             flexDirection: 'row',
@@ -136,6 +170,7 @@ const TaskScreenFilter = ({navigation, route}) => {
             mode="contained"
             onPress={() => {
               setFilterValues({...filterValues, ...tempForm});
+              console.log('filteredValues' + filterValues);
               navigation.navigate('Task');
             }}>
             Filter

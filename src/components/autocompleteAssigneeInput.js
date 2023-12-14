@@ -13,6 +13,7 @@ const AutoCompleteAssigneeInput = ({
   dataForm,
   setDataForm,
   initialValue,
+  allOption,
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
@@ -26,7 +27,9 @@ const AutoCompleteAssigneeInput = ({
     });
   };
 
-  const dataSetFormatUser = getDataSetFormatUser(dataSet);
+  const dataSetFormatUser = allOption
+    ? [{id: '', title: 'All'}, ...getDataSetFormatUser(dataSet)]
+    : getDataSetFormatUser(dataSet);
 
   const style = StyleSheet.create({
     container: {
@@ -82,12 +85,21 @@ const AutoCompleteAssigneeInput = ({
         useFilter={false}
         initialValue={initialValue ? dataSetFormatUser[0] : ''}
         onSelectItem={item => {
-          item &&
+          if (item && item.id !== '') {
             setDataForm({
               ...dataForm,
               assigneeId: item.id.toString(),
               assigneeName: {eng: item.title},
+              selectAllUsers: false, // Set selectAllUsers to false for other options
             });
+          } else if (item && item.title === 'All') {
+            setDataForm({
+              ...dataForm,
+              assigneeId: '',
+              assigneeName: {eng: ''},
+              selectAllUsers: true,
+            });
+          }
         }}
         dataSet={dataSetFormatUser}
       />
