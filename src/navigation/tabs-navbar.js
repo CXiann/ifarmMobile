@@ -16,7 +16,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenNav from './activity-screen-nav';
-import TestScreen from '../screens/test-screen';
+import {realmContext} from '../../RealmContext';
+import {useGlobal} from '../contexts/GlobalContext';
 import TaskScreenNav from './task-screen-nav';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MMKVLoader} from 'react-native-mmkv-storage';
@@ -24,7 +25,22 @@ import {MMKVLoader} from 'react-native-mmkv-storage';
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavbar({route}) {
+  const {useQuery} = realmContext;
+  const {userId, farmId, userData} = useGlobal();
   const {colors} = useTheme();
+  const userRole = userData?.role;
+  const notifications = useQuery('notifications').sorted('createdAt', true);
+
+  console.log('all noti: ', notifications);
+  const commonFilter = 'farmId CONTAINS $0 && NONE readUsers == $2';
+  const newNotiLength = notifications.filtered(
+    `${commonFilter} && ${
+      userRole == 'farmer' ? 'assigneeId CONTAINS $1' : 'userId != $1'
+    }`,
+    farmId.toString(),
+    userId.toString(),
+    userId.toString(),
+  ).length;
   const MMKV = new MMKVLoader().initialize();
   const [visible, setVisible] = React.useState(false);
 
@@ -35,11 +51,15 @@ export default function TabsNavbar({route}) {
   const style = StyleSheet.create({
     rightContainer: {
       flexDirection: 'row',
-      // backgroundColor: 'white',
-      // paddingBottom: 10,
-      // justifyContent: 'center',
+      justifyContent: 'flex-end',
     },
-    badge: {},
+    badge: {
+      // flex: 1,
+      // alignSelf: 'flex-start',
+      position: 'absolute',
+      top: 5,
+      right: 5,
+    },
   });
   return (
     <Tab.Navigator
@@ -51,27 +71,13 @@ export default function TabsNavbar({route}) {
         },
         headerRightContainerStyle: {
           paddingRight: '3%',
+          // maxWidth: '50%',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
         },
         headerRight: () => (
           <SafeAreaView style={style.rightContainer}>
-            {/* <Button
-              mode="elevated"
-              icon="arrow-right"
-              onPress={() => navigation.navigate('Farm Selector')}
-              contentStyle={{flexDirection: 'row-reverse'}}>
-              Change Farm
-            </Button> */}
-            {/* <IconButton
-              icon="bell"
-              iconColor="black"
-              size={20}
-              onPress={() => console.log('Pressed')}
-            />
-            <Badge style={style.badge}>3</Badge> */}
-
             <Button
               mode="elevated"
               icon="arrow-right"
@@ -84,57 +90,76 @@ export default function TabsNavbar({route}) {
               labelStyle={{color: colors.outline}}
               style={{
                 margin: 4,
-                maxWidth: '80%',
+                maxWidth: '60%',
+                // maxHeight: 10,
               }}>
               <Text
                 variant="titleMedium"
                 style={{
                   color: colors.tertiary,
                   fontWeight: 'bold',
-                  fontSize: 15,
+                  fontSize: 12,
                 }}>
                 {route.params.farmName}
               </Text>
             </Button>
+            <SafeAreaView style={{top: 2}}>
+              <IconButton
+                icon="bell"
+                size={20}
+                onPress={() => navigation.navigate('Notification')}
+              />
+              <Badge size={15} style={style.badge}>
+                {newNotiLength}
+              </Badge>
+            </SafeAreaView>
             <IconButton
               icon="logout-variant"
-              iconColor="gray"
+              iconColor="#FF2C2C"
               style={{
                 marginTop: 10,
+                // flex: 1,
+                // alignItems: 'center',
+                // justifyContent: 'center',
                 // backgroundColor: colors.secondaryContainer,
               }}
               size={20}
               onPress={() => showDialog()}
             />
             <Portal>
-              <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>
-                  Confirm Logout
-                  <Icon name="alert-circle-outline" color="red" size={30} />
-                </Dialog.Title>
+              <Dialog
+                visible={visible}
+                onDismiss={hideDialog}
+                style={{backgroundColor: 'white'}}>
+                <Dialog.Icon icon="alert-circle" size={30} />
+                <Dialog.Title>Confirm Logout</Dialog.Title>
                 <Dialog.Content>
                   <Text variant="bodyMedium">
                     Are you sure you want to logout?
                   </Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button
-                    style={{marginRight: 20, width: 80}}
-                    onPress={hideDialog}>
-                    No
-                  </Button>
-                  <Button
-                    mode="contained"
-                    style={{width: 80}}
-                    onPress={() => {
-                      hideDialog();
-                      MMKV.setBool('persistAccount', false);
-                      MMKV.removeItem('persistEmail');
-                      MMKV.removeItem('persistPassword');
-                      navigation.navigate('Login');
-                    }}>
-                    Yes
-                  </Button>
+                  <SafeAreaView
+                    style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                    <Button
+                      textColor="#C23E3B"
+                      // style={{marginRight: 20}}
+                      onPress={hideDialog}>
+                      No
+                    </Button>
+                    <Button
+                      textColor="#62A87C"
+                      // style={{width: 80}}
+                      onPress={() => {
+                        hideDialog();
+                        MMKV.setBool('persistAccount', false);
+                        MMKV.removeItem('persistEmail');
+                        MMKV.removeItem('persistPassword');
+                        navigation.navigate('Login');
+                      }}>
+                      Yes
+                    </Button>
+                  </SafeAreaView>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -233,6 +258,23 @@ export default function TabsNavbar({route}) {
           },
         }}
       />
+      {/* <Tab.Screen
+        name="Notification"
+        component={NotificationNav}
+        options={{
+          tabBarLabel: 'Notification',
+          tabBarIcon: ({color, size}) => {
+            return (
+              <SafeAreaView style={{flexDirection: 'row'}}>
+                <Icon name="bell" size={size} color={color} />
+                <Badge size={15} style={style.badge}>
+                  3
+                </Badge>
+              </SafeAreaView>
+            );
+          },
+        }}
+      /> */}
     </Tab.Navigator>
   );
 }

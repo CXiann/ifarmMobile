@@ -31,7 +31,7 @@ export default LocationInput;
 
 const styles = StyleSheet.create({
   textInput: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginHorizontal: 10,
     width: '80%',

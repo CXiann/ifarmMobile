@@ -7,8 +7,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Activity_Props as actProps} from '../../constants/activity-props';
 
 const ActivityScreenAddOptions = ({navigation, route}) => {
-  const handleActivityPressed = action => {
-    navigation.navigate('Add Form', {action: action});
+  const handleActivityPressed = item => {
+    navigation.navigate('Add Form', {action: item.action, color: item.bgColor});
   };
 
   return (
@@ -25,7 +25,7 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
           <Card
             mode="contained"
             style={styles.cardContainer}
-            onPress={() => handleActivityPressed(item.action)}>
+            onPress={() => handleActivityPressed(item)}>
             <Card.Title
               title={item.action}
               titleStyle={{fontSize: 12}}

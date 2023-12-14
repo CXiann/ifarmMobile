@@ -13,7 +13,7 @@ export const GlobalProvider = props => {
   const [userName, setUserName] = useState(null);
   const [farmName, setFarmName] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentWeatherData, setCurrentWeatherData] = useState({});
+  const [currentWeatherData, setCurrentWeatherData] = useState([]);
 
   return (
     <GlobalContext.Provider

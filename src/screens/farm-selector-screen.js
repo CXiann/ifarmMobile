@@ -44,7 +44,9 @@ const FarmSelectorScreen = ({navigation}) => {
   const currentUserAllFarmBSONId = userData?.farms?.map(
     farmIdStr => new BSON.ObjectId(farmIdStr),
   );
-  const allFarmData = farms.filtered('_id IN $0', currentUserAllFarmBSONId);
+  const allFarmData = farms
+    .filtered('_id IN $0', currentUserAllFarmBSONId)
+    .sorted('name.eng');
 
   useEffect(() => {
     const filterData = () => {
@@ -106,9 +108,10 @@ const FarmSelectorScreen = ({navigation}) => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: '#adf7ad',
+          backgroundColor: colors.inversePrimary,
           padding: 15,
-          borderRadius: 30,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
           elevation: 5,
         }}>
         <FlatList
@@ -142,8 +145,9 @@ const FarmSelectorScreen = ({navigation}) => {
               </Card.Content>
               <Card.Actions>
                 <Button
-                  mode="contained-tonal"
+                  mode="elevated"
                   style={{backgroundColor: colors.secondaryContainer}}
+                  labelStyle={{color: colors.tertiary}}
                   onPress={() => handleManageButton(item)}>
                   Manage
                 </Button>

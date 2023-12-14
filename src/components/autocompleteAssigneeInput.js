@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
@@ -14,9 +14,11 @@ const AutoCompleteAssigneeInput = ({
   setDataForm,
   initialValue,
   allOption,
+  setRefAssigneeFunction,
 }) => {
   Feather.loadFont();
   const {colors} = useTheme();
+  const dropdownController = useRef(null);
 
   const getDataSetFormatUser = users => {
     return users?.map(user => {
@@ -26,6 +28,10 @@ const AutoCompleteAssigneeInput = ({
       return newObj;
     });
   };
+
+  useEffect(() => {
+    setRefAssigneeFunction(dropdownController);
+  }, []);
 
   const dataSetFormatUser = allOption
     ? [{id: '', title: 'All'}, ...getDataSetFormatUser(dataSet)]
@@ -57,6 +63,9 @@ const AutoCompleteAssigneeInput = ({
         {label}
       </Text>
       <AutocompleteDropdown
+        controller={controller => {
+          dropdownController.current = controller;
+        }}
         inputContainerStyle={{
           backgroundColor: colors.surfaceVariant,
           borderColor: 'gray',
@@ -84,6 +93,13 @@ const AutoCompleteAssigneeInput = ({
         closeOnSubmit={true}
         useFilter={false}
         initialValue={initialValue ? dataSetFormatUser[0] : ''}
+        onClear={() =>
+          setDataForm({
+            ...dataForm,
+            assigneeId: '',
+            assigneeName: {eng: ''},
+          })
+        }
         onSelectItem={item => {
           if (item && item.id !== '') {
             setDataForm({

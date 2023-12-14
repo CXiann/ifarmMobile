@@ -1,11 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, View, Keyboard} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import NumberInput from '../../components/numberInput';
 import TaskInput from '../../components/taskInput';
 import AutoCompleteAssigneeInput from '../../components/autocompleteAssigneeInput';
 
 import Realm, {BSON} from 'realm';
+import {useTheme} from 'react-native-paper';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
 import {User} from '../../schemas/user.schema';
@@ -15,12 +17,14 @@ import DateInput from '../../components/dateInput';
 
 const TaskScreenAddForm = ({navigation}) => {
   const {useQuery, useRealm} = realmContext;
-  const {userData, farmId, userId} = useGlobal();
+  const {userName, userId, farmId, farmName} = useGlobal();
   const realm = useRealm();
+  const {colors} = useTheme();
+
+  const [refAssignee, setRefAssignee] = useState(null);
+  const [msg, setMsg] = useState(null);
 
   const users = useQuery(User);
-  const [selectedUser, setSelectedUser] = useState({id: '', title: ''});
-
   const currentFarmBSONID = new BSON.ObjectId(farmId);
 
   const filteredUsers = users.filtered('farms.@size > 0'); // Filter users with non-empty farms
@@ -36,11 +40,11 @@ const TaskScreenAddForm = ({navigation}) => {
     farmId: farmId.toString(),
     date: new Date(),
     completed: false,
-    farmName: {},
+    farmName: {eng: farmName, cht: '', chs: ''},
     creatorId: userId.toString(),
-    creatorName: {},
+    creatorName: {eng: userName, cht: '', chs: ''},
     assigneeId: '',
-    assigneeName: {},
+    assigneeName: {eng: '', cht: '', chs: ''},
     createdAt: new Date(new Date().toISOString()),
     __v: 0,
   };
@@ -56,21 +60,72 @@ const TaskScreenAddForm = ({navigation}) => {
     });
   }, [realm]);
 
+  const setRefAssigneeFunction = useCallback(ref => {
+    setRefAssignee(ref);
+  }, []);
+
   const handleAddTask = () => {
+    Keyboard.dismiss();
     console.log('dataForm: ', dataForm);
-    realm.write(() => {
-      realm.create('tasks', {
-        ...dataForm,
-        title: dataForm['title'],
-        date: new Date(dataForm['date'].toISOString()),
-        assigneeId: dataForm['assigneeId'],
-        assigneeName: dataForm['assigneeName'],
+    if (dataForm.title && dataForm.assigneeId) {
+      refAssignee?.current.clear();
+      realm.write(() => {
+        realm.create('notifications', {
+          userId: dataForm.creatorId,
+          userName: dataForm.creatorName,
+          farmId: dataForm.farmId,
+          farmName: dataForm.farmName,
+          assigneeId: dataForm.assigneeId,
+          assigneeName: dataForm.assigneeName,
+          content: dataForm.title,
+          date: new Date(dataForm['date'].toISOString()),
+          createdAt: new Date(new Date().toISOString()),
+          readUsers: [],
+          category: 'task',
+        });
+        realm.create('tasks', {
+          ...dataForm,
+          title: dataForm['title'],
+          date: new Date(dataForm['date'].toISOString()),
+          assigneeId: dataForm['assigneeId'],
+          assigneeName: dataForm['assigneeName'],
+        });
+        console.log('dataForm date: ', new Date(dataForm['date']));
       });
-    });
-    console.log('Successfully created data');
-    setDataForm(initialValueTasks);
+      console.log('Successfully created data');
+      setDataForm(initialValueTasks);
+      setMsg('Successfully created data.');
+    } else {
+      console.log('Error');
+      setMsg('Incorrect Input Data.');
+    }
+
     setVisible(true);
   };
+
+  const styles = StyleSheet.create({
+    outter: {
+      flex: 1,
+    },
+    container: {
+      padding: 16,
+      flex: 1,
+      alignItems: 'center',
+    },
+    button: {marginVertical: 10, minWidth: '100%'},
+    topBar: {
+      backgroundColor: colors.primaryContainer,
+      maxHeight: '15%',
+      minWidth: '100%',
+      flexDirection: 'row',
+      marginBottom: 10,
+    },
+    topBarText: {
+      justifyContent: 'center',
+      marginLeft: '3%',
+      color: 'black',
+    },
+  });
 
   return (
     <SafeAreaView style={styles.outter}>
@@ -95,11 +150,17 @@ const TaskScreenAddForm = ({navigation}) => {
           minWidth={'100%'}
           dateFieldName={'date'}
         />
-        <TaskInput
+        <NumberInput
           label={'Task'}
+          dataFormOption={'title'}
           dataForm={dataForm}
           setDataForm={setDataForm}
         />
+        {/* <TaskInput
+          label={'Task'}
+          dataForm={dataForm}
+          setDataForm={setDataForm}
+        /> */}
         <AutoCompleteAssigneeInput
           label={'Assignee'}
           dataSet={allUsers}
@@ -108,14 +169,18 @@ const TaskScreenAddForm = ({navigation}) => {
           dataForm={dataForm}
           setDataForm={setDataForm}
           initialValue={true}
+          setRefAssigneeFunction={setRefAssigneeFunction}
         />
         <Button mode="contained" style={styles.button} onPress={handleAddTask}>
           Add
         </Button>
         <SnackbarBottom
           label={'Dismiss'}
-          title={'Successfully Created Task.'}
+          title={msg}
           visible={visible}
+          textColor={
+            msg == 'Successfully created data.' ? 'yellowgreen' : 'red'
+          }
           dismiss={onDismissSnackBar}
         />
       </SafeAreaView>
@@ -124,27 +189,3 @@ const TaskScreenAddForm = ({navigation}) => {
 };
 
 export default TaskScreenAddForm;
-
-const styles = StyleSheet.create({
-  outter: {
-    flex: 1,
-  },
-  container: {
-    padding: 16,
-    flex: 1,
-    alignItems: 'center',
-  },
-  button: {marginVertical: 10, minWidth: '100%'},
-  topBar: {
-    backgroundColor: '#4CB963',
-    maxHeight: '15%',
-    minWidth: '100%',
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  topBarText: {
-    justifyContent: 'center',
-    marginLeft: '3%',
-    color: 'black',
-  },
-});
