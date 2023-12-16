@@ -18,16 +18,20 @@ import {
 import {realmContext} from '../../RealmContext';
 import {Task} from '../schemas/task.schema';
 import {useGlobal} from '../contexts/GlobalContext';
+import {User} from '../schemas/user.schema';
 
-const TaskCard = ({
-  taskTitle,
-  taskCompleted,
-  taskDate,
-  taskObject,
-  taskAssignee,
-  showSnackBar,
-}) => {
-  const {userId, userName} = useGlobal();
+const TaskCard = ({taskObject, showSnackBar}) => {
+  const taskTitle = taskObject['title'];
+  const taskCompleted = taskObject['completed'];
+  const taskDate = taskObject['date'];
+  const taskAssignee = taskObject.assigneeName['eng'];
+
+  const {useQuery} = realmContext;
+  const {userId, userName, userData} = useGlobal();
+  const users = useQuery(User);
+
+  const assigneeUser = users.find(user => user._id == taskObject.assigneeId);
+
   // const getTaskTypeStyle = taskType => {
   //   switch (taskType) {
   //     case 'Urgent':
@@ -47,6 +51,7 @@ const TaskCard = ({
   const realm = useRealm();
 
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [disableCompleteButton, setDisableCompleteButton] = useState(false);
 
   const showConfirmDialog = () => setDialogVisible(true);
   const hideConfirmDialog = () => setDialogVisible(false);
@@ -56,6 +61,14 @@ const TaskCard = ({
       // Create subscription for filtered results.
       mutableSubs.add(realm.objects(Task));
     });
+
+    if (
+      userData['role'] == 'owner' &&
+      assigneeUser['role'] == 'owner' &&
+      userId.toString() !== assigneeUser['_id'].toString()
+    ) {
+      setDisableCompleteButton(true);
+    }
   }, [realm]);
 
   const handleMarkTaskAsCompleted = () => {
@@ -152,7 +165,7 @@ const TaskCard = ({
             size={19}
             style={styles.completeButton}
             iconColor="white"
-            disabled={taskCompleted}
+            disabled={taskCompleted || disableCompleteButton}
             onPress={showConfirmDialog}></IconButton>
         </Card.Actions>
       </Card>

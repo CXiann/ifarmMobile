@@ -238,18 +238,17 @@ const TaskScreenMain = ({navigation}) => {
 
     return (
       <SafeAreaView>
-        {taskToDisplay.map((task, i) => (
-          <TaskCard
-            key={i} // Add a unique key prop for each TaskCard
-            taskTitle={task.title}
-            taskType="Normal"
-            taskCompleted={task.completed}
-            taskDate={task.date}
-            taskObject={task}
-            taskAssignee={task.assigneeName['eng']}
-            showSnackBar={showSnackBar}
-          />
-        ))}
+        {taskToDisplay
+          .slice() // Create a shallow copy of the array to avoid mutating the original array
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .map((task, i) => (
+            <TaskCard
+              key={i}
+              taskType="Normal"
+              taskObject={task}
+              showSnackBar={showSnackBar}
+            />
+          ))}
       </SafeAreaView>
     );
   };
@@ -268,7 +267,7 @@ const TaskScreenMain = ({navigation}) => {
                   {selectedDate.getDate()}
                 </Text>
                 <Text style={styles.taskCount}>
-                  You have total {todayTasksToDisplay.length} tasks today
+                  Total {todayTasksToDisplay.length} tasks today
                 </Text>
               </SafeAreaView>
               <SafeAreaView style={styles.buttonColumn}>
