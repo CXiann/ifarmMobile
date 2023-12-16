@@ -3,7 +3,6 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskCard from '../../components/taskCard';
-import DateCardCarousel from '../../components/dateCardCarousel';
 import SnackbarBottom from '../../components/snackbarBottom';
 import NotificationHandler from '../../components/notificationHandler';
 import PushNotification, {Importance} from 'react-native-push-notification';
@@ -285,7 +284,6 @@ const TaskScreenMain = ({navigation}) => {
                   }></IconButton>
               </SafeAreaView>
             </SafeAreaView>
-            {/* <DateCardCarousel handleChangeDate={handleChangeDate} /> */}
             <TaskProgressCard
               totalTasks={todayTasksToDisplay.length}
               completedTasks={

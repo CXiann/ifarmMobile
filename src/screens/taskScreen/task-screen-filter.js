@@ -17,7 +17,6 @@ import {useGlobal} from '../../contexts/GlobalContext';
 import {User} from '../../schemas/user.schema';
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';
-import {configureLayoutAnimations} from 'react-native-reanimated/lib/typescript/reanimated2/core';
 
 const TaskScreenFilter = ({navigation, route}) => {
   const {useQuery} = realmContext;
