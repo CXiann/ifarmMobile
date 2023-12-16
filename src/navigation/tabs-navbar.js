@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import Realm from 'realm';
 import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
@@ -13,7 +14,6 @@ import {
 } from 'react-native-paper';
 import {CommonActions} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import HomeScreen from '../screens/home-screen';
 import ActivitiesScreenNav from './activity-screen-nav';
 import {realmContext} from '../../RealmContext';
@@ -21,16 +21,19 @@ import {useGlobal} from '../contexts/GlobalContext';
 import TaskScreenNav from './task-screen-nav';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MMKVLoader} from 'react-native-mmkv-storage';
+import {Notification} from '../schemas/notification.schema';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabsNavbar({route}) {
-  const {useQuery} = realmContext;
+  const {useQuery, useRealm} = realmContext;
+  const {realm} = useRealm();
   const {userId, farmId, userData} = useGlobal();
   const {colors} = useTheme();
   const userRole = userData?.role;
-  const notifications = useQuery('notifications').sorted('createdAt', true);
+  const notifications = useQuery(Notification).sorted('createdAt', true);
   const [newNotiLength, setNewNotiLength] = useState(0);
+  const [currentUserNoti, setCurrentUserNoti] = useState([]);
 
   console.log('newNotiLength: ', newNotiLength);
   const MMKV = new MMKVLoader().initialize();
@@ -42,20 +45,31 @@ export default function TabsNavbar({route}) {
 
   useEffect(() => {
     console.log('GetNoti');
-    const commonFilter =
-      'farmId CONTAINS $0 && NONE readUsers == $2 && markedId != $3';
-    setNewNotiLength(
-      notifications.filtered(
-        `${commonFilter} && ${
-          userRole == 'farmer' ? 'assigneeId CONTAINS $1' : 'userId != $1'
-        }`,
-        farmId.toString(),
-        userId.toString(),
-        userId.toString(),
-        userId.toString(),
-      ).length,
+    const commonFilter = 'farmId CONTAINS $0 && markedId != $2';
+    const displayNoti = notifications.filtered(
+      `${commonFilter} && ${
+        userRole == 'farmer'
+          ? ' assigneeId CONTAINS $1'
+          : '!(category == "task" && userId == $1)'
+      }`,
+      farmId.toString(),
+      userId.toString(),
+      userId.toString(),
     );
-  }, [notifications, farmId, userId]);
+    const unreadNoti = displayNoti.filtered(
+      'NONE readUsers == $0',
+      userId.toString(),
+    );
+
+    // const unreadNoti = displayNoti.filtered(
+    //   'NONE readUsers == $0',
+    //   userId.toString(),
+    // );
+    console.log('TotalUnread: ', unreadNoti.length);
+    console.log('TotalCurrentNoti: ', displayNoti.length);
+    setNewNotiLength(unreadNoti.length);
+    setCurrentUserNoti(displayNoti);
+  }, []);
 
   const style = StyleSheet.create({
     rightContainer: {
@@ -116,11 +130,17 @@ export default function TabsNavbar({route}) {
               <IconButton
                 icon="bell"
                 size={20}
-                onPress={() => navigation.navigate('Notification')}
+                onPress={() =>
+                  navigation.navigate('Notification', {
+                    notifications: currentUserNoti,
+                  })
+                }
               />
-              <Badge size={15} style={style.badge}>
-                {newNotiLength}
-              </Badge>
+              {newNotiLength ? (
+                <Badge size={15} style={style.badge}>
+                  {newNotiLength}
+                </Badge>
+              ) : null}
             </SafeAreaView>
             <IconButton
               icon="logout-variant"

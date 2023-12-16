@@ -20,7 +20,7 @@ const ActivityScreenView = ({navigation}) => {
   const realm = useRealm();
   const {userId, farmId, setIsLoading} = useGlobal();
   const {colors} = useTheme();
-  const farm = useQuery(Activity);
+  const activities = useQuery(Activity);
 
   const styles = StyleSheet.create({
     container: {
@@ -78,7 +78,7 @@ const ActivityScreenView = ({navigation}) => {
     ];
     const propsForQuery = keysToExtract.map(key => dataForm[key]);
     console.log('Props: ', propsForQuery);
-    var currentUserAllActivities = farm
+    var currentUserAllActivities = activities
       .filtered(
         'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3' +
           (dataForm['selectedValue'].length > 0 ? ' && action IN $4' : ''),
@@ -120,14 +120,11 @@ const ActivityScreenView = ({navigation}) => {
         getNonEmptyStringValue(propsForQuery),
       );
     }
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(currentUserAllActivities);
-    });
+
     setIsLoading(false);
     setActivitiesToDisplay(currentUserAllActivities);
     console.log('Done useeffect');
-  }, [realm, dataForm]);
+  }, [dataForm]);
 
   console.log('ATD: ', activitiesToDisplay.length);
 

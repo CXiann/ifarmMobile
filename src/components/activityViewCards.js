@@ -77,7 +77,7 @@ const ActivityViewCards = ({item, actProps}) => {
               variant="bodyLarge"
               style={{
                 fontSize: 20,
-                color: colors.primaryContainer,
+                color: colors.tertiary,
               }}>
               {' (Std. unit: ' + item.quantity + ' ' + item.unit + ')'}
             </Text>
