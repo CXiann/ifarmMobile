@@ -33,13 +33,8 @@ const AutoCompleteAssigneeInput = ({
     setRefAssigneeFunction(dropdownController);
   }, []);
 
-  const randomNumericId = Math.floor(Math.random() * 10000) + 100;
-
   const dataSetFormatUser = allOption
-    ? [
-        {id: randomNumericId.toString(), title: 'All'},
-        ...getDataSetFormatUser(dataSet),
-      ]
+    ? [{id: '1', title: 'All'}, ...getDataSetFormatUser(dataSet)]
     : getDataSetFormatUser(dataSet);
 
   const style = StyleSheet.create({
@@ -106,7 +101,7 @@ const AutoCompleteAssigneeInput = ({
           })
         }
         onSelectItem={item => {
-          if (item && item.id !== randomNumericId.toString()) {
+          if (item && item.id !== '1') {
             setDataForm({
               ...dataForm,
               assigneeId: item.id.toString(),
