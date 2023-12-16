@@ -43,6 +43,7 @@ export default function TabsNavbar({route}) {
 
   const hideDialog = () => setVisible(false);
 
+  //not sure why cannot combine these 2 useeffect
   useEffect(() => {
     console.log('GetNoti');
     const commonFilter = 'farmId CONTAINS $0 && markedId != $2';
@@ -56,20 +57,29 @@ export default function TabsNavbar({route}) {
       userId.toString(),
       userId.toString(),
     );
-    const unreadNoti = displayNoti.filtered(
-      'NONE readUsers == $0',
-      userId.toString(),
-    );
-
-    // const unreadNoti = displayNoti.filtered(
-    //   'NONE readUsers == $0',
-    //   userId.toString(),
-    // );
-    console.log('TotalUnread: ', unreadNoti.length);
     console.log('TotalCurrentNoti: ', displayNoti.length);
-    setNewNotiLength(unreadNoti.length);
     setCurrentUserNoti(displayNoti);
   }, []);
+
+  useEffect(() => {
+    console.log('GetNotiLength');
+    const commonFilter =
+      'farmId CONTAINS $0 && markedId != $2 && NONE readUsers == $3';
+    const unreadNoti = notifications.filtered(
+      `${commonFilter} && ${
+        userRole == 'farmer'
+          ? ' assigneeId CONTAINS $1'
+          : '!(category == "task" && userId == $1)'
+      }`,
+      farmId.toString(),
+      userId.toString(),
+      userId.toString(),
+      userId.toString(),
+    ).length;
+
+    console.log('TotalUnread: ', unreadNoti.length);
+    setNewNotiLength(unreadNoti);
+  }, [notifications, farmId, userId]);
 
   const style = StyleSheet.create({
     rightContainer: {

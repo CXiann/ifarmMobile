@@ -78,12 +78,9 @@ const AutocompleteItemInput = ({
     };
 
     setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(realm.objects(options));
-    });
+
     setLoading(false);
-  }, [realm]);
+  }, []);
 
   const style = StyleSheet.create({
     container: {
