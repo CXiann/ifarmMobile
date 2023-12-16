@@ -68,7 +68,8 @@ const TaskScreenMain = ({navigation}) => {
     selectAllUsers: false,
   };
 
-  const [filterValues, setFilterValues] = useState(initialValues);
+  const [filterTodayValues, setFilterTodayValues] = useState(initialValues);
+  const [filterFutureValues, setFilterFutureValues] = useState(initialValues);
 
   // Get Task According to Date
   const {useRealm, useQuery} = realmContext;
@@ -110,25 +111,36 @@ const TaskScreenMain = ({navigation}) => {
 
     const currentUserTaskFilteredByRole = filterTasksAccordingToRole();
     // Filter tasks in the database using a range for the date field
-    const currentUserTodayTasks = currentUserTaskFilteredByRole.filtered(
+    let currentUserTodayTasks = currentUserTaskFilteredByRole.filtered(
       'date >= $0 && date < $1',
       startDate,
       endDate,
     );
 
-    const currentUserFutureTasks = filterFutureTasks(
-      currentUserTaskFilteredByRole,
+    currentUserTodayTasks = filterTasks(
+      currentUserTodayTasks,
+      filterTodayValues,
     );
+
+    let currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
+      'date >= $0 && date < $1',
+      filterFutureValues['startDate'],
+      filterFutureValues['endDate'],
+    );
+
+    currentUserFutureTasks = filterTasks(
+      currentUserFutureTasks,
+      filterFutureValues,
+    );
+
     setFutureTasksToDisplay(currentUserFutureTasks);
-    console.log(
-      'Total currentUserFutureTasks: ',
-      currentUserFutureTasks.length,
-    );
+    console.log('Total filteredTasks: ', currentUserFutureTasks.length);
 
     setTodayTasksToDisplay(currentUserTodayTasks);
     console.log('Total currentUserTodayTasks: ', currentUserTodayTasks.length);
+
     setIsLoading(false);
-  }, [selectedDate, filterValues]);
+  }, [selectedDate, filterTodayValues, filterFutureValues]);
 
   // const testPushNotification = () => {
   //   getChannels();
@@ -168,7 +180,7 @@ const TaskScreenMain = ({navigation}) => {
     }
   };
 
-  const filterFutureTasks = currentUserTaskFilteredByRole => {
+  const filterTasks = (currentUserTasks, filterValues) => {
     console.log('Filtered Role: ' + filterValues['assigneeId']);
     let taskStatus;
     let taskAll = false;
@@ -189,21 +201,10 @@ const TaskScreenMain = ({navigation}) => {
         break;
     }
 
-    let currentUserFutureTasks = null;
+    let filteredTasks = currentUserTasks;
 
-    if (taskAll) {
-      currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
-        'date >= $0 && date < $1',
-        filterValues['startDate'],
-        filterValues['endDate'],
-      );
-    } else {
-      currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
-        'date >= $0 && date < $1 &&  completed == $2',
-        filterValues['startDate'],
-        filterValues['endDate'],
-        taskStatus,
-      );
+    if (!taskAll) {
+      filteredTasks = currentUserTasks.filtered('completed == $0', taskStatus);
     }
 
     console.log(
@@ -215,13 +216,13 @@ const TaskScreenMain = ({navigation}) => {
       filterValues['assigneeId'] != '' &&
       filterValues['selectAllUsers'] == false
     ) {
-      currentUserFutureTasks = currentUserFutureTasks.filtered(
+      filteredTasks = filteredTasks.filtered(
         'assigneeId CONTAINS $0',
         filterValues['assigneeId'].toString(),
       );
     }
 
-    return currentUserFutureTasks;
+    return filteredTasks;
   };
 
   const renderTaskCard = ({taskToDisplay}) => {
@@ -294,21 +295,24 @@ const TaskScreenMain = ({navigation}) => {
             />
           </SafeAreaView>
           <SafeAreaView style={styles.bottomToday}>
-            <Text variant="titleLarge" style={styles.bottomTitle}>
-              Today's Tasks
-            </Text>
-            {/* <IconButton
-              icon="apple"
-              iconColor="#035E7B"
-              mode="contained"
-              size={20}
-              onPress={createChannel}></IconButton>
-            <IconButton
-              icon="plus"
-              iconColor="#035E7B"
-              mode="contained"
-              size={20}
-              onPress={testPushNotification}></IconButton> */}
+            <SafeAreaView style={{flexDirection: 'row'}}>
+              <Text variant="titleLarge" style={styles.bottomTitle}>
+                Today's Tasks
+              </Text>
+              <Button
+                icon="filter-variant"
+                mode="elevated"
+                style={styles.filterButton}
+                onPress={() =>
+                  navigation.navigate('Filter Task', {
+                    filterValues: filterTodayValues,
+                    setFilterValues: setFilterTodayValues,
+                    todayOrFuture: 'today',
+                  })
+                }>
+                Filter
+              </Button>
+            </SafeAreaView>
             {renderTaskCard({taskToDisplay: todayTasksToDisplay})}
           </SafeAreaView>
           <SafeAreaView style={styles.bottomFuture}>
@@ -322,8 +326,9 @@ const TaskScreenMain = ({navigation}) => {
                 style={styles.filterButton}
                 onPress={() =>
                   navigation.navigate('Filter Task', {
-                    filterValues: filterValues,
-                    setFilterValues: setFilterValues,
+                    filterValues: filterFutureValues,
+                    setFilterValues: setFilterFutureValues,
+                    todayOrFuture: 'future',
                   })
                 }>
                 Filter

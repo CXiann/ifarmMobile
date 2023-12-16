@@ -30,7 +30,7 @@ const TaskScreenFilter = ({navigation, route}) => {
   });
 
   const {colors} = useTheme();
-  const {filterValues, setFilterValues} = route.params;
+  const {filterValues, setFilterValues, todayOrFuture} = route.params;
   const [tempForm, setTempForm] = useState(filterValues);
 
   const [radioButtonValue, setRadioButtonValue] = useState(
@@ -102,24 +102,26 @@ const TaskScreenFilter = ({navigation, route}) => {
         </SafeAreaView>
       </SafeAreaView>
       <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.dateInputContainer}>
-          <DateInput
-            label={'From'}
-            dataForm={tempForm}
-            setDataForm={setTempForm}
-            dateFieldName={'startDate'}
-            minWidth={'48%'}
-            minimumDate={filterValues['startDate']}
-          />
-          <DateInput
-            label={'To'}
-            dataForm={tempForm}
-            setDataForm={setTempForm}
-            dateFieldName={'endDate'}
-            minWidth={'48%'}
-            minimumDate={filterValues['startDate']}
-          />
-        </SafeAreaView>
+        {todayOrFuture === 'future' && (
+          <SafeAreaView style={styles.dateInputContainer}>
+            <DateInput
+              label={'From'}
+              dataForm={tempForm}
+              setDataForm={setTempForm}
+              dateFieldName={'startDate'}
+              minWidth={'48%'}
+              minimumDate={filterValues['startDate']}
+            />
+            <DateInput
+              label={'To'}
+              dataForm={tempForm}
+              setDataForm={setTempForm}
+              dateFieldName={'endDate'}
+              minWidth={'48%'}
+              minimumDate={filterValues['startDate']}
+            />
+          </SafeAreaView>
+        )}
         <SafeAreaView style={styles.radioButtonContainer}>
           <Text style={styles.radioTitle}>Task Status</Text>
           <RadioButton.Group
