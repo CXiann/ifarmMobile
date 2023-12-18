@@ -4,8 +4,6 @@ import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskCard from '../../components/taskCard';
 import SnackbarBottom from '../../components/snackbarBottom';
-import NotificationHandler from '../../components/notificationHandler';
-import PushNotification, {Importance} from 'react-native-push-notification';
 
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
@@ -141,32 +139,6 @@ const TaskScreenMain = ({navigation}) => {
 
     setIsLoading(false);
   }, [selectedDate, filterTodayValues, filterFutureValues]);
-
-  // const testPushNotification = () => {
-  //   getChannels();
-  //   console.log('Entered testPushNotification');
-  //   PushNotification.localNotification({
-  //     channelId: 'channel-1',
-  //     title: 'TestNoti', // (optional)
-  //     message: 'This is a Test Notification Message', // (required)
-  //   });
-  // };
-
-  // const createChannel = () => {
-  //   PushNotification.createChannel(
-  //     {
-  //       channelId: 'channel-1',
-  //       channelName: 'Test Channel',
-  //     },
-  //     created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-  //   );
-  // };
-
-  // const getChannels = () => {
-  //   PushNotification.getChannels(function (channel_ids) {
-  //     console.log('Channel-ids: ' + channel_ids); // ['channel_id_1']
-  //   });
-  // };
 
   const filterTasksAccordingToRole = () => {
     if (userData['role'] == 'farmer') {
