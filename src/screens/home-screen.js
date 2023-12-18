@@ -90,7 +90,7 @@ const HomeScreen = ({navigation}) => {
     });
     // }
     setItemList(filteredTagsList);
-  }, [realm]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

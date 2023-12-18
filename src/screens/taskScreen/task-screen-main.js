@@ -82,13 +82,13 @@ const TaskScreenMain = ({navigation}) => {
   const [futureTasksToDisplay, setFutureTasksToDisplay] = useState([]);
   console.log('Current User Id: ', userId.toString());
 
-  useEffect(() => {
-    setIsLoading(true);
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(realm.objects(Task));
-    });
-  }, [realm]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   realm.subscriptions.update(mutableSubs => {
+  //     // Create subscription for filtered results.
+  //     mutableSubs.add(realm.objects(Task));
+  //   });
+  // }, [realm]);
 
   useEffect(() => {
     if (userData['role'] == 'farmer') {

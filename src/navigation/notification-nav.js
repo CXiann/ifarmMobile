@@ -10,7 +10,7 @@ import NotificationWeatherScreen from '../screens/notificationScreen/notificatio
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
-const NotificationNav = () => {
+const NotificationNav = ({route}) => {
   const {colors} = useTheme();
   return (
     <Stack.Navigator
@@ -22,12 +22,13 @@ const NotificationNav = () => {
         name="Main Notification"
         options={{title: 'Notifications'}}
         component={NotiNav}
+        initialParams={route.params}
       />
     </Stack.Navigator>
   );
 };
 
-const NotiNav = () => {
+const NotiNav = ({route}) => {
   const {colors} = useTheme();
   return (
     <Tab.Navigator
@@ -37,7 +38,11 @@ const NotiNav = () => {
         tabBarInactiveTintColor: colors.primaryContainer,
       }}>
       <Tab.Screen name="Weather" component={NotificationWeatherScreen} />
-      <Tab.Screen name="Task" component={NotificationTaskScreen} />
+      <Tab.Screen
+        name="Task"
+        component={NotificationTaskScreen}
+        initialParams={route.params}
+      />
     </Tab.Navigator>
   );
 };
