@@ -30,7 +30,9 @@ const TaskCard = ({taskObject, showSnackBar}) => {
   const {userId, userName, userData} = useGlobal();
   const users = useQuery(User);
 
-  const assigneeUser = users.find(user => user._id == taskObject.assigneeId);
+  const assigneeUser = users.find(
+    user => user._id.toString() == taskObject.assigneeId.toString(),
+  );
 
   // const getTaskTypeStyle = taskType => {
   //   switch (taskType) {
@@ -62,12 +64,20 @@ const TaskCard = ({taskObject, showSnackBar}) => {
       mutableSubs.add(realm.objects(Task));
     });
 
-    if (
-      userData['role'] == 'owner' &&
-      assigneeUser['role'] == 'owner' &&
-      userId.toString() !== assigneeUser['_id'].toString()
-    ) {
-      setDisableCompleteButton(true);
+    if (userData['role'] == 'farmer') {
+      setDisableCompleteButton(false);
+    }
+
+    if (userData['role'] == 'owner') {
+      if (assigneeUser['role'] == 'farmer') {
+        setDisableCompleteButton(false);
+      } else if (assigneeUser['role'] == 'owner') {
+        if (userId.toString() == assigneeUser['_id'].toString()) {
+          setDisableCompleteButton(false);
+        } else {
+          setDisableCompleteButton(true);
+        }
+      }
     }
   }, [realm]);
 
@@ -144,11 +154,10 @@ const TaskCard = ({taskObject, showSnackBar}) => {
           <SafeAreaView>
             {taskDate && (
               <Text style={styles.taskDate}>
-                {taskDate.toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })}
+                {`${('0' + taskDate.getDate()).slice(-2)}/${(
+                  '0' +
+                  (taskDate.getMonth() + 1)
+                ).slice(-2)}/${taskDate.getFullYear()}`}
               </Text>
             )}
           </SafeAreaView>
