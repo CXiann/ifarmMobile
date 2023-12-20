@@ -64,18 +64,22 @@ const TaskCard = ({taskObject, showSnackBar}) => {
       mutableSubs.add(realm.objects(Task));
     });
 
-    if (userData['role'] == 'farmer') {
-      setDisableCompleteButton(false);
+    if (userData != null) {
+      if (userData['role'] == 'farmer') {
+        setDisableCompleteButton(false);
+      }
     }
 
-    if (userData['role'] == 'owner') {
-      if (assigneeUser['role'] == 'farmer') {
-        setDisableCompleteButton(false);
-      } else if (assigneeUser['role'] == 'owner') {
-        if (userId.toString() == assigneeUser['_id'].toString()) {
+    if (userData != null && assigneeUser != null) {
+      if (userData['role'] == 'owner') {
+        if (assigneeUser['role'] == 'farmer') {
           setDisableCompleteButton(false);
-        } else {
-          setDisableCompleteButton(true);
+        } else if (assigneeUser['role'] == 'owner') {
+          if (userId.toString() == assigneeUser['_id'].toString()) {
+            setDisableCompleteButton(false);
+          } else {
+            setDisableCompleteButton(true);
+          }
         }
       }
     }

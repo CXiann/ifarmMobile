@@ -79,7 +79,7 @@ const TaskScreenMain = ({navigation}) => {
 
   const allTasks = useQuery(Task);
   const [todayTasksToDisplay, setTodayTasksToDisplay] = useState([]);
-  const [futureTasksToDisplay, setFutureTasksToDisplay] = useState([]);
+  const [allTasksToDisplay, setAllTasksToDisplay] = useState([]);
   console.log('Current User Id: ', userId.toString());
 
   // useEffect(() => {
@@ -120,19 +120,16 @@ const TaskScreenMain = ({navigation}) => {
       filterTodayValues,
     );
 
-    let currentUserFutureTasks = currentUserTaskFilteredByRole.filtered(
+    let currentUserAllTasks = currentUserTaskFilteredByRole.filtered(
       'date >= $0 && date < $1',
       filterFutureValues['startDate'],
       filterFutureValues['endDate'],
     );
 
-    currentUserFutureTasks = filterTasks(
-      currentUserFutureTasks,
-      filterFutureValues,
-    );
+    currentUserAllTasks = filterTasks(currentUserAllTasks, filterFutureValues);
 
-    setFutureTasksToDisplay(currentUserFutureTasks);
-    console.log('Total filteredTasks: ', currentUserFutureTasks.length);
+    setAllTasksToDisplay(currentUserAllTasks);
+    console.log('Total filteredTasks: ', currentUserAllTasks.length);
 
     setTodayTasksToDisplay(currentUserTodayTasks);
     console.log('Total currentUserTodayTasks: ', currentUserTodayTasks.length);
@@ -289,7 +286,7 @@ const TaskScreenMain = ({navigation}) => {
           <SafeAreaView style={styles.bottomFuture}>
             <SafeAreaView style={{flexDirection: 'row'}}>
               <Text variant="titleLarge" style={styles.bottomTitle}>
-                Future Tasks
+                All Tasks
               </Text>
               <Button
                 icon="filter-variant"
@@ -305,7 +302,7 @@ const TaskScreenMain = ({navigation}) => {
                 Filter
               </Button>
             </SafeAreaView>
-            {renderTaskCard({taskToDisplay: futureTasksToDisplay})}
+            {renderTaskCard({taskToDisplay: allTasksToDisplay})}
           </SafeAreaView>
         </SafeAreaView>
         <SnackbarBottom
