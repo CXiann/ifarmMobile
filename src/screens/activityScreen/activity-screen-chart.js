@@ -10,7 +10,7 @@ import {Summary_Props as sumProps} from '../../constants/summary-props';
 const ActivityScreenChart = ({navigation, route}) => {
   const {colors} = useTheme();
   const [isFocus, setIsFocus] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(sumProps[10]);
+  const [selectedOption, setSelectedOption] = useState(sumProps[3]);
 
   const styles = StyleSheet.create({
     container: {
