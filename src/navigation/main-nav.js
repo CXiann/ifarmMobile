@@ -17,6 +17,7 @@ import InventoryScreenDetail from '../screens/inventoryScreen/inventory-screen-d
 import ActivityScreenChart from '../screens/activityScreen/activity-screen-chart';
 import TaskScreenFilter from '../screens/taskScreen/task-screen-filter';
 import NotificationNav from './notification-nav';
+import NotificationTaskScreen from '../screens/notificationScreen/notification-task-screen';
 
 const Stack = createStackNavigator();
 
@@ -44,7 +45,10 @@ export default function MainNav() {
             component={InventoryScreenDetail}
           />
           <Stack.Screen name="Sort" component={ActivityScreenSort} />
-          <Stack.Screen name="Notification" component={NotificationNav} />
+          <Stack.Screen
+            name="Notification"
+            component={NotificationTaskScreen}
+          />
           <Stack.Screen name="Activity Chart" component={ActivityScreenChart} />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           <Stack.Screen name="Add Item" component={InventoryScreenAddForm} />

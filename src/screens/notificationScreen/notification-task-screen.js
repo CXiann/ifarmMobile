@@ -1,11 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {BSON} from 'realm';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Divider, Avatar, useTheme, ActivityIndicator} from 'react-native-paper';
+import {
+  Divider,
+  Avatar,
+  useTheme,
+  ActivityIndicator,
+  IconButton,
+  Text,
+} from 'react-native-paper';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, ScrollView} from 'react-native-gesture-handler';
 
 const NotificationTaskScreen = ({navigation, route}) => {
   const {notifications} = route.params;
@@ -94,7 +101,7 @@ const NotificationTaskScreen = ({navigation, route}) => {
     return icons.find(item => item.category === category);
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = item => {
     const avatarStyle = {
       size: 50,
       icon: getAvatarProp(item.category).icon,
@@ -262,11 +269,38 @@ const NotificationTaskScreen = ({navigation, route}) => {
     date: {
       color: 'darkgray',
     },
+    topBar: {
+      backgroundColor: colors.primaryContainer,
+      maxHeight: '15%',
+      minWidth: '100%',
+      flexDirection: 'row',
+    },
+    topBarText: {
+      justifyContent: 'center',
+      marginLeft: '3%',
+      color: 'black',
+    },
   });
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <FlatList
+      <SafeAreaView style={styles.topBar}>
+        <IconButton
+          icon="arrow-left"
+          iconColor="black"
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+        <SafeAreaView style={styles.topBarText}>
+          <Text variant="titleLarge" style={{fontWeight: 700}}>
+            Notifications
+          </Text>
+        </SafeAreaView>
+      </SafeAreaView>
+      <ScrollView>
+        {notifications.slice(0, renderCount).map(renderItem)}
+      </ScrollView>
+      {/* <FlatList
         removeClippedSubviews={true}
         data={notifications.slice(0, renderCount)}
         initialNumToRender={5}
@@ -274,7 +308,7 @@ const NotificationTaskScreen = ({navigation, route}) => {
         renderItem={renderItem}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.2}
-      />
+      /> */}
       {loading ? (
         <SafeAreaView style={{marginVertical: 5}}>
           <ActivityIndicator animating={true} size="small" />

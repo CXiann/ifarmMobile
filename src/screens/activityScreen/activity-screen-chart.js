@@ -1,26 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text, useTheme, IconButton} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
-import {BarChart} from 'react-native-gifted-charts';
+import {ScrollView} from 'react-native-gesture-handler';
+import {Dropdown} from 'react-native-element-dropdown';
+import ActivityScreenChartBar from './activity-screen-chart-bar';
+import {Summary_Props as sumProps} from '../../constants/summary-props';
 
 const ActivityScreenChart = ({navigation, route}) => {
   const {colors} = useTheme();
-
-  const barData = [
-    {value: 250, label: 'M'},
-    {value: 500, label: 'T', frontColor: '#177AD5'},
-    {value: 745, label: 'W', frontColor: '#177AD5'},
-    {value: 320, label: 'T'},
-    {value: 600, label: 'F', frontColor: '#177AD5'},
-  ];
+  const [isFocus, setIsFocus] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(sumProps[10]);
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
     topBar: {
-      backgroundColor: colors.primaryContainer,
+      backgroundColor: selectedOption.color,
       maxHeight: '15%',
       minWidth: '100%',
       flexDirection: 'row',
@@ -30,10 +27,24 @@ const ActivityScreenChart = ({navigation, route}) => {
       marginLeft: '3%',
       color: 'black',
     },
+    dropdownContainer: {flex: 1, padding: 16},
+    dropdownLabel: {fontWeight: 'bold', paddingBottom: 5},
+    dropdown: {
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      marginBottom: 10,
+    },
     inputContainer: {
       flex: 1,
       padding: 16,
       alignItems: 'center',
+    },
+    selectedTextStyle: {
+      fontSize: 16,
+      color: 'black',
     },
     button: {
       marginVertical: 10,
@@ -44,27 +55,51 @@ const ActivityScreenChart = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.topBar}>
-        <IconButton
-          icon="arrow-left"
-          iconColor="black"
-          size={25}
-          onPress={() => navigation.goBack()}
-        />
-        <SafeAreaView style={styles.topBarText}>
-          <Text variant="titleLarge" style={{fontWeight: 700}}>
-            {'Activity Summary'}
-          </Text>
+      <ScrollView
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        style={{flex: 1}}>
+        <SafeAreaView style={styles.topBar}>
+          <IconButton
+            icon="arrow-left"
+            iconColor="black"
+            size={25}
+            onPress={() => navigation.goBack()}
+          />
+          <SafeAreaView style={styles.topBarText}>
+            <Text variant="titleLarge" style={{fontWeight: 700}}>
+              {'Activity Summary'}
+            </Text>
+          </SafeAreaView>
         </SafeAreaView>
-      </SafeAreaView>
-      <BarChart
-        barWidth={22}
-        barBorderRadius={4}
-        frontColor="lightgray"
-        data={barData}
-        yAxisThickness={0}
-        xAxisThickness={0}
-      />
+        <SafeAreaView style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>Select Chart Category</Text>
+          <Dropdown
+            style={[
+              styles.dropdown,
+              isFocus && {borderColor: colors.primary, borderWidth: 1},
+            ]}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            itemTextStyle={{color: 'black'}}
+            itemContainerStyle={{}}
+            data={sumProps}
+            // search
+            maxHeight={180}
+            labelField="title"
+            valueField="id"
+            // placeholder={!isFocus ? 'Select item' : '...'}
+            autoScroll={false}
+            value={selectedOption}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            onChange={item => {
+              setSelectedOption(item);
+            }}
+          />
+        </SafeAreaView>
+        <ActivityScreenChartBar option={selectedOption} />
+      </ScrollView>
     </SafeAreaView>
   );
 };

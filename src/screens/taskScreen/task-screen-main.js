@@ -4,7 +4,7 @@ import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TaskCard from '../../components/taskCard';
 import SnackbarBottom from '../../components/snackbarBottom';
-
+import {FlatList} from 'react-native-gesture-handler';
 import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
@@ -109,22 +109,22 @@ const TaskScreenMain = ({navigation}) => {
 
     const currentUserTaskFilteredByRole = filterTasksAccordingToRole();
     // Filter tasks in the database using a range for the date field
-    let currentUserTodayTasks = currentUserTaskFilteredByRole.filtered(
-      'date >= $0 && date < $1',
-      startDate,
-      endDate,
-    );
+    let currentUserTodayTasks = currentUserTaskFilteredByRole
+      .filtered('date >= $0 && date < $1', startDate, endDate)
+      .sorted('date');
 
     currentUserTodayTasks = filterTasks(
       currentUserTodayTasks,
       filterTodayValues,
     );
 
-    let currentUserAllTasks = currentUserTaskFilteredByRole.filtered(
-      'date >= $0 && date < $1',
-      filterFutureValues['startDate'],
-      filterFutureValues['endDate'],
-    );
+    let currentUserAllTasks = currentUserTaskFilteredByRole
+      .filtered(
+        'date >= $0 && date < $1',
+        filterFutureValues['startDate'],
+        filterFutureValues['endDate'],
+      )
+      .sorted('date');
 
     currentUserAllTasks = filterTasks(currentUserAllTasks, filterFutureValues);
 
@@ -207,9 +207,23 @@ const TaskScreenMain = ({navigation}) => {
 
     return (
       <SafeAreaView>
-        {taskToDisplay
+        <FlatList
+          ListHeaderComponent={<View />} // Empty view to avoid warning
+          ListFooterComponent={<View />}
+          removeClippedSubviews={true}
+          data={taskToDisplay}
+          initialNumToRender={4}
+          keyExtractor={item => item._id.toString()} // Replace 'id' with the unique identifier in your data
+          renderItem={({item}) => (
+            <TaskCard
+              taskType="Normal"
+              taskObject={item}
+              showSnackBar={showSnackBar}
+            />
+          )}
+        />
+        {/* {taskToDisplay
           .slice() // Create a shallow copy of the array to avoid mutating the original array
-          .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((task, i) => (
             <TaskCard
               key={i}
@@ -217,7 +231,7 @@ const TaskScreenMain = ({navigation}) => {
               taskObject={task}
               showSnackBar={showSnackBar}
             />
-          ))}
+          ))} */}
       </SafeAreaView>
     );
   };

@@ -85,7 +85,7 @@ const HomeScreen = ({navigation}) => {
     filteredItemProps.map(prop => {
       filteredTagsList = {
         ...filteredTagsList,
-        [prop.options]: getVisibleTagsItems(selectedFarmAllProps, prop.options),
+        [prop.options]: selectedFarmAllProps[0][prop.options],
       };
     });
     // }

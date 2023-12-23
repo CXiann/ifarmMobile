@@ -37,12 +37,12 @@ const NotiNav = ({route}) => {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.primaryContainer,
       }}>
-      <Tab.Screen name="Weather" component={NotificationWeatherScreen} />
       <Tab.Screen
         name="Task"
         component={NotificationTaskScreen}
         initialParams={route.params}
       />
+      <Tab.Screen name="Weather" component={NotificationWeatherScreen} />
     </Tab.Navigator>
   );
 };
