@@ -1,47 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {Text, Divider} from 'react-native-paper';
+import {Text, Divider, Card} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {getColor} from '../../utils/colorGenerator-utils';
 
 const ActivityScreenChartDetails = ({
-  //   lineData,
-  stackedData,
-  barData,
+  data,
   type,
   pastMonthsArray,
   queryAction,
 }) => {
-  const [chartData, setChartData] = useState([]);
-  console.log('Bar Data: ', barData);
-  console.log('Stacked Data: ', stackedData);
+  const [chartData, setChartData] = useState(data);
 
   useEffect(() => {
-    var chartData = [];
+    setChartData(data);
+  }, [data]);
 
-    switch (type) {
-      case 'bar':
-        chartData = barData;
-
-        break;
-
-      //   case 'line':
-      //     chartData = lineData;
-
-      // break;
-
-      case 'stack':
-        chartData = stackedData;
-
-        break;
-
-      default:
-        break;
-    }
-    setChartData(chartData);
-  }, [type, barData, stackedData]);
-
-  console.log('main chart data: ', chartData);
+  console.log('main chart data: ', data);
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -60,90 +35,40 @@ const ActivityScreenChartDetails = ({
       {chartData &&
         chartData.map((month, index) => {
           return (
-            <SafeAreaView style={{flex: 1}} key={'tool_' + index}>
+            <SafeAreaView style={{flex: 1}} key={'month_' + index}>
               <Divider theme={{colors: {outlineVariant: 'black'}}} />
               <SafeAreaView>
                 <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
-                  {pastMonthsArray[index].month}
+                  {month.label}
                 </Text>
               </SafeAreaView>
               <SafeAreaView>
-                {/* {type == 'line' && month?.lineData !== undefined && (
-                  <SafeAreaView
-                    style={styles.legendColumn}
-                    key={'tool_' + index}>
-                    {month.lineData[index].value == 0 ? (
-                      <Text>No data</Text>
-                    ) : (
-                      <SafeAreaView style={{flexDirection: 'row'}}>
-                        <SafeAreaView
-                          style={{
-                            height: 10,
-                            width: 10,
-                            borderRadius: 5,
-                            // backgroundColor: stackItem.color,
-                            marginRight: 10,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text>{month.item}</Text>
-                      </SafeAreaView>
-                    )}
-                    <Text>{month.lineData[index].value.toFixed(3)}</Text>
-                  </SafeAreaView>
-                )} */}
-                {type == 'stack' &&
-                  month?.stacks !== undefined &&
-                  month.stacks.map((stackItem, index) => {
-                    return (
-                      <SafeAreaView
-                        style={styles.legendColumn}
-                        key={'tool_' + index}>
-                        {stackItem.value == 0 ? (
-                          <Text>No data</Text>
-                        ) : (
-                          <SafeAreaView style={{flexDirection: 'row'}}>
-                            <SafeAreaView
-                              style={{
-                                height: 10,
-                                width: 10,
-                                borderRadius: 5,
-                                backgroundColor: stackItem.color,
-                                marginRight: 10,
-                                alignSelf: 'center',
-                              }}
-                            />
-                            <Text>{stackItem.name}</Text>
-                          </SafeAreaView>
-                        )}
-                        <Text>{stackItem.value.toFixed(3)}</Text>
-                      </SafeAreaView>
-                    );
-                  })}
-                {type == 'bar' && month?.value !== undefined && (
-                  <SafeAreaView
-                    style={styles.legendColumn}
-                    key={'tool_' + index}>
-                    {month.value == 0 ? (
-                      <Text>No data</Text>
-                    ) : (
-                      <SafeAreaView style={{flexDirection: 'row'}}>
-                        <SafeAreaView
-                          style={{
-                            height: 10,
-                            width: 10,
-                            borderRadius: 5,
-                            backgroundColor: month.color,
-                            marginRight: 10,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text>{'Total Count'}</Text>
-                      </SafeAreaView>
-                    )}
-                    <Text>{month.value.toFixed(0)}</Text>
-                  </SafeAreaView>
-                )}
+                {month.stacks.map((stackItem, index) => {
+                  return (
+                    <View
+                      style={styles.legendColumn}
+                      key={stackItem.name + '_' + index}>
+                      {stackItem.value == 0 ? (
+                        <Text>No data</Text>
+                      ) : (
+                        <View style={{flexDirection: 'row'}}>
+                          <View
+                            style={{
+                              height: 10,
+                              width: 10,
+                              borderRadius: 5,
+                              backgroundColor: stackItem.color,
+                              marginRight: 10,
+                              alignSelf: 'center',
+                            }}
+                          />
+                          <Text>{stackItem.name}</Text>
+                        </View>
+                      )}
+                      <Text>{stackItem.value.toFixed(3)}</Text>
+                    </View>
+                  );
+                })}
               </SafeAreaView>
             </SafeAreaView>
           );

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {BSON} from 'realm';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Divider,
@@ -101,7 +101,7 @@ const NotificationTaskScreen = ({navigation, route}) => {
     return icons.find(item => item.category === category);
   };
 
-  const renderItem = item => {
+  const renderItem = ({item}) => {
     const avatarStyle = {
       size: 50,
       icon: getAvatarProp(item.category).icon,
@@ -128,16 +128,16 @@ const NotificationTaskScreen = ({navigation, route}) => {
       'farmer';
 
     return (
-      <SafeAreaView
+      <View
         style={
           item.readUsers.includes(userId.toString())
             ? styles.containerSeen
             : styles.containerXSeen
         }>
-        <SafeAreaView style={{justifyContent: 'center'}}>
+        <View style={{justifyContent: 'center'}}>
           <Avatar.Icon {...avatarStyle} />
-        </SafeAreaView>
-        <SafeAreaView style={styles.contentContainer}>
+        </View>
+        <View style={styles.contentContainer}>
           <Text
             style={styles.contentTop}
             numberOfLines={4}
@@ -212,8 +212,8 @@ const NotificationTaskScreen = ({navigation, route}) => {
           </Text>
 
           <Text style={styles.date}>{processDateCreated}</Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     );
   };
 
@@ -297,10 +297,10 @@ const NotificationTaskScreen = ({navigation, route}) => {
           </Text>
         </SafeAreaView>
       </SafeAreaView>
-      <ScrollView>
+      {/* <ScrollView>
         {notifications.slice(0, renderCount).map(renderItem)}
-      </ScrollView>
-      {/* <FlatList
+      </ScrollView> */}
+      <FlatList
         removeClippedSubviews={true}
         data={notifications.slice(0, renderCount)}
         initialNumToRender={5}
@@ -308,7 +308,7 @@ const NotificationTaskScreen = ({navigation, route}) => {
         renderItem={renderItem}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.2}
-      /> */}
+      />
       {loading ? (
         <SafeAreaView style={{marginVertical: 5}}>
           <ActivityIndicator animating={true} size="small" />

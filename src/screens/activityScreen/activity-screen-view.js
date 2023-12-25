@@ -170,13 +170,7 @@ const ActivityScreenView = ({navigation}) => {
         <Button
           icon="chart-bar"
           mode="elevated"
-          onPress={() =>
-            navigation.navigate('Activity Chart', {
-              dataForm: dataForm,
-              setDataForm: setDataForm,
-              actProps: actProps,
-            })
-          }>
+          onPress={() => navigation.navigate('Activity Chart')}>
           Chart
         </Button>
       </SafeAreaView>

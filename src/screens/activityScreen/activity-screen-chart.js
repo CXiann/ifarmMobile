@@ -55,23 +55,23 @@ const ActivityScreenChart = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.topBar}>
+        <IconButton
+          icon="arrow-left"
+          iconColor="black"
+          size={25}
+          onPress={() => navigation.goBack()}
+        />
+        <SafeAreaView style={styles.topBarText}>
+          <Text variant="titleLarge" style={{fontWeight: 700}}>
+            {'Activity Summary'}
+          </Text>
+        </SafeAreaView>
+      </SafeAreaView>
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         style={{flex: 1}}>
-        <SafeAreaView style={styles.topBar}>
-          <IconButton
-            icon="arrow-left"
-            iconColor="black"
-            size={25}
-            onPress={() => navigation.goBack()}
-          />
-          <SafeAreaView style={styles.topBarText}>
-            <Text variant="titleLarge" style={{fontWeight: 700}}>
-              {'Activity Summary'}
-            </Text>
-          </SafeAreaView>
-        </SafeAreaView>
         <SafeAreaView style={styles.dropdownContainer}>
           <Text style={styles.dropdownLabel}>Select Chart Category</Text>
           <Dropdown

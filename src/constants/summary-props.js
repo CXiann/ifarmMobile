@@ -79,7 +79,7 @@ export const Summary_Props = [
     title: 'Others',
     action: ['Others'],
     icon: 'unfold-more-vertical',
-    color: 'lightblue',
+    color: 'lightgray',
     type: 'bar',
     unit: 'times',
   },
