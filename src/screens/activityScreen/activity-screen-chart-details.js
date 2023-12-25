@@ -31,18 +31,18 @@ const ActivityScreenChartDetails = ({
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {chartData &&
         chartData.map((month, index) => {
           return (
-            <SafeAreaView style={{flex: 1}} key={'month_' + index}>
+            <View style={{flex: 1}} key={'month_' + index}>
               <Divider theme={{colors: {outlineVariant: 'black'}}} />
-              <SafeAreaView>
+              <View>
                 <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
                   {month.label}
                 </Text>
-              </SafeAreaView>
-              <SafeAreaView>
+              </View>
+              <View>
                 {month.stacks.map((stackItem, index) => {
                   return (
                     <View
@@ -69,11 +69,11 @@ const ActivityScreenChartDetails = ({
                     </View>
                   );
                 })}
-              </SafeAreaView>
-            </SafeAreaView>
+              </View>
+            </View>
           );
         })}
-    </SafeAreaView>
+    </View>
   );
 };
 
