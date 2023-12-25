@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -7,13 +7,13 @@ const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
   const progressPercentage = Math.round((completedTasks / totalTasks) * 100);
 
   return (
-    <SafeAreaView style={styles.card}>
-      <SafeAreaView style={styles.leftContainer}>
+    <View style={styles.card}>
+      <View style={styles.leftContainer}>
         <Text style={styles.totalTasks}>Task Progress</Text>
         <Text style={styles.labelTask}>
           {completedTasks}/{totalTasks} Tasks Completed today
         </Text>
-        <SafeAreaView style={styles.calendarRow}>
+        <View style={styles.calendarRow}>
           <IconButton
             icon="calendar-month"
             size={17}
@@ -23,9 +23,9 @@ const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
           <Text style={styles.calendarText}>
             {month} {day}
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
-      <SafeAreaView style={styles.rightContainer}>
+        </View>
+      </View>
+      <View style={styles.rightContainer}>
         {!isNaN(progressPercentage) ? (
           <>
             <Text style={styles.progressPercentage}>{progressPercentage}%</Text>
@@ -34,8 +34,8 @@ const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
         ) : (
           <Text style={styles.label}>No Data</Text>
         )}
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 };
 

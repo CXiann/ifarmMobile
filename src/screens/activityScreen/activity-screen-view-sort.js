@@ -1,5 +1,5 @@
 import Realm, {BSON} from 'realm';
-import {ScrollView} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {
   FlatList,
   GestureHandlerRootView,
@@ -186,7 +186,7 @@ const ActivityScreenViewSort = ({
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{flexGrow: 1}}>
           <TouchableOpacity>
-            <SafeAreaView
+            <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -200,8 +200,8 @@ const ActivityScreenViewSort = ({
                 }}>
                 Filtering Options
               </Text>
-            </SafeAreaView>
-            <SafeAreaView style={{marginBottom: 10, marginTop: 5}}>
+            </View>
+            <View style={{marginBottom: 10, marginTop: 5}}>
               {itemProps.map((prop, index) => {
                 return (
                   <React.Fragment key={prop.label + '_' + index}>
@@ -217,15 +217,15 @@ const ActivityScreenViewSort = ({
                   </React.Fragment>
                 );
               })}
-            </SafeAreaView>
-            <SafeAreaView style={{marginVertical: 10}}>
+            </View>
+            <View style={{marginVertical: 10}}>
               <ActivityViewSortingButtons
                 dataForm={tempForm}
                 setDataForm={setTempForm}
                 props={actProps}
               />
-            </SafeAreaView>
-            <SafeAreaView
+            </View>
+            <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -256,8 +256,8 @@ const ActivityScreenViewSort = ({
                 rippleColor={'white'}>
                 Select All Options
               </Button>
-            </SafeAreaView>
-            <SafeAreaView
+            </View>
+            <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Button
                 style={{
@@ -288,7 +288,7 @@ const ActivityScreenViewSort = ({
                 }}>
                 Filter
               </Button>
-            </SafeAreaView>
+            </View>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>

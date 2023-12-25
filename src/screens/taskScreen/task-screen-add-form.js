@@ -129,20 +129,20 @@ const TaskScreenAddForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.outter}>
-      <SafeAreaView style={styles.topBar}>
+      <View style={styles.topBar}>
         <IconButton
           icon="arrow-left"
           iconColor="black"
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <SafeAreaView style={styles.topBarText}>
+        <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
             {'Add Task'}
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
-      <SafeAreaView style={styles.container}>
+        </View>
+      </View>
+      <View style={styles.container}>
         <DateInput
           label={'Date'}
           dataForm={dataForm}
@@ -183,7 +183,7 @@ const TaskScreenAddForm = ({navigation}) => {
           }
           dismiss={onDismissSnackBar}
         />
-      </SafeAreaView>
+      </View>
     </SafeAreaView>
   );
 };

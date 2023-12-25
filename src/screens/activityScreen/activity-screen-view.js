@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
@@ -137,7 +137,7 @@ const ActivityScreenView = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row'}}>
         <Button
           style={{marginEnd: 20}}
           buttonColor="honeydew"
@@ -173,8 +173,8 @@ const ActivityScreenView = ({navigation}) => {
           onPress={() => navigation.navigate('Activity Chart')}>
           Chart
         </Button>
-      </SafeAreaView>
-      <SafeAreaView style={styles.dateInputContainer}>
+      </View>
+      <View style={styles.dateInputContainer}>
         <DateInput
           label={'From'}
           dataForm={dataForm}
@@ -189,12 +189,11 @@ const ActivityScreenView = ({navigation}) => {
           dateFieldName={'endDate'}
           minWidth={'48%'}
         />
-      </SafeAreaView>
+      </View>
       {activitiesToDisplay.length == 0 ? (
-        <SafeAreaView
-          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Text variant="bodyLarge">No Activities Recorded</Text>
-        </SafeAreaView>
+        </View>
       ) : (
         <FlatList
           removeClippedSubviews={true}

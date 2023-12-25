@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
+import {StyleSheet, SafeAreaView, View} from 'react-native';
 import {
   Button,
   Text,
@@ -133,29 +133,29 @@ const TaskCard = ({taskObject, showSnackBar}) => {
   const taskStatusBgColor = getTaskStatusColor(taskCompleted);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.statusIndicator}>
+    <View style={styles.container}>
+      <View style={styles.statusIndicator}>
         <Avatar.Icon
           size={22}
           icon={taskStatusIcon}
           style={taskStatusBgColor}
           color="#ffffff"
         />
-        <SafeAreaView style={styles.dottedLine}>
-          <SafeAreaView style={styles.dot} />
-          <SafeAreaView style={styles.dot} />
-          <SafeAreaView style={styles.dot} />
-          <SafeAreaView style={styles.dot} />
-          <SafeAreaView style={styles.dot} />
-        </SafeAreaView>
-      </SafeAreaView>
+        <View style={styles.dottedLine}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+        </View>
+      </View>
       <Card style={styles.taskCard}>
         <Card.Content>
           <Text style={styles.taskTitle}>{taskTitle}</Text>
           {/* <SafeAreaView style={[styles.taskType, taskTypeStyle]}>
             <Text style={styles.taskTypeText}>{props.taskType}</Text>
           </SafeAreaView> */}
-          <SafeAreaView>
+          <View>
             {taskDate && (
               <Text style={styles.taskDate}>
                 {`${('0' + taskDate.getDate()).slice(-2)}/${(
@@ -164,12 +164,12 @@ const TaskCard = ({taskObject, showSnackBar}) => {
                 ).slice(-2)}/${taskDate.getFullYear()}`}
               </Text>
             )}
-          </SafeAreaView>
-          <SafeAreaView>
+          </View>
+          <View>
             {taskAssignee && (
               <Text style={styles.taskDate}>Assigned to {taskAssignee}</Text>
             )}
-          </SafeAreaView>
+          </View>
         </Card.Content>
         <Card.Actions>
           <IconButton
@@ -192,25 +192,25 @@ const TaskCard = ({taskObject, showSnackBar}) => {
             Confirm Task is Completed
           </Dialog.Title>
           <Dialog.Content>
-            <SafeAreaView style={styles.dialogContainer}>
+            <View style={styles.dialogContainer}>
               <Text variant="bodyMedium">
                 Do you confirm to mark the task as completed?
               </Text>
-            </SafeAreaView>
+            </View>
           </Dialog.Content>
           <Dialog.Actions>
-            <SafeAreaView style={styles.buttonRow}>
+            <View style={styles.buttonRow}>
               <Button textColor="#C23E3B" onPress={hideConfirmDialog}>
                 Cancel
               </Button>
               <Button textColor="#62A87C" onPress={handleMarkTaskAsCompleted}>
                 Confirm
               </Button>
-            </SafeAreaView>
+            </View>
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text, IconButton, Button} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import InventoryDetails from '../../components/inventoryDetails';
 import {useTheme} from 'react-native-paper';
-import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import {Dropdown} from 'react-native-element-dropdown';
 
 const InventoryScreenDetail = ({route, navigation}) => {
@@ -61,7 +60,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.topBar}>
+      <View style={styles.topBar}>
         <IconButton
           icon="arrow-left"
           iconColor="black"
@@ -69,17 +68,17 @@ const InventoryScreenDetail = ({route, navigation}) => {
           style={styles.topBarBackIcon}
           onPress={() => navigation.goBack()}
         />
-        <SafeAreaView style={styles.topBarText}>
+        <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
             {field.label} Details
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         style={{flex: 1}}>
-        <SafeAreaView style={styles.dropdownContainer}>
+        <View style={styles.dropdownContainer}>
           <Text style={styles.dropdownLabel}>Select Inventory Type</Text>
           <Dropdown
             style={[
@@ -103,7 +102,7 @@ const InventoryScreenDetail = ({route, navigation}) => {
               setSelectedOption(item);
             }}
           />
-        </SafeAreaView>
+        </View>
         {/* <AutocompleteDropdown
           inputContainerStyle={{
             marginVertical: 10,

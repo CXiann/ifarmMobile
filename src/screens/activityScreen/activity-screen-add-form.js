@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native';
+import {StyleSheet, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
@@ -247,19 +247,19 @@ const ActivityScreenAddForm = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.topBar}>
+      <View style={styles.topBar}>
         <IconButton
           icon="arrow-left"
           iconColor="black"
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <SafeAreaView style={styles.topBarText}>
+        <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
             {route.params.action}
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Keyboard} from 'react-native';
+import {StyleSheet, Keyboard, View} from 'react-native';
 import {TextInput, useTheme, Button, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -23,8 +23,8 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
   };
 
   return (
-    <SafeAreaView style={{flexDirection: 'row'}}>
-      <SafeAreaView
+    <View style={{flexDirection: 'row'}}>
+      <View
         style={{
           backgroundColor: colors.surfaceVariant,
           maxWidth: '15%',
@@ -44,8 +44,8 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
             });
           }}
         />
-      </SafeAreaView>
-      <SafeAreaView style={{backgroundColor: colors.surfaceVariant}}>
+      </View>
+      <View style={{backgroundColor: colors.surfaceVariant}}>
         <TextInput
           label={label}
           mode="flat"
@@ -54,8 +54,8 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
           style={styles.textInput}
           contentStyle={styles.content}
         />
-      </SafeAreaView>
-      <SafeAreaView
+      </View>
+      <View
         style={{
           backgroundColor: colors.surfaceVariant,
           maxWidth: '15%',
@@ -75,8 +75,8 @@ const FieldInput = ({label, dataForm, setDataForm}) => {
             });
           }}
         />
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 };
 

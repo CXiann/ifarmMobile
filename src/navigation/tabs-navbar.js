@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Realm from 'realm';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   Button,
@@ -136,7 +136,7 @@ export default function TabsNavbar({route}) {
                 {route.params.farmName}
               </Text>
             </Button>
-            <SafeAreaView style={{top: 2}}>
+            <View style={{top: 2}}>
               <IconButton
                 icon="bell"
                 size={20}
@@ -151,7 +151,7 @@ export default function TabsNavbar({route}) {
                   {newNotiLength}
                 </Badge>
               ) : null}
-            </SafeAreaView>
+            </View>
             <IconButton
               icon="logout-variant"
               iconColor="#FF2C2C"
@@ -178,7 +178,7 @@ export default function TabsNavbar({route}) {
                   </Text>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <SafeAreaView
+                  <View
                     style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                     <Button
                       textColor="#C23E3B"
@@ -198,7 +198,7 @@ export default function TabsNavbar({route}) {
                       }}>
                       Yes
                     </Button>
-                  </SafeAreaView>
+                  </View>
                 </Dialog.Actions>
               </Dialog>
             </Portal>

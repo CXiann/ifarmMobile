@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
@@ -58,7 +58,7 @@ const AutoCompleteAssigneeInput = ({
   });
 
   return (
-    <SafeAreaView style={style.container}>
+    <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
@@ -119,7 +119,7 @@ const AutoCompleteAssigneeInput = ({
         }}
         dataSet={dataSetFormatUser}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

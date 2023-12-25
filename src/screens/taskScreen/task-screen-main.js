@@ -197,16 +197,16 @@ const TaskScreenMain = ({navigation}) => {
   const renderTaskCard = ({taskToDisplay}) => {
     if (taskToDisplay.length == 0) {
       return (
-        <SafeAreaView>
+        <View>
           <Text style={{alignSelf: 'center', fontSize: 20, padding: 15}}>
             No Task
           </Text>
-        </SafeAreaView>
+        </View>
       );
     }
 
     return (
-      <SafeAreaView>
+      <View>
         <FlatList
           ListHeaderComponent={<View />} // Empty view to avoid warning
           ListFooterComponent={<View />}
@@ -232,7 +232,7 @@ const TaskScreenMain = ({navigation}) => {
               showSnackBar={showSnackBar}
             />
           ))} */}
-      </SafeAreaView>
+      </View>
     );
   };
 
@@ -240,10 +240,10 @@ const TaskScreenMain = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <SafeAreaView style={styles.top}>
-          <SafeAreaView style={styles.topContent}>
-            <SafeAreaView style={styles.firstRow}>
-              <SafeAreaView style={styles.textColumn}>
+        <View style={styles.top}>
+          <View style={styles.topContent}>
+            <View style={styles.firstRow}>
+              <View style={styles.textColumn}>
                 <Text style={styles.dateTitle}>
                   {dayOfWeek[selectedDate.getDay()]},{' '}
                   {monthOfYear[selectedDate.getMonth()]}{' '}
@@ -252,8 +252,8 @@ const TaskScreenMain = ({navigation}) => {
                 <Text style={styles.taskCount}>
                   Total {todayTasksToDisplay.length} tasks today
                 </Text>
-              </SafeAreaView>
-              <SafeAreaView style={styles.buttonColumn}>
+              </View>
+              <View style={styles.buttonColumn}>
                 <IconButton
                   icon="plus"
                   iconColor="white"
@@ -265,8 +265,8 @@ const TaskScreenMain = ({navigation}) => {
                   onPress={() =>
                     navigation.navigate('Add New Task')
                   }></IconButton>
-              </SafeAreaView>
-            </SafeAreaView>
+              </View>
+            </View>
             <TaskProgressCard
               totalTasks={todayTasksToDisplay.length}
               completedTasks={
@@ -275,9 +275,9 @@ const TaskScreenMain = ({navigation}) => {
               month={monthOfYear[selectedDate.getMonth()]}
               day={selectedDate.getDate()}
             />
-          </SafeAreaView>
-          <SafeAreaView style={styles.bottomToday}>
-            <SafeAreaView style={{flexDirection: 'row'}}>
+          </View>
+          <View style={styles.bottomToday}>
+            <View style={{flexDirection: 'row'}}>
               <Text variant="titleLarge" style={styles.bottomTitle}>
                 Today's Tasks
               </Text>
@@ -294,11 +294,11 @@ const TaskScreenMain = ({navigation}) => {
                 }>
                 Filter
               </Button>
-            </SafeAreaView>
+            </View>
             {renderTaskCard({taskToDisplay: todayTasksToDisplay})}
-          </SafeAreaView>
-          <SafeAreaView style={styles.bottomFuture}>
-            <SafeAreaView style={{flexDirection: 'row'}}>
+          </View>
+          <View style={styles.bottomFuture}>
+            <View style={{flexDirection: 'row'}}>
               <Text variant="titleLarge" style={styles.bottomTitle}>
                 All Tasks
               </Text>
@@ -315,10 +315,10 @@ const TaskScreenMain = ({navigation}) => {
                 }>
                 Filter
               </Button>
-            </SafeAreaView>
+            </View>
             {renderTaskCard({taskToDisplay: allTasksToDisplay})}
-          </SafeAreaView>
-        </SafeAreaView>
+          </View>
+        </View>
         <SnackbarBottom
           label={'Dismiss'}
           title={'Successfully Mark Task as Completed'}

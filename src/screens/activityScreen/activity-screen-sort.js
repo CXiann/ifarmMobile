@@ -1,5 +1,5 @@
 import Realm, {BSON} from 'realm';
-import {ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import {
   Modal,
@@ -44,19 +44,19 @@ const ActivityScreenSort = ({navigation, route}) => {
       style={{
         flex: 1,
       }}>
-      <SafeAreaView style={styles.topBar}>
+      <View style={styles.topBar}>
         <IconButton
           icon="arrow-left"
           iconColor="black"
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <SafeAreaView style={styles.topBarText}>
+        <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
             Filtering Options
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
       <ScrollView
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
@@ -66,7 +66,7 @@ const ActivityScreenSort = ({navigation, route}) => {
           paddingHorizontal: 20,
           paddingVertical: 10,
         }}>
-        <SafeAreaView style={{marginBottom: 10, marginTop: 5}}>
+        <View style={{marginBottom: 10, marginTop: 5}}>
           {itemProps.map((prop, index) => {
             return (
               <React.Fragment key={prop.label + '_' + index}>
@@ -82,15 +82,15 @@ const ActivityScreenSort = ({navigation, route}) => {
               </React.Fragment>
             );
           })}
-        </SafeAreaView>
-        <SafeAreaView style={{marginVertical: 10}}>
+        </View>
+        <View style={{marginVertical: 10}}>
           <ActivityViewSortingButtons
             dataForm={tempForm}
             setDataForm={setTempForm}
             props={actProps}
           />
-        </SafeAreaView>
-        <SafeAreaView
+        </View>
+        <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -121,9 +121,8 @@ const ActivityScreenSort = ({navigation, route}) => {
             rippleColor={'white'}>
             Select All Options
           </Button>
-        </SafeAreaView>
-        <SafeAreaView
-          style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Button
             style={{
               backgroundColor: 'red',
@@ -153,7 +152,7 @@ const ActivityScreenSort = ({navigation, route}) => {
             }}>
             Filter
           </Button>
-        </SafeAreaView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

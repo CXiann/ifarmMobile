@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 import {TextInput, useTheme} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -32,9 +32,9 @@ const DateInput = ({
   };
 
   return (
-    <SafeAreaView>
+    <View>
       <TouchableWithoutFeedback onPress={showCalendar}>
-        <SafeAreaView>
+        <View>
           <TextInput
             label={label}
             mode="flat"
@@ -51,7 +51,7 @@ const DateInput = ({
             }
             style={styles.textInput}
           />
-        </SafeAreaView>
+        </View>
       </TouchableWithoutFeedback>
       {show && (
         <DateTimePicker
@@ -62,7 +62,7 @@ const DateInput = ({
           minimumDate={minimumDate}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

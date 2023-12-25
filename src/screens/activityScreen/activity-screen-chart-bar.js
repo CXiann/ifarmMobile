@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {BSON} from 'realm';
-import {BarChart} from 'react-native-gifted-charts';
-import {LineChart} from 'react-native-chart-kit';
+import {BarChart, LineChart} from 'react-native-gifted-charts';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text, useTheme, IconButton} from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
 import {getColor} from '../../utils/colorGenerator-utils';
@@ -47,13 +46,13 @@ const ActivityScreenChartBar = ({option}) => {
   const {farmId} = useGlobal();
   const {useQuery} = realmContext;
 
-  const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
   const allActivities = useQuery('activities');
 
   useEffect(() => {
     var barData = [];
-
+    var lineData = [];
     var stackedData = [];
     const allData = allActivities.filtered(
       'farmId == $0 && action IN $1 && date >= $2 && date <= $3',
@@ -78,7 +77,7 @@ const ActivityScreenChartBar = ({option}) => {
           };
         });
         console.log('bar data: ', barData);
-        setData(barData);
+        setChartData(barData);
         break;
 
       case 'stack':
@@ -113,7 +112,45 @@ const ActivityScreenChartBar = ({option}) => {
           return {stacks: stacksArr, label: month.month};
         });
         console.log('stack data: ', stackedData);
-        setData(stackedData);
+        setChartData(stackedData);
+        break;
+      case 'line':
+        lineData = queryAction.map(action => {
+          var actionObj = {item: action, lineData: []};
+          pastMonthsArray.map(month => {
+            var price = 0;
+
+            allData.map(act => {
+              if (act.date.getMonth() + 1 == month.id && act.action == action) {
+                price += act.price ?? 0;
+              }
+            });
+            actionObj.lineData.push({
+              value: price,
+              label: month.month,
+            });
+          });
+          return actionObj;
+        });
+        // console.log('Pes data3: ', lineData[0].lineData);
+        // console.log('Fer data3: ', lineData[1].lineData);
+        // console.log('Fo data3: ', lineData[2].lineData);
+        // console.log('Fung data3: ', lineData[3].lineData);
+        const dataSet = lineData.map(data => {
+          return {data: data.lineData};
+        });
+        console.log('linedata: ', dataSet[1].data);
+        setChartData(dataSet);
+
+        let maxValueExpenses = Number.MIN_SAFE_INTEGER;
+        for (const item of lineData) {
+          for (const data of item.lineData) {
+            if (data.value > maxValueExpenses) {
+              maxValueExpenses = data.value;
+            }
+          }
+        }
+        console.log('MaxExpenses: ', Math.ceil(maxValueExpenses));
         break;
 
       default:
@@ -129,7 +166,7 @@ const ActivityScreenChartBar = ({option}) => {
       borderTopLeftRadius: 35,
       borderTopRightRadius: 35,
       elevation: 8,
-      minHeight: 500,
+      minHeight: 700,
     },
     titleText: {
       margin: 5,
@@ -144,17 +181,41 @@ const ActivityScreenChartBar = ({option}) => {
     },
   });
 
+  console.log('main data: ', chartData);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.titleText}>{option.title}</Text>
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         {/* empty chart */}
-        {data.length == 0 && (
+        {chartData.length == 0 && (
           <Text style={{color: 'red', marginVertical: 20, alignSelf: 'center'}}>
             No data available
           </Text>
         )}
-
+        {/* <LineChart
+          noOfSections={5}
+          // maxValue={maxValueExpenses}
+          dataSet={chartData ?? []}
+          // data={[{value: 50}, {value: 80}, {value: 90}, {value: 70}]}
+          // data={chartData[0]?.lineData}
+          // data2={chartData[0]?.lineData}
+          // data3={chartData[1]?.lineData}
+          // data4={chartData[2]?.lineData}
+          // data5={chartData[3]?.lineData}
+          focusEnabled
+          color="black"
+          color1="blue"
+          color2="green"
+          color3="blue"
+          color4="yellow"
+          yAxisThickness={0}
+          xAxisThickness={0}
+          xAxisLength={20}
+          xAxisLabelTextStyle={{color: 'black'}}
+          yAxisTextStyle={{color: 'black'}}
+          isAnimated
+        /> */}
         {/* aerating, others, fertilizer, foliar, pesticide, fungicide, sowing, transplant, harvest, sales*/}
 
         <BarChart
@@ -167,7 +228,7 @@ const ActivityScreenChartBar = ({option}) => {
           showFractionalValues
           roundToDigits={1}
           noOfSections={5}
-          stackData={data}
+          stackData={chartData}
           yAxisThickness={0}
           xAxisThickness={0}
           xAxisLength={20}
@@ -175,14 +236,14 @@ const ActivityScreenChartBar = ({option}) => {
           yAxisTextStyle={{color: 'black', fontSize: 10}}
           isAnimated
         />
-      </SafeAreaView>
+      </View>
       <ActivityScreenChartDetails
-        data={data}
+        data={chartData}
         type={option.type}
         pastMonthsArray={pastMonthsArray}
         queryAction={queryAction}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

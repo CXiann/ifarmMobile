@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
@@ -41,7 +41,7 @@ const AutocompleteUnitInput = ({
   });
   console.log('focus: ', isFocus);
   return (
-    <SafeAreaView style={style.container}>
+    <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
@@ -54,7 +54,7 @@ const AutocompleteUnitInput = ({
           dropdownController.current.close();
           setIsFocus(false);
         }}>
-        <SafeAreaView>
+        <View>
           <AutocompleteDropdown
             controller={controller => {
               dropdownController.current = controller;
@@ -93,9 +93,9 @@ const AutocompleteUnitInput = ({
             }}
             dataSet={dataSet}
           />
-        </SafeAreaView>
+        </View>
       </TouchableWithoutFeedback>
-    </SafeAreaView>
+    </View>
   );
 };
 

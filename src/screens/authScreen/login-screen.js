@@ -1,14 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Keyboard,
-  Image,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {View, StyleSheet, Keyboard, Image} from 'react-native';
 import {Text, TextInput, Button, useTheme, Checkbox} from 'react-native-paper';
 import * as bcrypt from 'bcryptjs';
-import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../../contexts/GlobalContext';
@@ -20,7 +13,7 @@ import {User} from '../../schemas/user.schema';
 const LoginScreen = ({navigation}) => {
   const MMKV = new MMKVLoader().initialize();
 
-  const {userData, setUserId, setUserData, setUserName} = useGlobal();
+  const {setUserId, setUserData, setUserName} = useGlobal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHidden, setIsHidden] = useState(true);
@@ -139,8 +132,8 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.imageContainer}>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
           <Image
             source={logo}
             alt="logo"
@@ -150,8 +143,8 @@ const LoginScreen = ({navigation}) => {
               maxHeight: 200, // Set the maximum height if needed
             }}
           />
-        </SafeAreaView>
-        <SafeAreaView style={styles.inputContainer}>
+        </View>
+        <View style={styles.inputContainer}>
           <Text
             variant="titleLarge"
             style={{marginBottom: 13, fontWeight: 'bold'}}>
@@ -193,7 +186,7 @@ const LoginScreen = ({navigation}) => {
             value={password}
             onChangeText={password => setPassword(password)}
           />
-          <SafeAreaView style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Checkbox
               status={checked ? 'checked' : 'unchecked'}
               onPress={() => {
@@ -201,7 +194,7 @@ const LoginScreen = ({navigation}) => {
               }}
             />
             <Text style={{alignSelf: 'center'}}>Keep me logged in</Text>
-          </SafeAreaView>
+          </View>
           {err && (
             <Text style={{color: colors.error}}>Invalid Login Credential</Text>
           )}
@@ -213,8 +206,8 @@ const LoginScreen = ({navigation}) => {
             style={styles.button}>
             Log In
           </Button>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

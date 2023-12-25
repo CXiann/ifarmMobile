@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {Text} from 'react-native-paper';
 import {PieChart} from 'react-native-gifted-charts';
 
@@ -13,7 +13,7 @@ const PieChartComponent = ({
 }) => {
   const renderDot = color => {
     return (
-      <SafeAreaView
+      <View
         style={{
           height: 10,
           width: 10,
@@ -27,32 +27,32 @@ const PieChartComponent = ({
   console.log('pie data: ', pieData);
   const renderLegendComponent = () => {
     return (
-      <SafeAreaView style={styles.legendContainer}>
+      <View style={styles.legendContainer}>
         {pieData.map((item, index) => (
-          <SafeAreaView style={styles.legendColumn} key={index}>
+          <View style={styles.legendColumn} key={index}>
             {renderDot(item.color)}
             <Text style={styles.legendText}>
               {item.name}: {calculatePercentage(pieData, item.value)}%
             </Text>
-          </SafeAreaView>
+          </View>
         ))}
-      </SafeAreaView>
+      </View>
     );
   };
 
   const centerLabelComponent = () => {
     return (
-      <SafeAreaView style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Text style={{fontSize: 14, color: 'black', fontWeight: 'bold'}}>
           {getTotal(pieData).toFixed(2) + (type == 'Liquid' ? 'ℓ' : 'kg')}
         </Text>
         <Text style={{fontSize: 14, color: 'black'}}>Total</Text>
-      </SafeAreaView>
+      </View>
     );
   };
   console.log('Type: ', type);
   return (
-    <SafeAreaView style={styles.chartContainer}>
+    <View style={styles.chartContainer}>
       <PieChart
         data={
           pieData.length === 0 ? [{value: 100, color: 'lightgray'}] : pieData
@@ -73,7 +73,7 @@ const PieChartComponent = ({
         // innerCircleColor={'#232B5D'}
         centerLabelComponent={centerLabelComponent}
       />
-      <SafeAreaView style={styles.rightSideOfChart}>
+      <View style={styles.rightSideOfChart}>
         <Text style={styles.stockText}>Total In Stock</Text>
         <Text style={styles.stockValueText}>
           {pieData.length === 0
@@ -81,8 +81,8 @@ const PieChartComponent = ({
             : getTotal(pieData).toFixed(2) + (type == 'Liquid' ? 'ℓ' : 'kg')}
         </Text>
         {renderLegendComponent()}
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 };
 

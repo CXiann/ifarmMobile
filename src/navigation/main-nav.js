@@ -18,7 +18,7 @@ import ActivityScreenChart from '../screens/activityScreen/activity-screen-chart
 import TaskScreenFilter from '../screens/taskScreen/task-screen-filter';
 import NotificationNav from './notification-nav';
 import NotificationTaskScreen from '../screens/notificationScreen/notification-task-screen';
-
+import ActivityScreenViewSort from '../screens/activityScreen/activity-screen-view-sort';
 const Stack = createStackNavigator();
 
 export default function MainNav() {

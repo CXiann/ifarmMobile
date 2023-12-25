@@ -1,6 +1,6 @@
 import Realm, {BSON} from 'realm';
 import {useState, useEffect, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
@@ -103,13 +103,13 @@ const AutocompleteItemInput = ({
   });
   if (loading) {
     return (
-      <SafeAreaView style={style.container}>
+      <View style={style.container}>
         {/* <ActivityIndicator animating={true} /> */}
-      </SafeAreaView>
+      </View>
     );
   }
   return (
-    <SafeAreaView style={style.container}>
+    <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
@@ -158,7 +158,7 @@ const AutocompleteItemInput = ({
         }}
         dataSet={dataSetFormatFarm || []}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

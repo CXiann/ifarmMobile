@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, FlatList} from 'react-native';
+import {StyleSheet, FlatList, View} from 'react-native';
 import {
   Text,
   Button,
@@ -9,8 +9,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import AutocompleteFarmInput from '../components/autocompleteFarmInput';
-import Realm, {BSON} from 'realm';
+import {BSON} from 'realm';
 import {realmContext} from '../../RealmContext';
 import {useGlobal} from '../contexts/GlobalContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,7 +26,6 @@ const FarmSelectorScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
 
   const farms = useQuery(Farm);
-  // const [selectedFarm, setSelectedFarm] = useState({id: '', title: ''}); //store farm information in {id:objectId(string), title:}
 
   useEffect(() => {
     setIsLoading(false);
@@ -90,7 +88,7 @@ const FarmSelectorScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={style.container}>
-      <SafeAreaView style={style.headerContainer}>
+      <View style={style.headerContainer}>
         <Text
           variant="bodyLarge"
           style={{fontWeight: 'bold', marginTop: 10, marginLeft: 5}}>
@@ -104,8 +102,8 @@ const FarmSelectorScreen = ({navigation}) => {
           value={searchText}
           onChangeText={text => setSearchText(text)}
         />
-      </SafeAreaView>
-      <SafeAreaView
+      </View>
+      <View
         style={{
           flex: 1,
           backgroundColor: colors.inversePrimary,
@@ -126,22 +124,22 @@ const FarmSelectorScreen = ({navigation}) => {
                   style={{marginBottom: 15, fontWeight: 'bold'}}>
                   {item.name.eng}
                 </Text>
-                <SafeAreaView style={{flexDirection: 'row', marginBottom: 5}}>
+                <View style={{flexDirection: 'row', marginBottom: 5}}>
                   <Icon name="location-on" color="blue" size={20} />
                   <Text
                     variant="bodyMedium"
                     style={{marginLeft: 5, color: 'gray'}}>
                     {item.address.eng}
                   </Text>
-                </SafeAreaView>
-                <SafeAreaView style={{flexDirection: 'row'}}>
+                </View>
+                <View style={{flexDirection: 'row'}}>
                   <Icon2 name="tag" color="red" size={20} />
                   <Text
                     variant="bodyMedium"
                     style={{marginLeft: 5, color: 'gray'}}>
                     {item.tags.join(', ')}
                   </Text>
-                </SafeAreaView>
+                </View>
               </Card.Content>
               <Card.Actions>
                 <Button
@@ -155,7 +153,7 @@ const FarmSelectorScreen = ({navigation}) => {
             </Card>
           )}
         />
-      </SafeAreaView>
+      </View>
     </SafeAreaView>
   );
 };

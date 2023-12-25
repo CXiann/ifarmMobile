@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
@@ -79,7 +79,7 @@ const AutocompleteFarmInput = ({
     //   }}
     //   dataSet={dataSetFormatFarm}
     // />
-    <SafeAreaView style={style.containerNew}>
+    <View style={style.containerNew}>
       <Dropdown
         style={[
           style.dropdown,
@@ -107,7 +107,7 @@ const AutocompleteFarmInput = ({
           });
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

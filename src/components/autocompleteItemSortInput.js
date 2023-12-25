@@ -1,6 +1,6 @@
 import Realm, {BSON} from 'realm';
 import {useState, useEffect, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   Text,
   useTheme,
@@ -139,7 +139,7 @@ const AutocompleteItemSortInput = ({
   //   );
   // }
   return (
-    <SafeAreaView style={style.container}>
+    <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>
         {label}
       </Text>
@@ -157,7 +157,7 @@ const AutocompleteItemSortInput = ({
         renderRightIcon={item => {
           return (
             <>
-              <SafeAreaView style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row'}}>
                 {value && (
                   <IconButton
                     icon="close-circle-outline"
@@ -182,13 +182,13 @@ const AutocompleteItemSortInput = ({
                   size={20}
                   onPress={() => myRef.current.open()}
                 />
-              </SafeAreaView>
+              </View>
             </>
           );
         }}
         renderInputSearch={onSearch => {
           return (
-            <SafeAreaView style={{padding: 10}}>
+            <View style={{padding: 10}}>
               <TextInput
                 theme={{colors: {surfaceVariant: 'white'}}}
                 mode="flat"
@@ -220,7 +220,7 @@ const AutocompleteItemSortInput = ({
                   />
                 }
               />
-            </SafeAreaView>
+            </View>
           );
         }}
         maxHeight={200}
@@ -243,7 +243,7 @@ const AutocompleteItemSortInput = ({
           });
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

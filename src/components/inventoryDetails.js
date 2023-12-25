@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text, Button, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getColor} from '../utils/colorGenerator-utils';
@@ -113,7 +113,7 @@ const InventoryDetails = ({navigation, type, data, field}) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.titleText}>{type.toUpperCase()}</Text>
       <PieChartComponent
         pieData={pieData ?? []}
@@ -135,7 +135,7 @@ const InventoryDetails = ({navigation, type, data, field}) => {
         onPress={() => handleAddButton()}>
         Add Inventory
       </Button>
-    </SafeAreaView>
+    </View>
   );
 };
 

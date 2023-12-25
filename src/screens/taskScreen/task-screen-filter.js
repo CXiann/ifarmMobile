@@ -9,7 +9,7 @@ import {
   RadioButton,
   TextInput,
 } from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DateInput from '../../components/dateInput';
 import AutoCompleteAssigneeInput from '../../components/autocompleteAssigneeInput';
@@ -88,22 +88,22 @@ const TaskScreenFilter = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <SafeAreaView style={styles.topBar}>
+      <View style={styles.topBar}>
         <IconButton
           icon="arrow-left"
           iconColor="black"
           size={25}
           onPress={() => navigation.goBack()}
         />
-        <SafeAreaView style={styles.topBarText}>
+        <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
             Filter Tasks
           </Text>
-        </SafeAreaView>
-      </SafeAreaView>
-      <SafeAreaView style={styles.container}>
+        </View>
+      </View>
+      <View style={styles.container}>
         {todayOrFuture === 'future' && (
-          <SafeAreaView style={styles.dateInputContainer}>
+          <View style={styles.dateInputContainer}>
             <DateInput
               label={'From'}
               dataForm={tempForm}
@@ -118,9 +118,9 @@ const TaskScreenFilter = ({navigation, route}) => {
               dateFieldName={'endDate'}
               minWidth={'48%'}
             />
-          </SafeAreaView>
+          </View>
         )}
-        <SafeAreaView style={styles.radioButtonContainer}>
+        <View style={styles.radioButtonContainer}>
           <Text style={styles.radioTitle}>Task Status</Text>
           <RadioButton.Group
             onValueChange={handleRadioButtonClicked}
@@ -129,8 +129,8 @@ const TaskScreenFilter = ({navigation, route}) => {
             <RadioButton.Item label="Pending" value="pending" />
             <RadioButton.Item label="Completed" value="completed" />
           </RadioButton.Group>
-        </SafeAreaView>
-        <SafeAreaView style={styles.assigneeContainer}>
+        </View>
+        <View style={styles.assigneeContainer}>
           {userData['role'] === 'owner' && (
             <AutoCompleteAssigneeInput
               label={'Assignee'}
@@ -144,8 +144,8 @@ const TaskScreenFilter = ({navigation, route}) => {
               setRefAssigneeFunction={setRefAssigneeFunction}
             />
           )}
-        </SafeAreaView>
-        <SafeAreaView
+        </View>
+        <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -181,8 +181,8 @@ const TaskScreenFilter = ({navigation, route}) => {
             }}>
             Filter
           </Button>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

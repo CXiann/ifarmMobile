@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Card, Avatar, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -93,7 +93,7 @@ const ActivityViewCards = ({item, actProps}) => {
             {'RM ' + item.price}
           </Text>
         )}
-        <SafeAreaView style={styles.cardBottom}>
+        <View style={styles.cardBottom}>
           {item?.field != 0 || item?.row != 0 ? (
             <Text variant="bodyLarge" style={styles.cardBottomText}>
               {'F' + item.field + ' R' + item.row}
@@ -106,7 +106,7 @@ const ActivityViewCards = ({item, actProps}) => {
           <Text variant="bodyLarge" style={{fontWeight: 'bold'}}>
             {item?.date.toLocaleDateString()}
           </Text>
-        </SafeAreaView>
+        </View>
       </Card.Content>
     </Card>
   );
