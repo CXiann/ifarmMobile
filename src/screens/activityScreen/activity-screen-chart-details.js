@@ -1,9 +1,47 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, Divider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet} from 'react-native';
+import {getColor} from '../../utils/colorGenerator-utils';
 
-const ActivityScreenChartDetails = ({barData, type}) => {
+const ActivityScreenChartDetails = ({
+  //   lineData,
+  stackedData,
+  barData,
+  type,
+  pastMonthsArray,
+  queryAction,
+}) => {
+  const [chartData, setChartData] = useState([]);
+  console.log('Bar Data: ', barData);
+  console.log('Stacked Data: ', stackedData);
+
+  useEffect(() => {
+    var chartData = [];
+
+    switch (type) {
+      case 'bar':
+        chartData = barData;
+
+        break;
+
+      //   case 'line':
+      //     chartData = lineData;
+
+      // break;
+
+      case 'stack':
+        chartData = stackedData;
+
+        break;
+
+      default:
+        break;
+    }
+    setChartData(chartData);
+  }, [type, barData, stackedData]);
+
+  console.log('main chart data: ', chartData);
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -16,20 +54,46 @@ const ActivityScreenChartDetails = ({barData, type}) => {
       justifyContent: 'space-between',
     },
   });
+
   return (
     <SafeAreaView style={styles.container}>
-      {barData &&
-        barData.map((month, index) => {
+      {chartData &&
+        chartData.map((month, index) => {
           return (
             <SafeAreaView style={{flex: 1}} key={'tool_' + index}>
               <Divider theme={{colors: {outlineVariant: 'black'}}} />
               <SafeAreaView>
                 <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
-                  {month.label}
+                  {pastMonthsArray[index].month}
                 </Text>
               </SafeAreaView>
               <SafeAreaView>
+                {/* {type == 'line' && month?.lineData !== undefined && (
+                  <SafeAreaView
+                    style={styles.legendColumn}
+                    key={'tool_' + index}>
+                    {month.lineData[index].value == 0 ? (
+                      <Text>No data</Text>
+                    ) : (
+                      <SafeAreaView style={{flexDirection: 'row'}}>
+                        <SafeAreaView
+                          style={{
+                            height: 10,
+                            width: 10,
+                            borderRadius: 5,
+                            // backgroundColor: stackItem.color,
+                            marginRight: 10,
+                            alignSelf: 'center',
+                          }}
+                        />
+                        <Text>{month.item}</Text>
+                      </SafeAreaView>
+                    )}
+                    <Text>{month.lineData[index].value.toFixed(3)}</Text>
+                  </SafeAreaView>
+                )} */}
                 {type == 'stack' &&
+                  month?.stacks !== undefined &&
                   month.stacks.map((stackItem, index) => {
                     return (
                       <SafeAreaView
@@ -56,7 +120,7 @@ const ActivityScreenChartDetails = ({barData, type}) => {
                       </SafeAreaView>
                     );
                   })}
-                {type == 'bar' && (
+                {type == 'bar' && month?.value !== undefined && (
                   <SafeAreaView
                     style={styles.legendColumn}
                     key={'tool_' + index}>
@@ -74,10 +138,10 @@ const ActivityScreenChartDetails = ({barData, type}) => {
                             alignSelf: 'center',
                           }}
                         />
-                        <Text>{month.name}</Text>
+                        <Text>{'Total Count'}</Text>
                       </SafeAreaView>
                     )}
-                    <Text>{month.value.toFixed(3)}</Text>
+                    <Text>{month.value.toFixed(0)}</Text>
                   </SafeAreaView>
                 )}
               </SafeAreaView>

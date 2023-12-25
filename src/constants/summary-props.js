@@ -8,6 +8,7 @@ export const Summary_Props = [
     icon: 'shovel',
     color: '#FFE4B5',
     type: 'bar',
+    unit: 'times',
   },
   {
     id: 1,
@@ -16,6 +17,7 @@ export const Summary_Props = [
     icon: 'seed',
     color: 'darkseagreen',
     type: 'stack',
+    unit: 'pieces',
   },
   {
     id: 2,
@@ -24,6 +26,7 @@ export const Summary_Props = [
     icon: 'flower-pollen-outline',
     color: 'lightblue',
     type: 'stack',
+    unit: 'kg/ℓ',
   },
   {
     id: 3,
@@ -32,6 +35,7 @@ export const Summary_Props = [
     icon: 'bug',
     color: 'lavender',
     type: 'stack',
+    unit: 'kg/ℓ',
   },
   {
     id: 4,
@@ -40,6 +44,7 @@ export const Summary_Props = [
     icon: 'leaf',
     color: '#FFB6C1',
     type: 'stack',
+    unit: 'kg/ℓ',
   },
   {
     id: 5,
@@ -48,6 +53,7 @@ export const Summary_Props = [
     icon: 'mushroom',
     color: '#FFA07A',
     type: 'stack',
+    unit: 'kg/ℓ',
   },
   {
     id: 6,
@@ -56,6 +62,7 @@ export const Summary_Props = [
     icon: 'sickle',
     color: 'mintgreen',
     type: 'stack',
+    unit: 'pieces',
   },
 
   {
@@ -65,14 +72,16 @@ export const Summary_Props = [
     icon: 'swap-horizontal',
     color: 'greenyellow',
     type: 'stack',
+    unit: 'pieces',
   },
   {
     id: 8,
     title: 'Others',
     action: ['Others'],
     icon: 'unfold-more-vertical',
-    color: 'dodgerblue',
+    color: 'lightblue',
     type: 'bar',
+    unit: 'times',
   },
   {
     id: 9,
@@ -81,20 +90,22 @@ export const Summary_Props = [
     icon: 'currency-usd',
     color: '#FFFACD',
     type: 'stack',
+    unit: 'RM',
   },
-  {
-    id: 10,
-    title: 'Total Expenses',
-    action: ['Pesticide', 'Fertilizer', 'Foliar', 'Fungicide'],
-    icon: 'currency-usd',
-    color: '#E6A8D7',
-    type: 'line',
-  },
-  {
-    id: '11',
-    title: 'Profit/Loss',
-    action: 'calculate',
-    color: 'lightgray',
-    type: 'normal',
-  },
+  // {
+  //   id: 10,
+  //   title: 'Total Expenses',
+  //   action: ['Pesticide', 'Fertilizer', 'Foliar', 'Fungicide'],
+  //   icon: 'currency-usd',
+  //   color: '#E6A8D7',
+  //   type: 'line',
+  //   unit: 'RM',
+  // },
+  // {
+  //   id: '11',
+  //   title: 'Profit/Loss',
+  //   action: 'calculate',
+  //   color: 'lightgray',
+  //   type: 'normal',
+  // },
 ];

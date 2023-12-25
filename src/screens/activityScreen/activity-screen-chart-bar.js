@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {BSON} from 'realm';
-import {BarChart, LineChart} from 'react-native-gifted-charts';
+import {BarChart} from 'react-native-gifted-charts';
+import {LineChart} from 'react-native-chart-kit';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Text, useTheme, IconButton} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
@@ -45,9 +46,23 @@ const ActivityScreenChartBar = ({option}) => {
   const queryAction = option.action;
   const {farmId} = useGlobal();
   const {useQuery} = realmContext;
-  const [dataToProcess, setDataToProcess] = useState([]);
-  const [maxValue, setMaxValue] = useState(0);
-  const allData = useQuery('activities').filtered(
+
+  const allActivities = useQuery('activities');
+
+  var barData = [];
+  // var lineData = {
+  //   labels: [],
+  //   legends: [],
+  //   datasets: [
+  //     {data: [], color: (opacity = 1) => `#3498db`},
+  //     {data: [], color: (opacity = 1) => `#e74c3c`},
+  //     {data: [], color: (opacity = 1) => `#2ecc71`},
+  //     {data: [], color: (opacity = 1) => `#f39c12`},
+  //   ],
+  // };
+
+  var stackedData = [];
+  const allData = allActivities.filtered(
     'farmId == $0 && action IN $1 && date >= $2 && date <= $3',
     farmId.toString(),
     queryAction,
@@ -55,117 +70,87 @@ const ActivityScreenChartBar = ({option}) => {
     new Date(),
   );
   console.log('length: ', allData.length);
-
-  useEffect(() => {
-    var chartData = [];
-    var maxValue = 0;
-    switch (option.type) {
-      case 'bar':
-        chartData = pastMonthsArray.map(month => {
-          var total = 0;
-          allData.map(act => {
-            act.date.getMonth() + 1 == month.id ? (total += 1) : total;
-          });
-          return {value: total, label: month.month, color: 'skyblue'};
+  switch (option.type) {
+    case 'bar':
+      // old
+      barData = pastMonthsArray.map(month => {
+        var total = 0;
+        allData.map(act => {
+          act.date.getMonth() + 1 == month.id ? (total += 1) : total;
         });
-        console.log('bar data: ', chartData);
+        return {value: total, label: month.month, color: 'skyblue'};
+      });
+      console.log('bar data: ', barData);
 
-        for (const item of chartData) {
-          if (item.value > maxValue) {
-            maxValue = item.value;
-          }
-        }
-        console.log('MaxBar: ', Math.ceil(maxValue));
-        break;
+      break;
 
-      case 'line':
-        chartData = queryAction.map(action => {
-          var actionObj = {item: action, lineData: []};
-          pastMonthsArray.map(month => {
-            var price = 0;
+    // case 'line':
+    //   pastMonthsArray.map(month => {
+    //     queryAction.map((action, index) => {
+    //       var price = 0;
 
-            allData.map(act => {
-              if (act.date.getMonth() + 1 == month.id && act.action == action) {
-                price += act.price ?? 0;
-                console.log('total: ', price);
-              }
-            });
-            actionObj.lineData.push({
-              value: price,
-              label: month.month,
-            });
-          });
-          return actionObj;
-        });
-        console.log('Pes data3: ', chartData[0]);
-        console.log('Fer data3: ', chartData[1]);
-        console.log('Fo data3: ', chartData[2]);
-        console.log('Fung data3: ', chartData[3]);
-        const dataSet = chartData.map(data => {
-          return {data: data.lineData};
-        });
-        console.log('linedata: ', dataSet);
+    //       allData.map(act => {
+    //         if (act.date.getMonth() + 1 == month.id && act.action == action) {
+    //           price += act.price ?? 0;
+    //         }
+    //       });
 
-        for (const item of chartData) {
-          for (const data of item.lineData) {
-            if (data.value > maxValue) {
-              maxValue = data.value;
+    //       lineData.datasets[index].data.push(price);
+    //     });
+    //   });
+    //   pastMonthsArray.map(month => {
+    //     lineData.labels.push(month.month);
+    //   });
+    //   queryAction.map(action => {
+    //     lineData.legends.push(action);
+    //   });
+
+    //   console.log('dataline: ', lineData);
+    //   console.log('label: ', lineData.labels);
+    //   console.log('data: ', lineData.datasets);
+    //   console.log('color: ', lineData.datasets[0]);
+
+    //   break;
+
+    case 'stack':
+      //old
+      stackedData = pastMonthsArray.map(month => {
+        const stacksArr = [];
+
+        allData.map(act => {
+          if (act.date.getMonth() + 1 == month.id) {
+            const existingItemIndex = stacksArr.findIndex(
+              item => item.name === act.item.eng,
+            );
+
+            if (existingItemIndex !== -1) {
+              // If the item already exists, update its value by incrementing quantity
+              stacksArr[existingItemIndex].value += act.quantity;
+            } else {
+              // If the item doesn't exist, add a new object to stacksArr
+              stacksArr.push({
+                value: act.quantity,
+                name: act.item.eng,
+                color: getColor()[0],
+              });
             }
           }
-        }
-        console.log('MaxLine: ', Math.ceil(maxValue));
-
-        break;
-
-      case 'stack':
-        chartData = pastMonthsArray.map(month => {
-          const stacksArr = [];
-
-          allData.map(act => {
-            if (act.date.getMonth() + 1 == month.id) {
-              const existingItemIndex = stacksArr.findIndex(
-                item => item.name === act.item.eng,
-              );
-
-              if (existingItemIndex !== -1) {
-                // If the item already exists, update its value by incrementing quantity
-                stacksArr[existingItemIndex].value += act.quantity;
-              } else {
-                // If the item doesn't exist, add a new object to stacksArr
-                stacksArr.push({
-                  value: act.quantity,
-                  name: act.item.eng,
-                  color: getColor()[0],
-                });
-              }
-            }
-          });
-          stacksArr.length == 0 &&
-            stacksArr.push({
-              value: 0,
-              name: '',
-              color: getColor()[0],
-            });
-          return {stacks: stacksArr, label: month.month};
         });
-        console.log('bar data2: ', chartData);
+        stacksArr.length == 0 &&
+          stacksArr.push({
+            value: 0,
+            name: '',
+            color: getColor()[0],
+          });
+        return {stacks: stacksArr, label: month.month};
+      });
+      console.log('bar data2: ', stackedData);
 
-        for (const data of chartData) {
-          for (const stack of data.stacks) {
-            if (stack.value > maxValue) {
-              maxValue = stack.value;
-            }
-          }
-        }
-        console.log('MaxStack: ', Math.ceil(maxValue));
-        break;
+      break;
 
-      default:
-        break;
-    }
-    setDataToProcess(chartData);
-    setMaxValue(0);
-  }, [option]);
+    default:
+      break;
+  }
 
   const styles = StyleSheet.create({
     container: {
@@ -178,6 +163,8 @@ const ActivityScreenChartBar = ({option}) => {
       minHeight: 700,
     },
     titleText: {
+      margin: 5,
+      marginBottom: 30,
       fontSize: 20,
       fontWeight: 'bold',
     },
@@ -188,78 +175,66 @@ const ActivityScreenChartBar = ({option}) => {
     },
   });
 
-  console.log('DataToProcess: ', dataToProcess);
+  const lineConfig = {
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    // strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    propsForHorizontalLabels: {
+      dx: -40, // Adjust this value to move the labels closer to the y-axis
+      textAnchor: 'start', // Align text to the end of the label
+      fontSize: 10,
+    },
+    propsForVerticalLabels: {
+      fontWeight: 'bold', // Set the font weight to bold
+      // fontSize: 12, // Adjust the font size as needed
+    },
+    propsForBackgroundLines: {
+      x1: 50,
+    },
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleText}>{option.title}</Text>
-      <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+      <SafeAreaView style={{flex: 1}}>
         {/* empty chart */}
-        {maxValue == 0 && (
-          <Text style={{color: 'red', marginVertical: 10}}>
+        {allData.length == 0 && (
+          <Text style={{color: 'red', marginVertical: 20, alignSelf: 'center'}}>
             No data available
           </Text>
         )}
-        {/* total expenses OR aerating, others  */}
-        {option.type == 'line' && (
+        {/* total expenses*/}
+        {/* {option.type == 'line' && (
           <LineChart
-            noOfSections={5}
-            maxValue={maxValue}
-            dataSet={dataToProcess}
-            // data={barData3[0].lineData ?? []}
-            // data2={barData3[1].lineData ?? []}
-            // data3={barData3[2].lineData ?? []}
-            // data4={barData3[3].lineData ?? []}
-            focusEnabled
-            color="black"
-            color1="blue"
-            color2="green"
-            color3="blue"
-            color4="yellow"
-            yAxisThickness={0}
-            xAxisThickness={0}
-            xAxisLength={20}
-            xAxisLabelTextStyle={{color: 'black'}}
-            yAxisTextStyle={{color: 'black'}}
-            isAnimated
+            yAxisLabel={option.unit + ' '}
+            chartConfig={lineConfig}
+            height={220}
+            width={300}
+            data={lineData}
+            withVerticalLines={false}
           />
-        )}
-        {option.type == 'bar' && (
+        )} */}
+        {/* aerating, others */}
+        {option.type == 'bar' && barData.length !== 0 && (
           <BarChart
             barWidth={25}
             barBorderRadius={4}
             frontColor="skyblue"
             // showGradient
             noOfSections={5}
-            data={dataToProcess ?? []}
+            data={barData}
             yAxisThickness={0}
             xAxisThickness={0}
             xAxisLength={20}
-            xAxisLabelTextStyle={{color: 'black'}}
+            xAxisLabelTextStyle={{color: 'black', fontWeight: 'bold'}}
             yAxisTextStyle={{color: 'black'}}
             isAnimated
-            renderTooltip={(item, index) => {
-              return (
-                <SafeAreaView
-                  style={{
-                    marginBottom: 20,
-                    marginLeft: -6,
-                    backgroundColor: 'lightgray',
-                    paddingHorizontal: 6,
-                    paddingVertical: 4,
-                    borderRadius: 4,
-                    transform: [{rotate: '-90deg'}],
-                  }}>
-                  <Text style={{color: 'black', fontWeight: 'bold'}}>
-                    {item.value}
-                  </Text>
-                </SafeAreaView>
-              );
-            }}
           />
         )}
         {/* fertilizer, foliar, pesticide, fungicide, sowing, transplant, harvest, sales*/}
-        {option.type == 'stack' && (
+        {option.type == 'stack' && stackedData.length !== 0 && (
           <BarChart
             barWidth={25} // Increase the barWidth to make the bars wider
             barBorderRadius={2}
@@ -270,17 +245,24 @@ const ActivityScreenChartBar = ({option}) => {
             showFractionalValues
             roundToDigits={1}
             noOfSections={5}
-            stackData={dataToProcess ?? []}
+            stackData={stackedData}
             yAxisThickness={0}
             xAxisThickness={0}
             xAxisLength={20}
-            xAxisLabelTextStyle={{color: 'black'}}
+            xAxisLabelTextStyle={{color: 'black', fontWeight: 'bold'}}
             yAxisTextStyle={{color: 'black'}}
             isAnimated
           />
         )}
       </SafeAreaView>
-      <ActivityScreenChartDetails barData={dataToProcess} type={option.type} />
+      <ActivityScreenChartDetails
+        // lineData={lineData}
+        stackedData={stackedData}
+        barData={barData}
+        type={option.type}
+        pastMonthsArray={pastMonthsArray}
+        queryAction={queryAction}
+      />
     </SafeAreaView>
   );
 };
