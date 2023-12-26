@@ -137,27 +137,37 @@ const ActivityScreenView = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flexDirection: 'row'}}>
-        <Button
-          style={{marginEnd: 20}}
-          buttonColor="honeydew"
-          // textColor="white"
-          icon="plus"
-          mode="elevated"
-          onPress={() => navigation.navigate('Add Activity')}>
-          Add
-        </Button>
-        {/* Test old filter */}
-        {/* <Button
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            style={{marginEnd: 20}}
+            buttonColor="honeydew"
+            // textColor="white"
+            icon="plus"
+            mode="elevated"
+            onPress={() =>
+              navigation.navigate('Add Activity', {action: 'Add Activity'})
+            }>
+            Add
+          </Button>
+          {/* Test old filter */}
+          {/* <Button
           icon="filter-variant"
           mode="elevated"
           onPress={() => showModal()}>
           Filter
         </Button> */}
+          <Button
+            icon="chart-bar"
+            buttonColor="lightyellow"
+            mode="elevated"
+            onPress={() => navigation.navigate('Activity Chart')}>
+            Charts
+          </Button>
+        </View>
         <Button
           icon="filter-variant"
-          mode="elevated"
-          style={{marginEnd: 20}}
+          mode="text"
           onPress={() =>
             navigation.navigate('Sort', {
               dataForm: dataForm,
@@ -166,12 +176,6 @@ const ActivityScreenView = ({navigation}) => {
             })
           }>
           Filter
-        </Button>
-        <Button
-          icon="chart-bar"
-          mode="elevated"
-          onPress={() => navigation.navigate('Activity Chart')}>
-          Chart
         </Button>
       </View>
       <View style={styles.dateInputContainer}>

@@ -65,7 +65,11 @@ const ActivityScreenChartDetails = ({
                           <Text>{stackItem.name}</Text>
                         </View>
                       )}
-                      <Text>{stackItem.value.toFixed(3)}</Text>
+                      <Text>
+                        {type == 'bar'
+                          ? stackItem.value.toFixed(0)
+                          : stackItem.value.toFixed(3)}
+                      </Text>
                     </View>
                   );
                 })}

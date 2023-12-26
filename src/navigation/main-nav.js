@@ -19,6 +19,7 @@ import TaskScreenFilter from '../screens/taskScreen/task-screen-filter';
 import NotificationNav from './notification-nav';
 import NotificationTaskScreen from '../screens/notificationScreen/notification-task-screen';
 import ActivityScreenViewSort from '../screens/activityScreen/activity-screen-view-sort';
+import ActivityScreenAddOptions from '../screens/activityScreen/activity-screen-add-options';
 const Stack = createStackNavigator();
 
 export default function MainNav() {
@@ -50,6 +51,10 @@ export default function MainNav() {
             component={NotificationTaskScreen}
           />
           <Stack.Screen name="Activity Chart" component={ActivityScreenChart} />
+          <Stack.Screen
+            name="Add Activity"
+            component={ActivityScreenAddOptions}
+          />
           <Stack.Screen name="Add Form" component={ActivityScreenAddForm} />
           <Stack.Screen name="Add Item" component={InventoryScreenAddForm} />
           {/* <Stack.Screen name="Task_Screen" component={TaskScreenMain} /> */}

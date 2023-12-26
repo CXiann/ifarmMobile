@@ -22,6 +22,7 @@ import TaskScreenNav from './task-screen-nav';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import {Notification} from '../schemas/notification.schema';
+import ActivityScreenView from '../screens/activityScreen/activity-screen-view';
 
 const Tab = createBottomTabNavigator();
 
@@ -263,7 +264,7 @@ export default function TabsNavbar({route}) {
       />
       <Tab.Screen
         name="Activities"
-        component={ActivitiesScreenNav}
+        component={ActivityScreenView}
         options={{
           tabBarLabel: 'Activities',
           tabBarIcon: ({color, size}) => {

@@ -144,7 +144,10 @@ const AutocompleteItemSortInput = ({
         {label}
       </Text>
       <Dropdown
-        style={[style.dropdown, isFocus && {borderColor: 'yellowgreen'}]}
+        style={[
+          style.dropdown,
+          isFocus && {borderColor: colors.primaryContainer},
+        ]}
         selectedTextStyle={style.selectedTextStyle}
         itemTextStyle={style.itemTextStyle}
         inputSearchStyle={style.inputSearchStyle}
