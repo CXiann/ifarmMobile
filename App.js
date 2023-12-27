@@ -56,6 +56,7 @@ const App = () => {
             subs.add(realm.objects('fertilizers'));
             subs.add(realm.objects('fungicides'));
             subs.add(realm.objects('notifications'));
+            subs.add(realm.objects('tasks'));
           },
         },
         clientReset: {
