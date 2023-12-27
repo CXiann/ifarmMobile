@@ -89,6 +89,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+         release {
+            storeFile file('ifarmmobile.keystore')
+            storePassword 'ttmtcx123'
+            keyAlias 'ifarmmobile'
+            keyPassword 'ttmtcx123'
+          }
     }
     buildTypes {
         debug {

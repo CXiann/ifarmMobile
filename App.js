@@ -19,12 +19,11 @@ import SplashScreen from 'react-native-splash-screen';
 const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
-  SplashScreen.hide();
-  // useEffect(() => {
-  //   if (Platform.OS === 'android') {
-
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
+  }, []);
 
   return (
     <GlobalProvider>
