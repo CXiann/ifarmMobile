@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Platform} from 'react-native';
 import {
   Provider as PaperProvider,
   MD3LightTheme as MD3DefaultTheme,
@@ -14,9 +14,18 @@ import {realmContext} from './RealmContext';
 import {APP_ID} from '@env';
 import {GlobalProvider, useGlobal} from './src/contexts/GlobalContext';
 import LoadingOverlay from './src/components/loadingOverlay';
+import SplashScreen from 'react-native-splash-screen';
+
 const {RealmProvider, useRealm} = realmContext;
 
 export default function AppWrapper() {
+  SplashScreen.hide();
+  // useEffect(() => {
+  //   if (Platform.OS === 'android') {
+
+  //   }
+  // }, []);
+
   return (
     <GlobalProvider>
       <AppProvider

@@ -6,7 +6,7 @@ import LocationInput from './locationInput';
 
 const WeatherMainCard = () => {
   const apiKey = '49fc111d10474a59b9e115511232710';
-  const days = '12';
+  const days = '3';
   const apiUrl = 'https://api.weatherapi.com/v1/forecast.json';
 
   const [city, setCity] = useState('Kuala Lumpur');

@@ -111,6 +111,8 @@ dependencies {
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.5.0'
 
+    implementation project(':react-native-splash-screen')
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
