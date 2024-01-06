@@ -378,7 +378,11 @@ const styles = StyleSheet.create({
   bottomToday: {
     backgroundColor: '#ffffff',
     padding: 20,
-    borderRadius: 40,
+    // borderRadius: 40,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
   bottomFuture: {
     marginTop: 30,

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locationIcon: {
-    backgroundColor: '#c7e39d',
+    backgroundColor: '#45BE37',
   },
   locationTitle: {
     alignItems: 'center',

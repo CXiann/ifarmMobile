@@ -112,14 +112,14 @@ export default function TabsNavbar({route}) {
         },
         headerRight: () => (
           <SafeAreaView style={style.rightContainer}>
-            <Button
+            {/* <Button
               mode="elevated"
               icon="arrow-right"
               onPress={() => navigation.navigate('Farm Selector')}
               contentStyle={{
                 flexDirection: 'row-reverse',
                 justifyContent: 'center',
-                backgroundColor: colors.secondaryContainer,
+                backgroundColor: '#C1DE91',
               }}
               labelStyle={{color: colors.outline}}
               style={{
@@ -136,11 +136,18 @@ export default function TabsNavbar({route}) {
                 }}>
                 {route.params.farmName}
               </Text>
-            </Button>
+            </Button> */}
+            <View style={{top: 2}}>
+              <IconButton
+                icon="chevron-down-circle-outline"
+                size={22}
+                onPress={() => navigation.navigate('Farm Selector')}
+              />
+            </View>
             <View style={{top: 2}}>
               <IconButton
                 icon="bell"
-                size={20}
+                size={22}
                 onPress={() =>
                   navigation.navigate('Notification', {
                     notifications: currentUserNoti,
@@ -153,19 +160,23 @@ export default function TabsNavbar({route}) {
                 </Badge>
               ) : null}
             </View>
-            <IconButton
-              icon="logout-variant"
-              iconColor="#FF2C2C"
-              style={{
-                marginTop: 10,
-                // flex: 1,
-                // alignItems: 'center',
-                // justifyContent: 'center',
-                // backgroundColor: colors.secondaryContainer,
-              }}
-              size={20}
-              onPress={() => showDialog()}
-            />
+            <View style={{top: 2}}>
+              <IconButton
+                icon="logout-variant"
+                // iconColor="#CD515D"
+                style={
+                  {
+                    // marginTop: 9,
+                    // flex: 1,
+                    // alignItems: 'center',
+                    // justifyContent: 'center',
+                    // backgroundColor: colors.secondaryContainer,
+                  }
+                }
+                size={22}
+                onPress={() => showDialog()}
+              />
+            </View>
             <Portal>
               <Dialog
                 visible={visible}
@@ -238,25 +249,25 @@ export default function TabsNavbar({route}) {
 
             return null;
           }}
-          getLabelText={({route}) => {
-            const {options} = descriptors[route.key];
-            const label =
-              options.tabBarLabel !== undefined
-                ? options.tabBarLabel
-                : options.title !== undefined
-                ? options.title
-                : route.title;
+          // getLabelText={({route}) => {
+          //   const {options} = descriptors[route.key];
+          //   const label =
+          //     options.tabBarLabel !== undefined
+          //       ? options.tabBarLabel
+          //       : options.title !== undefined
+          //       ? options.title
+          //       : route.title;
 
-            return label;
-          }}
-          style={{backgroundColor: colors.primaryContainer}}
+          //   return label;
+          // }}
+          style={{backgroundColor: colors.primaryContainer, height: '8%'}}
         />
       )}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Home',
+          // tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => {
             return <Icon name="home" size={size} color={color} />;
           },
@@ -266,9 +277,9 @@ export default function TabsNavbar({route}) {
         name="Activities"
         component={ActivityScreenView}
         options={{
-          tabBarLabel: 'Activities',
+          // tabBarLabel: 'Activities',
           tabBarIcon: ({color, size}) => {
-            return <Icon name="weather-sunny" size={size} color={color} />;
+            return <Icon name="view-grid-outline" size={size} color={color} />;
           },
         }}
       />
@@ -286,7 +297,7 @@ export default function TabsNavbar({route}) {
         name="Task"
         component={TaskScreenNav}
         options={{
-          tabBarLabel: 'Task',
+          // tabBarLabel: 'Task',
           tabBarIcon: ({color, size}) => {
             return (
               <Icon

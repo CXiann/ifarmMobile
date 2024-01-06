@@ -21,7 +21,7 @@ const LocationInput = ({label, city, setCity, country}) => {
       style={styles.textInput}
       textColor="white"
       activeOutlineColor="#6BF216"
-      outlineColor="#01B67D"
+      outlineColor="#80d776"
       onBlur={handleLocationChange}
     />
   );
