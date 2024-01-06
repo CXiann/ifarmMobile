@@ -4,26 +4,22 @@ import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';
-import {Activity_Props as actProps} from '../../constants/activity-props';
+import {Inventory_Props as invProps} from '../../constants/inventory-existing-props';
 
 import DateInput from '../../components/dateInput';
-import FieldInput from '../../components/fieldInput';
 import NumberInput from '../../components/numberInput';
 import AutocompleteItemInput from '../../components/autocompleteItemInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import SnackbarBottom from '../../components/snackbarBottom';
 import {useGlobal} from '../../contexts/GlobalContext';
-import {validateRange} from '../../utils/field-utils';
+
 import {convertItemName} from '../../utils/convertAction-utils';
 
-const ActivityScreenAddForm = ({route, navigation}) => {
+const InventoryScreenExistngNewForm = ({route, navigation}) => {
   //find the input fields for corresponding action selected
-  const selectedAction = route.params.action;
-  const themeColor = route.params.color;
-  const selectedActionAllProps = actProps.find(
-    act => act.action == selectedAction,
-  );
-  const selectedActionFields = selectedActionAllProps.fields;
+  const items = convertItemName(route.params.action);
+  const field = route.params.field;
+
   const {userId, farmId, userName, farmName} = useGlobal();
 
   const {useRealm, useObject} = realmContext;
@@ -34,19 +30,19 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     userName: {eng: userName, chs: '', cht: ''},
     farmId: farmId.toString(),
     farmName: {eng: farmName, chs: '', cht: ''},
-    row: '', //int
-    field: '0', //int
+    row: 0, //int
+    field: 0, //int
     quantity: '', //int
     price: '', //int
     unit: '',
     item: {eng: '', chs: '', cht: ''},
-    action: selectedAction,
+    action: 'Add Inventory',
     remarks: '',
     date: new Date(),
     isActual: true,
     originalQuantity: '', //int
     originalUnit: '', //modified in input component
-    convertQuantity: '', //int
+    convertQuantity: 0, //int
     createdAt: new Date(new Date().toISOString()),
     __v: 0,
   };
@@ -55,7 +51,6 @@ const ActivityScreenAddForm = ({route, navigation}) => {
   const [visible, setVisible] = useState(false);
   const [refUnit, setRefUnit] = useState(null);
   const [refItem, setRefItem] = useState(null);
-  const [updateRows, setUpdateRows] = useState([]);
 
   const onDismissSnackBar = () => setVisible(false);
 
@@ -67,32 +62,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     });
   }, [realm]);
 
-  useEffect(() => {
-    setUpdateRows(validateRange(dataForm['row']));
-  }, [dataForm]);
-
-  const convertQuantity = () => {
-    return {
-      ...dataForm,
-      quantity: !isNaN(parseFloat(dataForm['originalQuantity']))
-        ? /kg|^ℓ$/.test(dataForm['originalUnit'])
-          ? parseFloat(dataForm['originalQuantity'])
-          : /mg/.test(dataForm['originalUnit'])
-          ? parseFloat(dataForm['originalQuantity']) / 1000000
-          : /^g$|mℓ/.test(dataForm['originalUnit'])
-          ? parseFloat(dataForm['originalQuantity']) / 1000
-          : parseFloat(dataForm['originalQuantity']) / 2
-        : 0,
-    };
-  };
   const convertForm = useCallback(
     row => {
       return {
         ...dataForm,
-        row: !isNaN(parseInt(row)) ? parseInt(row) : 0,
-        field: !isNaN(parseInt(dataForm['field']))
-          ? parseInt(dataForm['field'])
-          : 0,
         quantity: !isNaN(parseFloat(dataForm['originalQuantity']))
           ? /kg|^ℓ$/.test(dataForm['originalUnit'])
             ? parseFloat(dataForm['originalQuantity'])
@@ -110,51 +83,16 @@ const ActivityScreenAddForm = ({route, navigation}) => {
         originalQuantity: !isNaN(parseFloat(dataForm['originalQuantity']))
           ? parseFloat(dataForm['originalQuantity'])
           : 0,
-
-        convertQuantity: !isNaN(parseInt(dataForm['convertQuantity']))
-          ? /kg|ℓ/.test(dataForm['unit'])
-            ? parseInt(dataForm['convertQuantity'])
-            : parseInt(dataForm['convertQuantity']) * 1000
-          : 0,
       };
     },
-    [dataForm, selectedAction],
+    [dataForm],
   );
 
   const validateDataInput = () => {
-    return selectedActionFields.every(field => {
+    return invProps.every(field => {
       console.log(field.id + '_' + field.validate(dataForm[field.id]));
       return field.validate(dataForm[field.id]);
     });
-  };
-
-  const validateQuantity = () => {
-    var flag;
-    realm.write(() => {
-      //update farm
-      const farm = realm.objectForPrimaryKey('farms', BSON.ObjectId(farmId));
-      const activityForm = convertQuantity();
-      const items = convertItemName(activityForm.action);
-      console.log('Farm: ', farm[items]);
-      console.log('Activity: ', activityForm);
-      const totalActQuantity = activityForm.quantity * updateRows.length;
-
-      farm[items].map(f => {
-        if (f.name.eng === activityForm.item.eng) {
-          if (totalActQuantity < f.quantity) {
-            f.quantity = parseFloat(
-              (parseFloat(f.quantity) - totalActQuantity).toFixed(3),
-            );
-            flag = true;
-          } else {
-            flag = false;
-          }
-          return;
-        }
-      });
-      console.log('Farm items', farm[items]);
-    });
-    return flag;
   };
 
   const setRefUnitFunction = useCallback(ref => {
@@ -165,7 +103,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     setRefItem(ref);
   }, []);
 
-  const handleAddActivity = () => {
+  const handleAddInventory = () => {
     // console.log('########');
     // for (const key in dataForm) {
     //   if (dataForm.hasOwnProperty(key)) {
@@ -177,22 +115,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     //   }
     // }
     console.log('DataForm: ', dataForm);
-    const vInput = validateDataInput();
-    const vQuantity =
-      dataForm.action == 'Foliar' ||
-      dataForm.action == 'Fertilizer' ||
-      dataForm.action == 'Pesticide' ||
-      dataForm.action == 'Fungicide'
-        ? validateQuantity()
-        : true;
 
-    const isValid = vInput && vQuantity;
+    const isValid = validateDataInput();
     console.log('AllValid: ', isValid);
-
-    // const farm = realm.objectForPrimaryKey('farms', BSON.ObjectId(farmId));
-    // const activityForm = convertForm();
-    // const items = convertItemName(activityForm.action);
-    // console.log('Final Farm: ', farm[items]);
+    const inventoryForm = convertForm();
 
     if (isValid) {
       refUnit?.current.clear();
@@ -200,20 +126,31 @@ const ActivityScreenAddForm = ({route, navigation}) => {
 
       //update activities
       realm.write(() => {
-        updateRows.map(row => realm.create('activities', convertForm(row)));
+        const farm = realm.objectForPrimaryKey('farms', BSON.ObjectId(farmId));
+        console.log('Farm: ', farm[items]);
+        console.log('Activity: ', inventoryForm);
+
+        //update farm
+        farm[items].map(f => {
+          if (f.name.eng === inventoryForm.item.eng) {
+            updated = true;
+            f.quantity = parseFloat(
+              (parseFloat(f.quantity) + inventoryForm.quantity).toFixed(3),
+            );
+            return;
+          }
+        });
+
+        //update activity
+        realm.create('activities', inventoryForm);
+        console.log('Farm items', farm[items]);
       });
       console.log('Successfully created data');
       setDataForm(initialValueActivities);
       setMsg('Successfully created data.');
     } else {
-      var errMsg = '';
-      errMsg = vInput
-        ? vQuantity
-          ? ''
-          : 'Quantity Exceeded Available Inventory.'
-        : 'Incorrect Input Data.';
       console.log('Error');
-      setMsg(errMsg);
+      setMsg('Incorrect Input Data.');
     }
     setVisible(true);
   };
@@ -223,7 +160,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
       flex: 1,
     },
     topBar: {
-      backgroundColor: themeColor,
+      backgroundColor: field.cardColor,
       maxHeight: '15%',
       minWidth: '100%',
       flexDirection: 'row',
@@ -241,7 +178,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
     button: {
       marginVertical: 10,
       minWidth: '100%',
-      backgroundColor: themeColor,
+      backgroundColor: field.cardColor,
     },
   });
 
@@ -256,7 +193,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
         />
         <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
-            {route.params.action}
+            {'Add Existing ' + route.params.action}
           </Text>
         </View>
       </View>
@@ -265,7 +202,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
         keyboardShouldPersistTaps="handled"
         style={{flex: 1}}>
         <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
-          {selectedActionFields.map((field, index) => {
+          {invProps.map((field, index) => {
             switch (field.type) {
               case 'date': {
                 return (
@@ -280,16 +217,6 @@ const ActivityScreenAddForm = ({route, navigation}) => {
                   </React.Fragment>
                 );
               }
-              case 'field':
-                return (
-                  <React.Fragment key={field.type + '_' + index}>
-                    <FieldInput
-                      label={'Field Number'}
-                      dataForm={dataForm}
-                      setDataForm={setDataForm}
-                    />
-                  </React.Fragment>
-                );
               case 'number':
                 return (
                   <React.Fragment key={field.type + '_' + index}>
@@ -305,10 +232,10 @@ const ActivityScreenAddForm = ({route, navigation}) => {
                 return (
                   <React.Fragment key={field.type + '_' + index}>
                     <AutocompleteItemInput
-                      label={field.name}
+                      label={route.params.action + ' name'}
                       id={'_id'}
                       title={'name'}
-                      options={field.options}
+                      options={items}
                       dataForm={dataForm}
                       setDataForm={setDataForm}
                       initialValue={false}
@@ -342,7 +269,7 @@ const ActivityScreenAddForm = ({route, navigation}) => {
           <Button
             mode="contained"
             style={styles.button}
-            onPress={handleAddActivity}>
+            onPress={handleAddInventory}>
             Add
           </Button>
         </KeyboardAvoidingView>
@@ -358,4 +285,4 @@ const ActivityScreenAddForm = ({route, navigation}) => {
   );
 };
 
-export default ActivityScreenAddForm;
+export default InventoryScreenExistngNewForm;

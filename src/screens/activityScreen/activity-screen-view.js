@@ -80,11 +80,10 @@ const ActivityScreenView = ({navigation}) => {
     console.log('Props: ', propsForQuery);
     var currentUserAllActivities = activities
       .filtered(
-        'date >= $0 && date <= $1 && userId CONTAINS $2 && farmId CONTAINS $3' +
-          (dataForm['selectedValue'].length > 0 ? ' && action IN $4' : ''),
+        'date >= $0 && date <= $1 && farmId CONTAINS $2' +
+          (dataForm['selectedValue'].length > 0 ? ' && action IN $3' : ''),
         new Date(dataForm['startDate'].setHours(0, 0, 0, 0)), //set earliest possible starting of date
         new Date(dataForm['endDate'].setHours(23, 59, 59, 999)), //set latest possible ending of date
-        userId.toString(),
         farmId.toString(),
         dataForm['selectedValue'],
       )
@@ -159,7 +158,6 @@ const ActivityScreenView = ({navigation}) => {
         </Button> */}
           <Button
             icon="chart-bar"
-            buttonColor="lightyellow"
             mode="elevated"
             onPress={() => navigation.navigate('Activity Chart')}>
             Charts

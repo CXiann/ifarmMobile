@@ -170,7 +170,7 @@ const LoginScreen = ({navigation}) => {
             style={{backgroundColor: 'white', marginBottom: 10}}
             right={
               <TextInput.Icon
-                icon={isHidden ? 'eye' : 'eye-off'}
+                icon={isHidden ? 'eye-off' : 'eye'}
                 color={
                   passFocus
                     ? colors.primary

@@ -9,6 +9,7 @@ const AutocompleteUnitInput = ({
   label,
   dataSet,
   dataForm,
+  dataFormOption,
   setDataForm,
   setRefUnitFunction,
 }) => {
@@ -89,7 +90,7 @@ const AutocompleteUnitInput = ({
             closeOnSubmit={true}
             useFilter={false}
             onSelectItem={item => {
-              item && setDataForm({...dataForm, originalUnit: item.title});
+              item && setDataForm({...dataForm, [dataFormOption]: item.title});
             }}
             dataSet={dataSet}
           />

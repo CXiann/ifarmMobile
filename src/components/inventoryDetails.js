@@ -45,8 +45,15 @@ const InventoryDetails = ({navigation, type, data, field}) => {
 
   // console.log('Option: ', visibleData.length);
 
-  const handleAddButton = () => {
-    navigation.navigate('Add Item', {
+  const handleNewAddButton = () => {
+    navigation.navigate('Add New Inventory', {
+      action: field.label,
+      field: field,
+    });
+  };
+
+  const handleExistingAddButton = () => {
+    navigation.navigate('Add Existing Inventory', {
       action: field.label,
       field: field,
     });
@@ -105,9 +112,9 @@ const InventoryDetails = ({navigation, type, data, field}) => {
     },
     addStockButton: {
       backgroundColor: selectedCardColor,
-      marginTop: 30,
-      marginBottom: 30,
-      width: '100%',
+      marginTop: 20,
+      marginBottom: 20,
+      width: '80%',
       alignSelf: 'center',
     },
   });
@@ -132,8 +139,14 @@ const InventoryDetails = ({navigation, type, data, field}) => {
       <Button
         mode="contained"
         style={styles.addStockButton}
-        onPress={() => handleAddButton()}>
-        Add Inventory
+        onPress={() => handleNewAddButton()}>
+        Add New Inventory
+      </Button>
+      <Button
+        mode="contained"
+        style={styles.addStockButton}
+        onPress={() => handleExistingAddButton()}>
+        Add Existing Inventory
       </Button>
     </View>
   );

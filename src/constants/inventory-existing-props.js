@@ -12,7 +12,6 @@ export const Inventory_Props = [
     id: 'item',
     name: 'Item Name',
     type: 'autocomplete',
-    options: 'fertilizers',
     validate: v => {
       return !!v.eng;
     },

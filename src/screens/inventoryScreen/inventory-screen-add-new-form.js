@@ -4,92 +4,51 @@ import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';
-import {Inventory_Props as invProps} from '../../constants/inventory-props';
-
-import DateInput from '../../components/dateInput';
-import NumberInput from '../../components/numberInput';
-import AutocompleteItemInput from '../../components/autocompleteItemInput';
+import {Inventory_Props as newProps} from '../../constants/inventory-new-props';
+import StringInput from '../../components/stringinput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import SnackbarBottom from '../../components/snackbarBottom';
 import {useGlobal} from '../../contexts/GlobalContext';
 
 import {convertItemName} from '../../utils/convertAction-utils';
 
-const InventoryScreenAddForm = ({route, navigation}) => {
+const InventoryScreenAddExistingForm = ({route, navigation}) => {
   //find the input fields for corresponding action selected
   const items = convertItemName(route.params.action);
   const field = route.params.field;
 
-  const {userId, farmId, userName, farmName} = useGlobal();
+  const {farmId} = useGlobal();
 
   const {useRealm, useObject} = realmContext;
   const realm = useRealm();
 
   const initialValueActivities = {
-    userId: userId.toString(),
-    userName: {eng: userName, chs: '', cht: ''},
-    farmId: farmId.toString(),
-    farmName: {eng: farmName, chs: '', cht: ''},
-    row: 0, //int
-    field: 0, //int
-    quantity: '', //int
-    price: '', //int
-    unit: '',
-    item: {eng: '', chs: '', cht: ''},
-    action: 'Add Inventory',
-    remarks: '',
-    date: new Date(),
-    isActual: true,
-    originalQuantity: '', //int
+    id: new BSON.ObjectId(),
+    name: '',
+    tags: ['all'],
     originalUnit: '', //modified in input component
-    convertQuantity: 0, //int
-    createdAt: new Date(new Date().toISOString()),
+    unitType: '',
     __v: 0,
   };
   const [dataForm, setDataForm] = useState(initialValueActivities);
   const [msg, setMsg] = useState(null);
   const [visible, setVisible] = useState(false);
   const [refUnit, setRefUnit] = useState(null);
-  const [refItem, setRefItem] = useState(null);
 
   const onDismissSnackBar = () => setVisible(false);
 
-  useEffect(() => {
-    realm.subscriptions.update(mutableSubs => {
-      // Create subscription for filtered results.
-      mutableSubs.add(realm.objects('activities'));
-      mutableSubs.add(realm.objects('farms'));
-    });
-  }, [realm]);
-
-  const convertForm = useCallback(
-    row => {
-      return {
-        ...dataForm,
-        quantity: !isNaN(parseFloat(dataForm['originalQuantity']))
-          ? /kg|^ℓ$/.test(dataForm['originalUnit'])
-            ? parseFloat(dataForm['originalQuantity'])
-            : /mg/.test(dataForm['originalUnit'])
-            ? parseFloat(dataForm['originalQuantity']) / 1000000
-            : /^g$|mℓ/.test(dataForm['originalUnit'])
-            ? parseFloat(dataForm['originalQuantity']) / 1000
-            : parseFloat(dataForm['originalQuantity']) / 2
-          : 0,
-        unit: /g/.test(dataForm['originalUnit']) ? 'kg' : 'ℓ',
-        price: !isNaN(parseFloat(dataForm['price']))
-          ? parseFloat(dataForm['price'])
-          : 0,
-        date: new Date(dataForm['date'].toISOString()),
-        originalQuantity: !isNaN(parseFloat(dataForm['originalQuantity']))
-          ? parseFloat(dataForm['originalQuantity'])
-          : 0,
-      };
-    },
-    [dataForm],
-  );
+  const convertForm = useCallback(() => {
+    const newObj = {
+      ...dataForm,
+      name: {eng: dataForm['name'], chs: '', cht: ''},
+      unitType: /g/.test(dataForm['originalUnit']) ? 'kg' : 'ℓ',
+    };
+    delete newObj['originalUnit'];
+    return newObj;
+  }, [dataForm]);
 
   const validateDataInput = () => {
-    return invProps.every(field => {
+    return newProps.every(field => {
       console.log(field.id + '_' + field.validate(dataForm[field.id]));
       return field.validate(dataForm[field.id]);
     });
@@ -97,10 +56,6 @@ const InventoryScreenAddForm = ({route, navigation}) => {
 
   const setRefUnitFunction = useCallback(ref => {
     setRefUnit(ref);
-  }, []);
-
-  const setRefItemFunction = useCallback(ref => {
-    setRefItem(ref);
   }, []);
 
   const handleAddInventory = () => {
@@ -114,40 +69,48 @@ const InventoryScreenAddForm = ({route, navigation}) => {
     //     }
     //   }
     // }
-    console.log('DataForm: ', dataForm);
+    console.log('DataForm add inv: ', dataForm);
 
     const isValid = validateDataInput();
-    console.log('AllValid: ', isValid);
     const inventoryForm = convertForm();
+    console.log('AllValid: ', isValid);
 
     if (isValid) {
       refUnit?.current.clear();
-      refItem?.current.clear();
 
-      //update activities
       realm.write(() => {
-        //update farm
         const farm = realm.objectForPrimaryKey('farms', BSON.ObjectId(farmId));
         console.log('Farm: ', farm[items]);
         console.log('Activity: ', inventoryForm);
-
+        var existed = false;
         //update farm
         farm[items].map(f => {
-          if (f.name.eng === inventoryForm.item.eng) {
-            f.quantity = parseFloat(
-              (parseFloat(f.quantity) + inventoryForm.quantity).toFixed(3),
-            );
+          if (f.name.eng === inventoryForm.name.eng) {
+            existed = true;
             return;
           }
         });
+        if (!existed) {
+          //create new item globally
+          realm.create(items, inventoryForm);
 
-        //update activity
-        realm.create('activities', inventoryForm);
-        console.log('Farm items', farm[items]);
+          //create new item locally in farm
+          const localInventoryForm = {
+            ...inventoryForm,
+            _id: inventoryForm.id,
+            unit: inventoryForm['unitType'],
+            quantity: 0,
+          };
+          delete localInventoryForm['unitType'];
+          farm[items].push(localInventoryForm);
+          console.log('Successfully created data');
+          setDataForm(initialValueActivities);
+          setMsg('Successfully created data.');
+        } else {
+          console.log('Error');
+          setMsg(route.params.action + ' existed.');
+        }
       });
-      console.log('Successfully created data');
-      setDataForm(initialValueActivities);
-      setMsg('Successfully created data.');
     } else {
       console.log('Error');
       setMsg('Incorrect Input Data.');
@@ -176,11 +139,13 @@ const InventoryScreenAddForm = ({route, navigation}) => {
       alignItems: 'center',
     },
     button: {
-      marginVertical: 10,
+      marginVertical: 20,
       minWidth: '100%',
       backgroundColor: field.cardColor,
     },
   });
+
+  console.log('dataform Main: ', dataForm);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -193,7 +158,7 @@ const InventoryScreenAddForm = ({route, navigation}) => {
         />
         <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
-            {'Add ' + route.params.action}
+            {'Add New ' + route.params.action}
           </Text>
         </View>
       </View>
@@ -202,44 +167,16 @@ const InventoryScreenAddForm = ({route, navigation}) => {
         keyboardShouldPersistTaps="handled"
         style={{flex: 1}}>
         <KeyboardAvoidingView behavior="padding" style={styles.inputContainer}>
-          {invProps.map((field, index) => {
+          {newProps.map((field, index) => {
             switch (field.type) {
-              case 'date': {
+              case 'text':
                 return (
                   <React.Fragment key={field.type + '_' + index}>
-                    <DateInput
-                      label={'Date'}
-                      dataForm={dataForm}
-                      setDataForm={setDataForm}
-                      minWidth={'100%'}
-                      dateFieldName={'date'}
-                    />
-                  </React.Fragment>
-                );
-              }
-              case 'number':
-                return (
-                  <React.Fragment key={field.type + '_' + index}>
-                    <NumberInput
-                      label={field.name}
+                    <StringInput
+                      label={route.params.action + ' name'}
                       dataFormOption={field.id}
                       dataForm={dataForm}
                       setDataForm={setDataForm}
-                    />
-                  </React.Fragment>
-                );
-              case 'autocomplete':
-                return (
-                  <React.Fragment key={field.type + '_' + index}>
-                    <AutocompleteItemInput
-                      label={field.name}
-                      id={'_id'}
-                      title={'name'}
-                      options={items}
-                      dataForm={dataForm}
-                      setDataForm={setDataForm}
-                      initialValue={false}
-                      setRefItemFunction={setRefItemFunction}
                     />
                   </React.Fragment>
                 );
@@ -250,6 +187,7 @@ const InventoryScreenAddForm = ({route, navigation}) => {
                       label={field.name}
                       dataSet={field.units}
                       dataForm={dataForm}
+                      dataFormOption={field.id}
                       setDataForm={setDataForm}
                       setRefUnitFunction={setRefUnitFunction}
                     />
@@ -284,4 +222,4 @@ const InventoryScreenAddForm = ({route, navigation}) => {
   );
 };
 
-export default InventoryScreenAddForm;
+export default InventoryScreenAddExistingForm;
