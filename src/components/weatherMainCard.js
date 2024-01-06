@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingLeft: 15,
     borderRadius: 30,
-    backgroundColor: '#01B67D',
+    backgroundColor: '#80d776',
   },
   topRow: {
     flexDirection: 'row',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locationIcon: {
-    backgroundColor: '#6BF216',
+    backgroundColor: '#c7e39d',
   },
   locationTitle: {
     alignItems: 'center',

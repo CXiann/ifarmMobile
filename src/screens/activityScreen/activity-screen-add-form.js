@@ -1,11 +1,11 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {Activity_Props as actProps} from '../../constants/activity-props';
-
+import {SafeAreaView} from 'react-native-safe-area-context';
 import DateInput from '../../components/dateInput';
 import FieldInput from '../../components/fieldInput';
 import NumberInput from '../../components/numberInput';

@@ -14,7 +14,6 @@ import {
   SafeAreaSafe,
   SafeAreaViewAreaView,
 } from 'react-native-safe-area-context';
-
 import {realmContext} from '../../RealmContext';
 import {Task} from '../schemas/task.schema';
 import {useGlobal} from '../contexts/GlobalContext';

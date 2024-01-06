@@ -7,7 +7,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import {realmContext} from '../../RealmContext';
 
 import {Farm} from '../schemas/farm.schema';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGlobal} from '../contexts/GlobalContext';
 
 const AutocompleteItemInput = ({

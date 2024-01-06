@@ -368,7 +368,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   top: {
-    backgroundColor: '#4CB963',
+    // backgroundColor: '#4CB963',
+    backgroundColor: '#7BD671',
     height: '100%',
   },
   topContent: {

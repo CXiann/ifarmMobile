@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {BSON} from 'realm';
 import {BarChart, LineChart} from 'react-native-gifted-charts';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {Text, useTheme, IconButton} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
 import {realmContext} from '../../../RealmContext';

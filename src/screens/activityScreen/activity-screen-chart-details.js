@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, Divider, Card} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {StyleSheet, View} from 'react-native';
 import {getColor} from '../../utils/colorGenerator-utils';
 

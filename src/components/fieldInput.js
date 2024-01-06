@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Keyboard, View} from 'react-native';
 import {TextInput, useTheme, Button, IconButton} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FieldInput = ({label, dataForm, setDataForm}) => {
   const {colors} = useTheme();

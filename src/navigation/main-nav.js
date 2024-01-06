@@ -3,7 +3,6 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-
 import TabsNavbar from './tabs-navbar';
 import LoginScreen from '../screens/authScreen/login-screen';
 import ActivityScreenAddForm from '../screens/activityScreen/activity-screen-add-form';

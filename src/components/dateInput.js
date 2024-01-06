@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 import {TextInput, useTheme} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const DateInput = ({
   label,

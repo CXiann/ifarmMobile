@@ -3,7 +3,6 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useTheme} from 'react-native-paper';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import NotificationTaskScreen from '../screens/notificationScreen/notification-task-screen';
 import NotificationWeatherScreen from '../screens/notificationScreen/notification-weather-screen';
 

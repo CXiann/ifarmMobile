@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginHorizontal: 10,
     width: '80%',
-    backgroundColor: '#01B67D',
+    backgroundColor: '#80d776',
   },
 });
