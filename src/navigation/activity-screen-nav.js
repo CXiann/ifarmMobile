@@ -2,7 +2,6 @@ import React from 'react';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useTheme, ActivityIndicator, TextInput} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ActivityScreenView from '../screens/activityScreen/activity-screen-view';
 import {createStackNavigator} from '@react-navigation/stack';

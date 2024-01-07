@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 
 import {StyleSheet, View} from 'react-native';
 import {Text, Button, useTheme} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {getColor} from '../utils/colorGenerator-utils';
 
 import PieChartComponent from './pieChartComponent';

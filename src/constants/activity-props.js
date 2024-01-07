@@ -131,7 +131,7 @@ export const Activity_Props = [
     id: 2,
     action: 'Fertilizer',
     icon: 'flower-pollen-outline',
-    bgColor: 'gold',
+    bgColor: '#75A9A5',
     fields: [
       {
         id: 'date',
@@ -218,7 +218,7 @@ export const Activity_Props = [
     id: 3,
     action: 'Pesticide',
     icon: 'bug',
-    bgColor: 'dimgrey',
+    bgColor: '#7C6050',
     fields: [
       {
         id: 'date',
@@ -305,7 +305,7 @@ export const Activity_Props = [
     id: 4,
     action: 'Foliar',
     icon: 'leaf',
-    bgColor: 'violet',
+    bgColor: '#BCD897',
     fields: [
       {
         id: 'date',
@@ -392,7 +392,7 @@ export const Activity_Props = [
     id: 5,
     action: 'Fungicide',
     icon: 'mushroom',
-    bgColor: 'purple',
+    bgColor: '#7680d7',
     fields: [
       {
         id: 'date',
@@ -685,7 +685,7 @@ export const Activity_Props = [
     id: 8,
     action: 'Sales',
     icon: 'currency-usd',
-    bgColor: 'red',
+    bgColor: 'gold',
     fields: [
       {
         id: 'date',
@@ -837,7 +837,7 @@ export const Activity_Props = [
     id: 10,
     action: 'Others',
     icon: 'unfold-more-vertical',
-    bgColor: 'dodgerblue',
+    bgColor: 'dimgrey',
     fields: [
       {
         id: 'date',

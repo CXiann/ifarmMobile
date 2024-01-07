@@ -1,7 +1,6 @@
 import React, {memo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Card, Avatar, Text, useTheme} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ActivityViewCards = ({item, actProps}) => {
   const {colors} = useTheme();

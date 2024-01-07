@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Text, IconButton} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const TaskProgressCard = ({totalTasks, completedTasks, month, day}) => {
   const progressPercentage = Math.round((completedTasks / totalTasks) * 100);

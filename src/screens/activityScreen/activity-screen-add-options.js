@@ -3,7 +3,6 @@ import {StyleSheet, View} from 'react-native';
 import {Card, Avatar, Text, IconButton, useTheme} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
 import {Activity_Props as actProps} from '../../constants/activity-props';
 
 const ActivityScreenAddOptions = ({navigation, route}) => {

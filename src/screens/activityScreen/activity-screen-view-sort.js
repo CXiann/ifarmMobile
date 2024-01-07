@@ -19,7 +19,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import ActivityViewSortingButtons from '../../components/activityViewSortingButtons';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 import AutocompleteItemSortInput from '../../components/autocompleteItemSortInput';
 import {Item_Props as itemProps} from '../../constants/item-props';
 

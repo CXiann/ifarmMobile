@@ -4,7 +4,6 @@ import {Text, useTheme} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
 import {Dropdown} from 'react-native-element-dropdown';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AutocompleteFarmInput = ({
   dataSet,

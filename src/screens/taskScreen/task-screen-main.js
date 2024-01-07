@@ -368,7 +368,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   top: {
-    backgroundColor: '#4CB963',
+    // backgroundColor: '#4CB963',
+    backgroundColor: '#7BD671',
     height: '100%',
   },
   topContent: {
@@ -377,7 +378,11 @@ const styles = StyleSheet.create({
   bottomToday: {
     backgroundColor: '#ffffff',
     padding: 20,
-    borderRadius: 40,
+    // borderRadius: 40,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
   bottomFuture: {
     marginTop: 30,
