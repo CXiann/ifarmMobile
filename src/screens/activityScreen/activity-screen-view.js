@@ -4,7 +4,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTheme, Button, Text} from 'react-native-paper';
 import {FlatList} from 'react-native-gesture-handler';
 
-import Realm from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
 

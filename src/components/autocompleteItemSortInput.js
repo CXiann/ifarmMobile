@@ -1,21 +1,13 @@
-import Realm, {BSON} from 'realm';
+import {BSON} from 'realm';
 import {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  Text,
-  useTheme,
-  ActivityIndicator,
-  TextInput,
-  IconButton,
-} from 'react-native-paper';
-import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
+import {Text, useTheme, TextInput, IconButton} from 'react-native-paper';
 import Feather from 'react-native-vector-icons/Feather';
 import {realmContext} from '../../RealmContext';
 
 import {Farm} from '../schemas/farm.schema';
 import {useGlobal} from '../contexts/GlobalContext';
 import {Dropdown} from 'react-native-element-dropdown';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const AutocompleteItemSortInput = ({
   label, //labeling for input
@@ -129,14 +121,6 @@ const AutocompleteItemSortInput = ({
   });
   console.log('iniValue: ', tempForm['previousValue'][options]);
 
-  // render other component
-  // if (loading) {
-  //   return (
-  //     <SafeAreaView style={style.container}>
-  //       {/* <ActivityIndicator animating={true} /> */}
-  //     </SafeAreaView>
-  //   );
-  // }
   return (
     <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>

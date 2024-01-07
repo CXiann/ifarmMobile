@@ -1,4 +1,4 @@
-import Realm, {BSON} from 'realm';
+import {BSON} from 'realm';
 import {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text, useTheme} from 'react-native-paper';
@@ -24,7 +24,6 @@ const AutocompleteItemInput = ({
   const {useRealm} = realmContext;
   const realm = useRealm();
   const {farmId} = useGlobal();
-  const [loading, setLoading] = useState(true);
   const dropdownController = useRef(null);
   const [dataSetFormatFarm, setDataSetFormatFarm] = useState([
     {
@@ -77,8 +76,6 @@ const AutocompleteItemInput = ({
     };
 
     setDataSetFormatFarm(getDataSetFormat(visibleTagsOptions));
-
-    setLoading(false);
   }, []);
 
   const style = StyleSheet.create({
@@ -100,13 +97,7 @@ const AutocompleteItemInput = ({
       minWidth: '100%',
     },
   });
-  if (loading) {
-    return (
-      <View style={style.container}>
-        {/* <ActivityIndicator animating={true} /> */}
-      </View>
-    );
-  }
+
   return (
     <View style={style.container}>
       <Text variant="labelMedium" style={style.text}>

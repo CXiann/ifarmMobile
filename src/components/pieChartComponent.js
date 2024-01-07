@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 import {PieChart} from 'react-native-gifted-charts';
 

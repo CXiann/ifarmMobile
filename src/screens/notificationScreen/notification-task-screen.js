@@ -12,7 +12,7 @@ import {
 } from 'react-native-paper';
 import {realmContext} from '../../../RealmContext';
 import {useGlobal} from '../../contexts/GlobalContext';
-import {FlatList, ScrollView} from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 
 const NotificationTaskScreen = ({navigation, route}) => {
   const {notifications} = route.params;

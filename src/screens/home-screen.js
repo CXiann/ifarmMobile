@@ -1,21 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import Realm, {BSON} from 'realm';
-import {
-  StatusBar,
-  StyleSheet,
-  View,
-  Platform,
-  Text,
-  KeyboardAvoidingView,
-} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {BSON} from 'realm';
+import {StyleSheet, Text} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {useGlobal} from '../contexts/GlobalContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import StockCard from '../components/stockCard';
 import {realmContext} from '../../RealmContext';
 import {Farm} from '../schemas/farm.schema';
-import {getVisibleTagsItems} from '../utils/visibleTagsItems-utils';
 import {Item_Props as itemProps} from '../constants/item-props';
 import {FlatList} from 'react-native-gesture-handler';
 import WeatherMainCard from '../components/weatherMainCard';

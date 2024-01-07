@@ -1,10 +1,5 @@
-import Realm, {BSON} from 'realm';
 import {ScrollView, View} from 'react-native';
-import {
-  FlatList,
-  GestureHandlerRootView,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import React, {useEffect, useState, useCallback} from 'react';
 import Modal from 'react-native-modal';
 

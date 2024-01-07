@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {StyleSheet, KeyboardAvoidingView, ScrollView, View} from 'react-native';
-import {Button, Text, Snackbar, IconButton} from 'react-native-paper';
+import {Button, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';

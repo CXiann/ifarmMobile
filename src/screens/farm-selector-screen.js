@@ -1,13 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, FlatList, View} from 'react-native';
-import {
-  Text,
-  Button,
-  Card,
-  useTheme,
-  TextInput,
-  IconButton,
-} from 'react-native-paper';
+import {Text, Button, Card, useTheme, TextInput} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
 import {realmContext} from '../../RealmContext';

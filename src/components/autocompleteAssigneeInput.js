@@ -123,15 +123,3 @@ const AutoCompleteAssigneeInput = ({
 };
 
 export default AutoCompleteAssigneeInput;
-
-// const style = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 16,
-//     paddingBottom: 40,
-//     justifyContent: 'center',
-//     minWidth: '100%',
-//     // flexDirection: 'row',
-//     // flexDirection: 'column-reverse',
-//   },
-// });

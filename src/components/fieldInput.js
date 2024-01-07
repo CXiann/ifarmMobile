@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {StyleSheet, Keyboard, View} from 'react-native';
-import {TextInput, useTheme, Button, IconButton} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {TextInput, useTheme, IconButton} from 'react-native-paper';
 
 const FieldInput = ({label, dataForm, setDataForm}) => {
   const {colors} = useTheme();

@@ -11,7 +11,6 @@ const InventoryDetails = ({navigation, type, data, field}) => {
   const [pieData, setPieData] = useState(null);
   const [visibleData, setVisibleData] = useState(data[field.options] ?? []);
   const [selectedData, setSelectedData] = useState('');
-  const {colors} = useTheme();
 
   const selectedCardColor = field.cardColor;
   const selectedIcon = field.icon;

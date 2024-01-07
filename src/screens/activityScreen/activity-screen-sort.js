@@ -1,6 +1,6 @@
 import Realm, {BSON} from 'realm';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   Portal,

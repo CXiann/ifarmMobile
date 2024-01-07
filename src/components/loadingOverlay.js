@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, Image} from 'react-native';
 import {Portal, Modal, Text} from 'react-native-paper';
 import farmer from '../assets/images/farmer.gif';
