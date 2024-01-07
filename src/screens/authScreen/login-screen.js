@@ -72,9 +72,11 @@ const LoginScreen = ({navigation}) => {
     setIsLoading(true);
     const currentUser = users.filtered('email CONTAINS $0', email)[0];
     if (currentUser && currentUser.role != 'admin') {
+      console.log('if');
       isValid = await validateCredentials(currentUser);
     } else {
-      setTimeout(() => {}, 5000);
+      console.log('else');
+      await new Promise(resolve => setTimeout(resolve, 3000));
     }
     console.log('Valid: ', isValid);
     if (isValid) {

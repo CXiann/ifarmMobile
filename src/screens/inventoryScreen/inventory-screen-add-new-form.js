@@ -5,7 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {BSON} from 'realm';
 import {realmContext} from '../../../RealmContext';
 import {Inventory_Props as newProps} from '../../constants/inventory-new-props';
-import StringInput from '../../components/stringinput';
+import StringInput from '../../components/stringInput';
 import AutocompleteUnitInput from '../../components/autocompleteUnitInput';
 import SnackbarBottom from '../../components/snackbarBottom';
 import {useGlobal} from '../../contexts/GlobalContext';
