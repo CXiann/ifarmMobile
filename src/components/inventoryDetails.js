@@ -131,6 +131,7 @@ const InventoryDetails = ({navigation, type, data, field}) => {
         pieData={pieData ?? []}
         calculatePercentage={calculatePercentage}
         icon={selectedIcon}
+        getTotal={getTotal}
         selectedData={selectedData}
         setSelectedData={setSelectedDataFromPie}
       />

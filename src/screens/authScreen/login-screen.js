@@ -128,7 +128,7 @@ const LoginScreen = ({navigation}) => {
     button: {
       alignSelf: 'center',
       minWidth: '90%',
-      marginTop: '25%',
+      marginTop: 50,
     },
   });
 

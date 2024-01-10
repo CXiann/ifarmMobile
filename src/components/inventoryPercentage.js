@@ -7,6 +7,7 @@ const InventoryPercentage = ({
   calculatePercentage,
   icon,
   selectedData,
+  getTotal,
 }) => {
   const {colors} = useTheme();
   const styles = StyleSheet.create({
@@ -89,6 +90,8 @@ const InventoryPercentage = ({
     return selectedData === data;
   };
 
+  console.log('Total ', getTotal(pieData));
+
   console.log('selectedData: ', selectedData);
   return (
     <View style={styles.percentageContainer}>
@@ -123,7 +126,11 @@ const InventoryPercentage = ({
                   </Text>
                 </View>
                 <ProgressBar
-                  progress={calculatePercentage(pieData, item.value) / 100}
+                  progress={
+                    getTotal(pieData) == 0
+                      ? 0
+                      : calculatePercentage(pieData, item.value) / 100
+                  }
                   color={item.color}
                   style={
                     isSelected ? styles.progressBarSelected : styles.progressBar

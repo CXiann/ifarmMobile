@@ -72,6 +72,7 @@ const ActivityScreenAddOptions = ({navigation, route}) => {
                   <Avatar.Icon
                     {...props}
                     icon={item.icon}
+                    color="white"
                     style={{
                       backgroundColor: item.bgColor,
                     }}

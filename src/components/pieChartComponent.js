@@ -27,14 +27,16 @@ const PieChartComponent = ({
   const renderLegendComponent = () => {
     return (
       <View style={styles.legendContainer}>
-        {pieData.map((item, index) => (
-          <View style={styles.legendColumn} key={index}>
-            {renderDot(item.color)}
-            <Text style={styles.legendText}>
-              {item.name}: {calculatePercentage(pieData, item.value)}%
-            </Text>
-          </View>
-        ))}
+        {pieData.length !== 0 &&
+          getTotal(pieData) !== 0 &&
+          pieData.map((item, index) => (
+            <View style={styles.legendColumn} key={index}>
+              {renderDot(item.color)}
+              <Text style={styles.legendText}>
+                {item.name}: {calculatePercentage(pieData, item.value)}%
+              </Text>
+            </View>
+          ))}
       </View>
     );
   };
@@ -52,35 +54,44 @@ const PieChartComponent = ({
   console.log('Type: ', type);
   return (
     <View style={styles.chartContainer}>
-      <PieChart
-        data={
-          pieData.length === 0 ? [{value: 100, color: 'lightgray'}] : pieData
-        }
-        donut
-        focusOnPress
-        showGradient
-        sectionAutoFocus
-        radius={80}
-        innerRadius={30}
-        showValuesAsLabels
-        textColor="black"
-        textSize={10}
-        showText={pieData.length === 0 ? false : true}
-        onPress={item => {
-          setSelectedData(item.name);
-        }}
-        // innerCircleColor={'#232B5D'}
-        centerLabelComponent={centerLabelComponent}
-      />
-      <View style={styles.rightSideOfChart}>
-        <Text style={styles.stockText}>Total In Stock</Text>
-        <Text style={styles.stockValueText}>
-          {pieData.length === 0
-            ? 'No Data'
-            : getTotal(pieData).toFixed(2) + (type == 'Liquid' ? 'ℓ' : 'kg')}
-        </Text>
-        {renderLegendComponent()}
-      </View>
+      {
+        <>
+          <PieChart
+            data={
+              pieData.length === 0 || getTotal(pieData) == 0
+                ? [{value: 100, color: 'lightgray'}]
+                : pieData
+            }
+            donut
+            focusOnPress
+            showGradient
+            sectionAutoFocus
+            radius={80}
+            innerRadius={30}
+            showValuesAsLabels={
+              pieData.length === 0 || getTotal(pieData) == 0 ? false : true
+            }
+            textColor="black"
+            textSize={10}
+            showText={pieData.length === 0 ? false : true}
+            onPress={item => {
+              setSelectedData(item.name);
+            }}
+            // innerCircleColor={'#232B5D'}
+            centerLabelComponent={centerLabelComponent}
+          />
+          <View style={styles.rightSideOfChart}>
+            <Text style={styles.stockText}>Total In Stock</Text>
+            <Text style={styles.stockValueText}>
+              {pieData.length === 0 || getTotal(pieData) == 0
+                ? 'No Data'
+                : getTotal(pieData).toFixed(2) +
+                  (type == 'Liquid' ? 'ℓ' : 'kg')}
+            </Text>
+            {renderLegendComponent()}
+          </View>
+        </>
+      }
     </View>
   );
 };

@@ -39,6 +39,13 @@ export default function AppWrapper() {
   );
 }
 const App = () => {
+  const existingRealmFileBehaviorConfig = {
+    type: 'openImmediately',
+  };
+
+  const newRealmFileBehaviorConfig = {
+    type: 'openImmediately',
+  };
   return (
     <RealmProvider
       // fallback={<LoadingOverlay />}
@@ -58,6 +65,8 @@ const App = () => {
             subs.add(realm.objects('tasks'));
           },
         },
+        newRealmFileBehavior: newRealmFileBehaviorConfig,
+        existingRealmFileBehavior: existingRealmFileBehaviorConfig,
         clientReset: {
           mode: 'discardUnsyncedChanges',
           onBefore: realm => {
@@ -129,7 +138,7 @@ const LogIn = () => {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <Text>Test</Text>
+      {/* <Text>Test</Text> */}
     </View>
   );
 };

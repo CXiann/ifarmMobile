@@ -16,10 +16,13 @@ export const Activity_Props = [
       },
       {
         id: 'field',
-        name: 'Field Number*',
+        name: 'Field Number',
         type: 'field',
         props: {type: 'number'},
-        validate: v => !!parseInt(v),
+        validate: v => {
+          if (parseInt(v) === 0) return true; //field number 0 is valid
+          return parseInt(v) > 0;
+        },
         width: '33%',
       },
       {
@@ -27,8 +30,7 @@ export const Activity_Props = [
         name: 'Row Range',
         type: 'number',
         validate: v => {
-          if (parseInt(v) === 0) return false;
-          return !!validateRange(v);
+          return !!validateRange(v).length != 0;
         },
         width: '33%',
       },
@@ -206,7 +208,7 @@ export const Activity_Props = [
         type: 'number',
         validate: v => {
           if (parseFloat(v) === 0) return true; //price 0 is valid
-          return parseFloat(v) > 0;
+          return parseFloat(v) >= 0;
         },
         width: '12%',
       },
@@ -591,7 +593,7 @@ export const Activity_Props = [
         name: 'Price(RM)',
         type: 'price',
         validate: v => {
-          return parseFloat(v) > 0;
+          return parseFloat(v) >= 0;
         },
         width: '12%',
       },

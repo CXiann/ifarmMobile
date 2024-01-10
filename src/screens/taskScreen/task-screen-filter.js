@@ -97,7 +97,9 @@ const TaskScreenFilter = ({navigation, route}) => {
         />
         <View style={styles.topBarText}>
           <Text variant="titleLarge" style={{fontWeight: 700}}>
-            Filter Tasks
+            {todayOrFuture === 'today'
+              ? 'Filter Today Tasks'
+              : 'Filter Future Tasks'}
           </Text>
         </View>
       </View>

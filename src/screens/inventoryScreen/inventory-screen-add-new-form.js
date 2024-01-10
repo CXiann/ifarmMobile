@@ -49,6 +49,10 @@ const InventoryScreenAddExistingForm = ({route, navigation}) => {
 
   const validateDataInput = () => {
     return newProps.every(field => {
+      if (field.id == 'name') {
+        const list = realm.objects(items);
+        return field.validate(dataForm[field.id], list);
+      }
       console.log(field.id + '_' + field.validate(dataForm[field.id]));
       return field.validate(dataForm[field.id]);
     });
